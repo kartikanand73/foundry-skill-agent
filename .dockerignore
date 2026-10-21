@@ -1,0 +1,9 @@
+.env
+.azure/
+.venv/
+__pycache__/
+*.pyc
+tests/
+scripts/
+deploy/
+.pytest_cache/

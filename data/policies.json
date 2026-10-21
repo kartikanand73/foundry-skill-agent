@@ -1,0 +1,16 @@
+{
+  "policies": [
+    {
+      "id": "POL-HR-001",
+      "title": "Contoso Vacation (Paid Time Off) Policy",
+      "topics": ["vacation", "pto", "paid time off", "annual leave", "time off", "carryover"],
+      "text": "Full-time employees accrue 15 days of paid vacation per calendar year (1.25 days per month). After 5 years of service, accrual increases to 20 days per year. Vacation requests of 3 or more consecutive days must be submitted to your manager at least 10 business days in advance. Up to 5 unused days may be carried over into the next calendar year; any additional unused days are forfeited on December 31. Unused vacation is not paid out except where required by local law."
+    },
+    {
+      "id": "POL-HR-002",
+      "title": "Contoso Company Holiday Policy",
+      "topics": ["holiday", "holidays", "public holiday", "floating holiday", "office closure"],
+      "text": "Contoso observes 10 paid company holidays per year: New Year's Day, Martin Luther King Jr. Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving Day, the day after Thanksgiving, Christmas Eve, and Christmas Day. Each employee also receives 2 floating holidays per year, which must be used within the calendar year and cannot be carried over. Employees required to work on a company holiday receive an alternate day off within 30 days."
+    }
+  ]
+}

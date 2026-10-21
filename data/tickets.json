@@ -1,0 +1,22 @@
+{
+  "tickets": [
+    {
+      "ticket_id": "INC1001",
+      "status": "In Progress",
+      "summary": "Laptop cannot connect to corporate VPN after OS update",
+      "latest_update": "2026-10-19 14:05 - Network team identified an outdated VPN client; a new client package is being pushed to the device."
+    },
+    {
+      "ticket_id": "INC1002",
+      "status": "Resolved",
+      "summary": "Request for access to the Finance shared drive",
+      "latest_update": "2026-10-17 09:30 - Access granted after manager approval. Please sign out and back in to see the drive."
+    },
+    {
+      "ticket_id": "INC1003",
+      "status": "Awaiting User",
+      "summary": "Outlook crashes when opening calendar",
+      "latest_update": "2026-10-18 16:45 - Support asked the user to send the crash log from %LOCALAPPDATA%\\Microsoft\\Outlook. Waiting for reply."
+    }
+  ]
+}

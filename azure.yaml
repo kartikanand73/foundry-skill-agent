@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+# Unified azd project file for Foundry Hosted Agents (replaces the older agent.yaml + agent.manifest.yaml).
+# Reference: https://learn.microsoft.com/azure/foundry/agents/concepts/azure-yaml-reference
+requiredVersions:
+  azd: ">=1.27.1"
+  extensions:
+    azure.ai.agents: ">=1.0.0-beta.8"
+    azure.ai.projects: ">=1.0.0-beta.4"
+
+name: skill-agent
+
+infra:
+  provider: microsoft.foundry   # Bicep-less; supplied by the azure.ai.projects extension
+
+services:
+  ai-project:
+    host: azure.ai.project
+    # Reuse an EXISTING Foundry project (cheapest). Set it with:
+    #   azd env set EXISTING_FOUNDRY_PROJECT_ENDPOINT https://<account>.services.ai.azure.com/api/projects/<project>
+    # Remove this line (and uncomment `deployments`) to let azd provision a new project + model instead.
+    endpoint: ${EXISTING_FOUNDRY_PROJECT_ENDPOINT}
+    # deployments:
+    #   - name: gpt-4.1-mini
+    #     model: { format: OpenAI, name: gpt-4.1-mini, version: "2025-04-14" }
+    #     sku: { name: GlobalStandard, capacity: 10 }
+
+  skill-agent:
+    host: azure.ai.agent
+    project: .
+    # Prebuilt image (built in Azure with `az acr build`, no local Docker needed).
+    # Set AGENT_IMAGE (azd env var, not a container var) and AZD_AGENT_SKIP_ACR=true.
+    # NOTE: the platform reserves AGENT_* and FOUNDRY_* names for container env vars.
+    image: ${AGENT_IMAGE}
+    docker:
+      remoteBuild: true     # azd never needs local Docker
+    uses:
+      - ai-project
+    kind: hosted
+    name: skill-agent
+    description: Demo agent that routes to HR-policy or IT-ticket skills and runs local Python tools.
+    startupCommand: python main.py
+    protocols:
+      - protocol: invocations
+        version: 2.0.0
+    env:
+      MODEL_DEPLOYMENT_NAME: ${MODEL_DEPLOYMENT_NAME}
+      MODEL_REASONING_EFFORT: ${MODEL_REASONING_EFFORT}
+      REQUEST_TIMEOUT_SECONDS: "60"
+    container:
+      resources:
+        cpu: "0.25"           # smallest allowed size
+        memory: 0.5Gi

@@ -1,0 +1,6 @@
+# Versions verified together on 2026-10-20 (Python 3.13)
+openai>=1.106,<4          # callable api_key for Entra tokens; tested with 3.35.1
+azure-identity>=1.19      # tested with 1.26.0
+azure-ai-agentserver-invocations>=1.2.0,<2   # Foundry Hosted Agents invocations protocol (pulls azure-ai-agentserver-core 2.x)
+PyYAML>=6.0
+python-dotenv>=1.0
