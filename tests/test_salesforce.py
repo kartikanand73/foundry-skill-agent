@@ -105,6 +105,14 @@ def test_expired_session_is_recreated_once():
     assert fake.bodies("/messages")[-1]["message"]["sequenceId"] == 1
 
 
+def test_bypass_user_configurable():
+    fake = FakeSalesforce()
+    AgentforceClient(dataclasses.replace(CFG, bypass_user=False),
+                     http=httpx.Client(transport=httpx.MockTransport(fake)),
+                     secret_provider=lambda: "x").ask("c", "q")
+    assert fake.bodies("/sessions")[0]["bypassUser"] is False
+
+
 def test_end_session_sends_delete_with_reason():
     fake = FakeSalesforce()
     c = client(fake)

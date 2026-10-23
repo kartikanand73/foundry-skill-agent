@@ -39,6 +39,8 @@ class SalesforceConfig:
     secret_name: str = "salesforce-client-secret"
     timeout_s: float = 60.0
     session_idle_s: float = 600.0
+    bypass_user: bool = True  # True: agent's assigned user (service agents). Employee agents may need False
+                              # (runs as the token's Run As user).
 
     @staticmethod
     def from_env() -> "SalesforceConfig | None":
@@ -56,6 +58,7 @@ class SalesforceConfig:
             secret_name=e("SALESFORCE_SECRET_NAME", "salesforce-client-secret"),
             timeout_s=float(e("SALESFORCE_TIMEOUT_SECONDS", "60")),
             session_idle_s=float(e("SALESFORCE_SESSION_IDLE_SECONDS", "600")),
+            bypass_user=e("SALESFORCE_BYPASS_USER", "true").strip().lower() not in ("0", "false", "no"),
         )
 
 
@@ -124,7 +127,7 @@ class AgentforceClient:
                            "externalSessionKey": str(uuid.uuid4()),
                            "instanceConfig": {"endpoint": self.cfg.my_domain},
                            "streamingCapabilities": {"chunkTypes": ["Text"]},
-                           "bypassUser": True,
+                           "bypassUser": self.cfg.bypass_user,
                        })
         if r.status_code not in (200, 201):
             trace("sf_session_error", status=r.status_code)
