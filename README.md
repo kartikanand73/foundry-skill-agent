@@ -224,6 +224,11 @@ Then rebuild the image (`az acr build`), update `AGENT_IMAGE` to the new tag, an
 
 **Locally**, put the same values in `.env`. Either use `SALESFORCE_KEYVAULT_URL` (read with your `az`/`azd` login) or, for quick tests only, `SALESFORCE_CLIENT_SECRET`.
 
+### Verified against a live org (2026-10-23)
+A Developer Edition org with an Employee Agent, tested from the laptop through `gpt-5`: the token, session start, message, reply and session end all succeeded.
+- **Employee agents need `SALESFORCE_BYPASS_USER=false`.** With `true`, session start fails with `400 Invalid user ID provided on start session`, because employee agents have no dedicated agent user and run as the Run As user.
+- Agentforce answers only from the subagents and actions it has. A default employee agent with General FAQ, Off Topic and Ambiguous Question can't read records until you add a subagent with record actions (e.g. Query Records / Get Record Details), and the Run As user needs access to those objects.
+
 ### Try it
 ```json
 {"message": "What open opportunities does the Acme account have in Salesforce?"}

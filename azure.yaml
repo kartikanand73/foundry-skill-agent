@@ -52,6 +52,7 @@ services:
       SALESFORCE_AGENTFORCE_ID: ${SALESFORCE_AGENTFORCE_ID}
       SALESFORCE_KEYVAULT_URL: ${SALESFORCE_KEYVAULT_URL}
       SALESFORCE_SECRET_NAME: salesforce-client-secret
+      SALESFORCE_BYPASS_USER: "false"   # Employee agents require false
     container:
       resources:
         cpu: "0.25"           # smallest allowed size
