@@ -229,6 +229,10 @@ A Developer Edition org with an Employee Agent, tested from the laptop through `
 - **Employee agents need `SALESFORCE_BYPASS_USER=false`.** With `true`, session start fails with `400 Invalid user ID provided on start session`, because employee agents have no dedicated agent user and run as the Run As user.
 - Agentforce answers only from the subagents and actions it has. A default employee agent with General FAQ, Off Topic and Ambiguous Question can't read records until you add a subagent with record actions (e.g. Query Records / Get Record Details), and the Run As user needs access to those objects.
 
+**Deployed and verified hosted (2026-10-23):** agent version 2, image `skill-agent:v2`. The secret is read from Key Vault with the agent's managed identity, so the container has no secret in its environment. A Salesforce account list and a follow-up in the same session, an HR question and an IT question all passed.
+
+**Rotating the secret:** reset it in the External Client App, then run `az keyvault secret set --vault-name <kv> -n salesforce-client-secret --file <file>`. The hosted agent picks up the new value at its next token refresh (within 25 minutes), with no redeploy.
+
 ### Try it
 ```json
 {"message": "What open opportunities does the Acme account have in Salesforce?"}
@@ -258,6 +262,7 @@ What the deployment created in your subscription (everything else was reused):
 | Container registry `<acr>` (Basic) | your resource group | roughly $5/month while it exists |
 | Hosted agent `skill-agent` (version 1), 0.25 vCPU / 0.5 GiB | your Foundry project | vCPU + memory hours only while a session's compute is running; idle sessions don't use compute |
 | Role assignments: AcrPull (project + account identities), Foundry User (agent identity) | ACR / account scope | free |
+| Key Vault `<kv>` (Standard, RBAC) holding `salesforce-client-secret`; agent identity = Key Vault Secrets User | your resource group | a few cents per 10k operations |
 
 Model usage is billed on your existing `gpt-5` deployment. Each message is 1 call (unsupported/clarify) or 3 calls (route → tool request → answer). `gpt-5` costs more per token than a mini model; for a cheaper demo, deploy `gpt-5-mini` (or similar) and set `MODEL_DEPLOYMENT_NAME`. Check the Azure pricing calculator for current rates.
 
@@ -268,9 +273,11 @@ Container Apps fallback (not used): RG + ACR Basic + consumption environment tha
 ```bash
 # 1. the hosted agent (all versions)
 azd ai agent delete skill-agent
-# 2. the container registry
+# 2. the Key Vault (soft-delete keeps it 90 days unless purged)
+az keyvault delete -n <kv> -g <rg> && az keyvault purge -n <kv>
+# 3. the container registry
 az acr delete -n <acr> -g <rg> --yes
-# 3. optional: the agent's role assignment on the account (gone with the agent identity anyway)
+# 4. optional: the agent's role assignment on the account (gone with the agent identity anyway)
 ```
 
 `azd down` is **not** needed here and would not delete your existing project. Your Foundry account, project, `gpt-5` deployment and resource group `DB` are left untouched by both commands.
