@@ -69,6 +69,32 @@ def _secret_from_keyvault(cfg: SalesforceConfig) -> str:
     return SecretClient(cfg.keyvault_url, DefaultAzureCredential()).get_secret(cfg.secret_name).value
 
 
+def _compact_records(msgs: list[dict], limit: int = 25) -> list[dict]:
+    """Flatten Agentforce action outputs (the `result` field Salesforce renders as record cards)
+    into small dicts the model can read: object, id, title and non-empty field values."""
+    out: list[dict] = []
+    for m in msgs:
+        for item in m.get("result") or []:
+            value = item.get("value") if isinstance(item, dict) else None
+            rows = value.get("result") if isinstance(value, dict) else None
+            if not isinstance(rows, list):
+                if value not in (None, "", {}, []):   # non-record action output: keep it, truncated
+                    out.append({"action_output": str(value)[:1500]})
+                continue
+            for r in rows:
+                if not isinstance(r, dict):
+                    continue
+                fields = {}
+                for f in (r.get("data") or {}).values():
+                    if isinstance(f, dict) and f.get("value") not in (None, ""):
+                        fields[f.get("label") or f.get("apiName")] = f.get("displayValue") or f.get("value")
+                out.append({"object": (r.get("sObjectInfo") or {}).get("label"), "id": r.get("id"),
+                            "title": r.get("title"), "fields": fields})
+                if len(out) >= limit:
+                    return out
+    return out
+
+
 @dataclass
 class _Session:
     id: str
@@ -186,6 +212,7 @@ class AgentforceClient:
         unsafe = any(m.get("isContentSafe") is False for m in msgs)
         return {
             "answer": "\n\n".join(replies) if replies else "",
+            "records": _compact_records(msgs),
             "message_types": sorted({m.get("type", "?") for m in msgs}),
             "content_safe": not unsafe,
             "source": f"Salesforce Agentforce agent {self.cfg.agent_id}",

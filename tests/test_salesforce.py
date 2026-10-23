@@ -29,6 +29,7 @@ class FakeSalesforce:
         self.answer, self.fail = answer, fail or {}
         self.sessions = 0
         self.expire_next = False
+        self.result = []
 
     def __call__(self, req: httpx.Request) -> httpx.Response:
         self.requests.append(req)
@@ -48,7 +49,8 @@ class FakeSalesforce:
             if self.fail.get("message"):
                 return httpx.Response(500, json={})
             return httpx.Response(200, json={"messages": [
-                {"type": "Inform", "id": "m1", "message": self.answer, "isContentSafe": True}]})
+                {"type": "Inform", "id": "m1", "message": self.answer, "isContentSafe": True,
+                 "result": self.result}]})
         if req.method == "DELETE":
             return httpx.Response(200, json={"messages": [{"type": "SessionEnded", "reason": "ClientRequest"}]})
         return httpx.Response(404)
@@ -155,7 +157,7 @@ def test_agent_routes_to_salesforce_skill_and_calls_agentforce(make_agent):
     fake = FakeSalesforce()
     agent = make_agent(client(fake))
     r = agent.handle("user1:sess", "What open opportunities does the Acme account have?")
-    assert r.skill == "salesforce-agentforce" and r.skill_version == "1.0.0"
+    assert r.skill == "salesforce-agentforce" and r.skill_version == "1.1.0"
     assert r.tool_calls[0]["tool"] == "ask_agentforce" and r.tool_calls[0]["status"] == "found"
     assert r.text.startswith("From Salesforce: Acme Corp has 2 open opportunities")
     # only the Salesforce skill's tool was offered
@@ -187,3 +189,20 @@ def test_hr_and_it_unaffected(make_agent):
     agent = make_agent(client(FakeSalesforce()))
     assert agent.handle("a", "What is our vacation policy?").skill == "hr-policy"
     assert agent.handle("b", "Status of INC1001?").skill == "it-ticket"
+
+
+def test_structured_records_are_returned():
+    """Real Agentforce shape (captured from a live org): records live in result[].value.result[]."""
+    fake = FakeSalesforce(answer="Here are a few accounts from your Salesforce CRM.")
+    fake.result = [{"type": "copilotActionOutput/QueryRecords_x", "property": "", "value": {"result": [
+        {"id": "001A", "sObjectInfo": {"apiName": "Account", "label": "Account"}, "title": "Initech",
+         "data": {"Id": {"value": "001A", "label": "Account ID"}, "Name": {"value": "Initech", "label": "Account Name"},
+                  "Phone": {"value": None, "label": "Account Phone"}}},
+        {"id": "001B", "sObjectInfo": {"label": "Account"}, "title": "Acme Corp",
+         "data": {"Name": {"value": "Acme Corp", "label": "Account Name"},
+                  "AnnualRevenue": {"value": 5000000, "displayValue": "$5,000,000", "label": "Annual Revenue"}}}]}}]
+    r = client(fake).ask("c", "List a few accounts")
+    assert [x["title"] for x in r["records"]] == ["Initech", "Acme Corp"]
+    assert r["records"][0] == {"object": "Account", "id": "001A", "title": "Initech",
+                               "fields": {"Account ID": "001A", "Account Name": "Initech"}}   # empty Phone dropped
+    assert r["records"][1]["fields"]["Annual Revenue"] == "$5,000,000"                       # displayValue preferred
