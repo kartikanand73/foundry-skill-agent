@@ -37,7 +37,7 @@ services:
       - ai-project
     kind: hosted
     name: skill-agent
-    description: Demo agent that routes to HR-policy or IT-ticket skills and runs local Python tools.
+    description: Demo agent that routes to HR-policy, IT-ticket or Salesforce Agentforce skills and runs Python tools.
     startupCommand: python main.py
     protocols:
       - protocol: invocations
@@ -46,6 +46,12 @@ services:
       MODEL_DEPLOYMENT_NAME: ${MODEL_DEPLOYMENT_NAME}
       MODEL_REASONING_EFFORT: ${MODEL_REASONING_EFFORT}
       REQUEST_TIMEOUT_SECONDS: "60"
+      # Salesforce Agentforce (non-secret values only; the client secret lives in Key Vault)
+      SALESFORCE_MY_DOMAIN: ${SALESFORCE_MY_DOMAIN}
+      SALESFORCE_CLIENT_ID: ${SALESFORCE_CLIENT_ID}
+      SALESFORCE_AGENTFORCE_ID: ${SALESFORCE_AGENTFORCE_ID}
+      SALESFORCE_KEYVAULT_URL: ${SALESFORCE_KEYVAULT_URL}
+      SALESFORCE_SECRET_NAME: salesforce-client-secret
     container:
       resources:
         cpu: "0.25"           # smallest allowed size

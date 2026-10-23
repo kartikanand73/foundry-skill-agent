@@ -30,17 +30,18 @@ Conversation memory keeps only user/assistant **text** (last 6 turns). System pr
 agent/
   core.py       SkillAgent.handle(session_id, message) – the whole flow above
   skills.py     catalog (frontmatter only) + full skill loading
-  tools.py      lookup_policy, get_ticket_status, schemas, argument validation, allowlist
+  tools.py      lookup_policy, get_ticket_status, ask_agentforce, schemas, validation, allowlist
+  salesforce.py Agentforce Agent API client (OAuth, sessions, messages, Key Vault secret)
   llm.py        OpenAI SDK → Azure OpenAI v1 endpoint with Entra ID tokens
   config.py     env-based settings
   trace.py      [trace] lines on stderr (never credentials)
   fake_llm.py   OFFLINE scripted stand-in model for tests/demos only
-skills/hr-policy/SKILL.md     skills/it-ticket/SKILL.md
+skills/hr-policy/SKILL.md     skills/it-ticket/SKILL.md     skills/salesforce-agentforce/SKILL.md
 data/policies.json            data/tickets.json
 cli.py          local chat
 main.py         Foundry Hosted Agent entry point (Invocations protocol, port 8088)
 scripts/demo.py required demo cases + hot-reload demo
-tests/          16 offline tests
+tests/          27 offline tests (incl. Agentforce API contract via mock transport)
 Dockerfile  azure.yaml  deploy/aca/deploy.sh  .env.example
 ```
 
@@ -185,6 +186,50 @@ azd ai agent monitor skill-agent --session-id <id>                     # contain
 | 401 from model inside container | Assign **Foundry User** on the account to the agent's instance identity |
 | `azd auth token` says MFA required / wrong issuer | Log in to the subscription's tenant explicitly (`--tenant-id`) |
 | `temperature` rejected | Reasoning models (gpt-5, o-series) don't accept it; leave `MODEL_TEMPERATURE` unset |
+
+## 3a. Salesforce Agentforce skill
+
+A third skill, `salesforce-agentforce`, sends CRM questions (accounts, contacts, opportunities, pipeline, customer cases) to an **existing Agentforce agent** through the [Agentforce Agent API](https://developer.salesforce.com/docs/einstein/genai/guide/agent-api-get-started.html). The pattern is unchanged: the router sees only the skill's description, and when it's selected the model is offered one tool, `ask_agentforce(question)`. That tool makes real HTTPS calls from the hosted agent to Salesforce:
+
+```
+POST https://<mydomain>.my.salesforce.com/services/oauth2/token     grant_type=client_credentials
+POST https://api.salesforce.com/einstein/ai-agent/v1/agents/<agentId>/sessions      (once per conversation)
+POST https://api.salesforce.com/einstein/ai-agent/v1/sessions/<sessionId>/messages  {sequenceId, type: Text, text}
+DELETE .../sessions/<sessionId>   x-session-end-reason: UserRequest                 (on /reset or idle expiry)
+```
+
+- **One Agentforce session per conversation.** Follow-ups keep context on the Salesforce side, and `sequenceId` increments for each message. If Salesforce expires a session (404/410), it's recreated once automatically.
+- **Tokens** are cached for 25 minutes and refreshed on a 401. Tokens, secrets and full session IDs are never traced.
+- **Failures** (auth, timeout, HTTP errors) come back to the model as structured errors. The skill tells it to report that Salesforce is unavailable rather than guess.
+- **Not configured?** The skill still routes, but answers "Salesforce is not configured", so the HR and IT skills are unaffected.
+
+### Salesforce side (you create this)
+1. **External Client App** with OAuth scopes `api`, `refresh_token, offline_access`, `chatbot_api`, `sfap_api`. Enable **Client Credentials Flow**, enable JWT-based access tokens, and set **Run As** to a user with API access.
+2. An **Agentforce agent** (not the "Agentforce (Default)" type, which the API doesn't support). Activate it, connect the External Client App to it, and note its ID (`0Xx…`).
+
+### Azure side (when you deploy)
+```bash
+# store the consumer secret in Key Vault (never in azure.yaml, .env in git, or the image)
+az keyvault secret set --vault-name <vault> -n salesforce-client-secret --value '<consumer secret>'
+# let the hosted agent's identity read it (principal = "Instance Identity Principal ID" from `azd ai agent show`)
+az role assignment create --assignee-object-id <agent-principal-id> --assignee-principal-type ServicePrincipal \
+  --role "Key Vault Secrets User" --scope $(az keyvault show -n <vault> --query id -o tsv)
+
+azd env set SALESFORCE_MY_DOMAIN https://<mydomain>.my.salesforce.com
+azd env set SALESFORCE_CLIENT_ID <consumer key>
+azd env set SALESFORCE_AGENTFORCE_ID 0Xx...
+azd env set SALESFORCE_KEYVAULT_URL https://<vault>.vault.azure.net/
+```
+Then rebuild the image (`az acr build`), update `AGENT_IMAGE` to the new tag, and run `azd deploy`. Hosted agents allow outbound internet by default; if the project uses `AllowOnlyApprovedOutbound`, allow `*.my.salesforce.com` and `api.salesforce.com`.
+
+**Locally**, put the same values in `.env`. Either use `SALESFORCE_KEYVAULT_URL` (read with your `az`/`azd` login) or, for quick tests only, `SALESFORCE_CLIENT_SECRET`.
+
+### Try it
+```json
+{"message": "What open opportunities does the Acme account have in Salesforce?"}
+{"message": "Who is the primary contact on that account?"}
+```
+The second message reuses the same Agentforce session, so "that account" is resolved on the Salesforce side.
 
 ## 4. Fallback: Azure Container Apps
 

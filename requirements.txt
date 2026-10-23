@@ -4,3 +4,5 @@ azure-identity>=1.19      # tested with 1.26.0
 azure-ai-agentserver-invocations>=1.2.0,<2   # Foundry Hosted Agents invocations protocol (pulls azure-ai-agentserver-core 2.x)
 PyYAML>=6.0
 python-dotenv>=1.0
+httpx>=0.27              # Salesforce Agentforce Agent API calls
+azure-keyvault-secrets>=4.8   # Salesforce client secret from Key Vault (hosted)

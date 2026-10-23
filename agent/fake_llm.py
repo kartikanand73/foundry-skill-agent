@@ -46,6 +46,10 @@ class _Completions:
         hr = any(w in last for w in ("vacation", "pto", "holiday", "time off", "leave", "policy"))
         it = any(w in last for w in ("ticket", "inc", "incident")) or (
             re.search(r"\binc\d+", last) or ("ticket id" in context and re.search(r"\d{3,}", last)))
+        sf = any(w in last for w in ("salesforce", "account", "opportunit", "pipeline", "agentforce", "crm"))
+        if sf and not (hr or it):
+            return _completion({"content": json.dumps({"skill": "salesforce-agentforce", "reason": "scripted rule",
+                                                       "clarification": ""})})
         if hr and it:
             pick, q = "clarify", "Do you want help with an HR policy or with an IT ticket first?"
         elif hr:
@@ -71,6 +75,8 @@ class _Completions:
                 answer = "Sure - what is your ticket ID? It looks like INC1001."
             else:
                 return self._call("get_ticket_status", {"ticket_id": m[-1]})
+        elif "ask_agentforce" in tool_names and tool_choice != "none":
+            return self._call("ask_agentforce", {"question": messages[-1]["content"]})
         elif "lookup_policy" in tool_names and tool_choice != "none":
             last = messages[-1]["content"].lower()
             topic = "holiday" if "holiday" in last else "vacation"
@@ -89,7 +95,13 @@ class _Completions:
     @staticmethod
     def _answer(r: dict) -> str:
         if "error" in r:
+            if "Salesforce" in r["error"]:
+                return f"Salesforce is unavailable right now ({r['error']})"
             return f"I couldn't complete the lookup: {r['error']}"
+        if "source" in r and "answer" in r:
+            if not r.get("content_safe", True):
+                return "From Salesforce: the response was withheld by Salesforce safety checks."
+            return f"From Salesforce: {r['answer'] or 'no matching data was found.'}"
         if "ticket_id" in r:
             if not r.get("found"):
                 return f"I couldn't find a ticket with ID {r['ticket_id']}. Please double-check the ID."

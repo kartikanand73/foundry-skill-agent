@@ -9,7 +9,8 @@ from dataclasses import dataclass, field
 from .config import Settings
 from .llm import make_client
 from .skills import SkillStore
-from .tools import REGISTRY, execute
+from .salesforce import AgentforceClient, SalesforceConfig
+from .tools import REGISTRY, ToolContext, execute
 from .trace import trace
 
 CLARIFY, UNSUPPORTED = "clarify", "unsupported"
@@ -39,7 +40,7 @@ class AgentReply:
 
 
 class SkillAgent:
-    def __init__(self, settings: Settings | None = None, client=None):
+    def __init__(self, settings: Settings | None = None, client=None, salesforce=None):
         self.s = settings or Settings.from_env()
         self.client = client or make_client(self.s)
         self.skills = SkillStore(self.s.skills_dir)
@@ -53,6 +54,8 @@ class SkillAgent:
         # Conversation memory holds ONLY user/assistant text. System prompts, skill
         # instructions and tool definitions are rebuilt per request, so a skill loaded
         # on one turn can never stay active on the next.
+        sf_cfg = SalesforceConfig.from_env()
+        self.salesforce = salesforce if salesforce is not None else (AgentforceClient(sf_cfg) if sf_cfg else None)
         self._history: dict[str, deque] = {}
         self._lock = threading.Lock()
 
@@ -63,7 +66,7 @@ class SkillAgent:
             return AgentReply("Please type a question.", CLARIFY)
         history = self._get_history(session_id)
         try:
-            reply = self._handle(message, history)
+            reply = self._handle(message, history, session_id)
         except Exception as e:  # never leak stack traces or secrets to the user
             hint = "check `az login` / role assignment" if "Authentication" in type(e).__name__ else _safe(e)
             trace("error", type=type(e).__name__, detail=hint)
@@ -75,9 +78,11 @@ class SkillAgent:
     def reset(self, session_id: str) -> None:
         with self._lock:
             self._history.pop(session_id, None)
+        if self.salesforce:
+            self.salesforce.end(session_id)   # close the matching Agentforce session
 
     # ---------- steps ----------
-    def _handle(self, message: str, history: list[dict]) -> AgentReply:
+    def _handle(self, message: str, history: list[dict], session_id: str = "") -> AgentReply:
         catalog = self.skills.catalog()
         choice, clarification = self._route(message, history, catalog)
 
@@ -97,7 +102,7 @@ class SkillAgent:
         # Step 5: load only this skill's full instructions, fresh from disk
         skill = self.skills.load(choice)
         trace("loaded_skill", skill=skill.name, version=skill.version, tools=list(skill.allowed_tools))
-        return self._run_skill(skill, message, history)
+        return self._run_skill(skill, message, history, session_id)
 
     def _route(self, message: str, history: list[dict], catalog) -> tuple[str, str]:
         names = [c.name for c in catalog]
@@ -130,7 +135,7 @@ class SkillAgent:
         trace("router", choice=data.get("skill"), reason=data.get("reason", ""))
         return str(data.get("skill", "")), str(data.get("clarification", ""))
 
-    def _run_skill(self, skill, message: str, history: list[dict]) -> AgentReply:
+    def _run_skill(self, skill, message: str, history: list[dict], session_id: str = "") -> AgentReply:
         tools = [REGISTRY[t].schema for t in skill.allowed_tools if t in REGISTRY]  # step 6
         messages: list[dict] = [
             {"role": "system", "content": f"{GUARDRAIL}\n\n{skill.instructions}"},
@@ -154,8 +159,8 @@ class SkillAgent:
                                             for tc in msg.tool_calls]})
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
-                result, clean = execute(tc.function.name, tc.function.arguments,
-                                        skill.allowed_tools, self.s.data_dir)
+                ctx = ToolContext(self.s.data_dir, session_id, self.salesforce)
+                result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
                 status = "error" if "error" in result else ("found" if result.get("found") else "not_found")
                 trace("tool_done", tool=tc.function.name, status=status)
                 calls_log.append({"tool": tc.function.name, "args": clean, "status": status})
