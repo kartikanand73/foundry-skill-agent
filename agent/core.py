@@ -10,6 +10,7 @@ from .config import Settings
 from .llm import make_client
 from .skills import SkillStore
 from .salesforce import AgentforceClient, SalesforceConfig
+from .snowflake import CortexAgentClient, SnowflakeConfig
 from .tools import REGISTRY, ToolContext, execute
 from .trace import trace
 
@@ -40,7 +41,7 @@ class AgentReply:
 
 
 class SkillAgent:
-    def __init__(self, settings: Settings | None = None, client=None, salesforce=None):
+    def __init__(self, settings: Settings | None = None, client=None, salesforce=None, snowflake=None):
         self.s = settings or Settings.from_env()
         self.client = client or make_client(self.s)
         self.skills = SkillStore(self.s.skills_dir)
@@ -56,6 +57,8 @@ class SkillAgent:
         # on one turn can never stay active on the next.
         sf_cfg = SalesforceConfig.from_env()
         self.salesforce = salesforce if salesforce is not None else (AgentforceClient(sf_cfg) if sf_cfg else None)
+        sn_cfg = SnowflakeConfig.from_env()
+        self.snowflake = snowflake if snowflake is not None else (CortexAgentClient(sn_cfg) if sn_cfg else None)
         self._history: dict[str, deque] = {}
         self._lock = threading.Lock()
 
@@ -80,6 +83,8 @@ class SkillAgent:
             self._history.pop(session_id, None)
         if self.salesforce:
             self.salesforce.end(session_id)   # close the matching Agentforce session
+        if self.snowflake:
+            self.snowflake.end(session_id)
 
     # ---------- steps ----------
     def _handle(self, message: str, history: list[dict], session_id: str = "") -> AgentReply:
@@ -159,7 +164,7 @@ class SkillAgent:
                                             for tc in msg.tool_calls]})
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
-                ctx = ToolContext(self.s.data_dir, session_id, self.salesforce)
+                ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake)
                 result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
                 status = "error" if "error" in result else ("found" if result.get("found") else "not_found")
                 trace("tool_done", tool=tc.function.name, status=status)

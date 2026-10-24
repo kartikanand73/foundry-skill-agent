@@ -59,6 +59,22 @@ def ask_agentforce(ctx: "ToolContext", question: str) -> dict:
         return {"error": f"Salesforce: could not connect ({type(e).__name__})."}
 
 
+def ask_cortex_agent(ctx: "ToolContext", question: str) -> dict:
+    """Forward the question to the Snowflake Cortex Agent (real HTTPS call)."""
+    if not ctx.snowflake:
+        return {"error": "Snowflake: not configured for this agent (set SNOWFLAKE_ACCOUNT_URL, "
+                         "SNOWFLAKE_AGENT_DATABASE, SNOWFLAKE_AGENT_SCHEMA, SNOWFLAKE_AGENT_NAME)."}
+    from .snowflake import SnowflakeError
+    try:
+        return {"found": True, **ctx.snowflake.ask(ctx.session_key, question)}
+    except SnowflakeError as e:
+        return {"error": f"Snowflake: {e}"}
+    except httpx.TimeoutException:
+        return {"error": "Snowflake: no response in time."}
+    except httpx.HTTPError as e:
+        return {"error": f"Snowflake: could not connect ({type(e).__name__})."}
+
+
 # ---------- argument validation ----------
 
 def _validate_topic(args: dict) -> dict:
@@ -97,6 +113,7 @@ class ToolContext:
     data_dir: Path
     session_key: str = ""
     salesforce: Any = None   # AgentforceClient | None
+    snowflake: Any = None    # CortexAgentClient | None
 
 @dataclass(frozen=True)
 class ToolSpec:
@@ -145,6 +162,21 @@ REGISTRY: dict[str, ToolSpec] = {
         }},
         validate=_validate_question,
         run=ask_agentforce,
+    ),
+    "ask_cortex_agent": ToolSpec(
+        name="ask_cortex_agent",
+        schema={"type": "function", "function": {
+            "name": "ask_cortex_agent",
+            "description": "Ask the company's Snowflake Cortex Agent an analytics question about data in the "
+                           "Snowflake warehouse. Returns its answer, the SQL it ran and result tables.",
+            "strict": True,
+            "parameters": {"type": "object", "additionalProperties": False, "required": ["question"],
+                           "properties": {"question": {"type": "string",
+                               "description": "A complete, self-contained analytics question including any "
+                                              "filters, time periods or names mentioned earlier."}}},
+        }},
+        validate=_validate_question,
+        run=ask_cortex_agent,
     ),
 }
 

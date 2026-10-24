@@ -240,6 +240,21 @@ A Developer Edition org with an Employee Agent, tested from the laptop through `
 ```
 The second message reuses the same Agentforce session, so "that account" is resolved on the Salesforce side.
 
+## 3b. Snowflake Cortex Agent skill
+
+`snowflake-cortex` sends analytics questions to an **existing Cortex Agent object** through the [Cortex Agents Run API](https://docs.snowflake.com/user-guide/snowflake-cortex/cortex-agents-run). The agent's semantic view stays the single definition of each metric.
+
+```
+POST https://<account>.snowflakecomputing.com/api/v2/databases/<db>/schemas/<schema>/agents/<name>:run
+Authorization: Bearer <PAT>        X-Snowflake-Authorization-Token-Type: PROGRAMMATIC_ACCESS_TOKEN
+{"messages": [...last turns..., {"role":"user","content":[{"type":"text","text":"..."}]}], "stream": false}
+```
+
+- The tool returns the agent's `answer` plus the `sql` it ran and its result `tables` (capped at 25 rows), so `gpt-5` answers from the actual rows and can show the SQL when asked.
+- **Follow-ups:** the last 4 turns of the conversation are resent in `messages`, so no server-side threads are needed.
+- **Auth:** a programmatic access token (PAT) for a user whose default role can use the agent, its semantic view and a warehouse. Hosted, the PAT is read from Key Vault (`snowflake-pat`); locally, from `SNOWFLAKE_PAT`. On a 401 the token is re-read, so rotating it in Key Vault needs no redeploy.
+- **Network policy:** PATs normally require the user to be covered by a Snowflake network policy. The hosted agent's outbound IPs aren't fixed, so use an authentication policy that allows PATs without a network policy for this service user, or allow-list the egress range.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:

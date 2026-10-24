@@ -37,7 +37,7 @@ services:
       - ai-project
     kind: hosted
     name: skill-agent
-    description: Demo agent that routes to HR-policy, IT-ticket or Salesforce Agentforce skills and runs Python tools.
+    description: Demo agent that routes to HR-policy, IT-ticket, Salesforce Agentforce or Snowflake Cortex skills and runs Python tools.
     startupCommand: python main.py
     protocols:
       - protocol: invocations
@@ -53,6 +53,12 @@ services:
       SALESFORCE_KEYVAULT_URL: ${SALESFORCE_KEYVAULT_URL}
       SALESFORCE_SECRET_NAME: salesforce-client-secret
       SALESFORCE_BYPASS_USER: "false"   # Employee agents require false
+      # Snowflake Cortex Agent (non-secret; the PAT lives in Key Vault as `snowflake-pat`)
+      SNOWFLAKE_ACCOUNT_URL: ${SNOWFLAKE_ACCOUNT_URL}
+      SNOWFLAKE_AGENT_DATABASE: ${SNOWFLAKE_AGENT_DATABASE}
+      SNOWFLAKE_AGENT_SCHEMA: ${SNOWFLAKE_AGENT_SCHEMA}
+      SNOWFLAKE_AGENT_NAME: ${SNOWFLAKE_AGENT_NAME}
+      SNOWFLAKE_KEYVAULT_URL: ${SALESFORCE_KEYVAULT_URL}
     container:
       resources:
         cpu: "0.25"           # smallest allowed size
