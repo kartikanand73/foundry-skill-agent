@@ -1,0 +1,32 @@
+<!-- Policy for API "skill-agent", operation POST /chat.
+     Caller -> APIM: subscription key (enforced by the API's subscriptionRequired=true).
+     APIM -> Foundry: Entra token from APIM's system-assigned managed identity (Foundry User role). -->
+<policies>
+    <inbound>
+        <base />
+        <rate-limit calls="30" renewal-period="60" />
+        <!-- never forward the caller's APIM key to Foundry -->
+        <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+        <authentication-managed-identity resource="https://ai.azure.com" />
+        <set-backend-service base-url="{{foundry-agent-protocols-url}}" />
+        <!-- /chat -> /invocations?api-version=v1 ; agent_session_id (if any) is kept -->
+        <rewrite-uri template="/invocations" copy-unmatched-params="true" />
+        <set-query-parameter name="api-version" exists-action="override">
+            <value>v1</value>
+        </set-query-parameter>
+    </inbound>
+    <backend>
+        <forward-request timeout="120" />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+        <return-response>
+            <set-status code="502" reason="Agent unavailable" />
+            <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
+            <set-body>@("{\"error\":\"agent unavailable\",\"request_id\":\"" + context.RequestId + "\"}")</set-body>
+        </return-response>
+    </on-error>
+</policies>

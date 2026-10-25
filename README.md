@@ -255,6 +255,20 @@ Authorization: Bearer <PAT>        X-Snowflake-Authorization-Token-Type: PROGRAM
 - **Auth:** a programmatic access token (PAT) for a user whose default role can use the agent, its semantic view and a warehouse. Hosted, the PAT is read from Key Vault (`snowflake-pat`); locally, from `SNOWFLAKE_PAT`. On a 401 the token is re-read, so rotating it in Key Vault needs no redeploy.
 - **Network policy:** PATs normally require the user to be covered by a Snowflake network policy. The hosted agent's outbound IPs aren't fixed, so use an authentication policy that allows PATs without a network policy for this service user, or allow-list the egress range.
 
+## 3c. Web front end: Streamlit + API Management
+
+```
+Browser --Entra sign-in--> Streamlit (App Service B1) --subscription key--> APIM (Consumption)
+        --APIM managed identity (Foundry User)--> Foundry hosted agent (invocations)
+```
+
+- **`webapp/`**: Streamlit chat UI. The left sidebar lists threads ("+ New chat", rename, delete). **Each thread is one hosted-agent session**: the first message gets a session ID back from Foundry (`x-agent-session-id`), and follow-ups in that thread send it again, so each thread keeps its own context. Threads live in the browser session.
+- **`infra/apim-policy.xml`**: rate limit of 30/min, removes the caller's key, gets an Entra token for `https://ai.azure.com` with APIM's managed identity, and rewrites `/chat` to `/invocations?api-version=v1` (keeping `agent_session_id`).
+- **Secrets:** the APIM subscription key is in Key Vault, and the web app reads it through a Key Vault reference with its managed identity. APIM calls Foundry with no key at all.
+- **Deploy (PowerShell, from the repo root):** `deploy/webapp/0-verify-session.ps1` → `1-apim.ps1` → `2-test-apim.ps1` → `3-webapp.ps1` → `4-entra-auth.ps1`.
+- **Run locally:** `cd webapp; pip install -r requirements.txt; $env:APIM_BASE_URL="https://<apim>.azure-api.net/skill-agent"; $env:APIM_SUBSCRIPTION_KEY="<key>"; streamlit run app.py`
+- **Delete:** `az webapp delete -n <app> -g <rg>; az appservice plan delete -n <plan> -g <rg> --yes; az apim delete -n <apim> -g <rg> --yes; az ad app delete --id <auth app id>`
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:
