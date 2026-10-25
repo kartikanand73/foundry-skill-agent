@@ -22,9 +22,10 @@ step "named value + API + operation"
     --method POST --display-name Chat -o none
 
 step "policy"
-$xml = Get-Content "$PSScriptRoot\..\..\infra\apim-policy.xml" -Raw
+# ReadAllText, not Get-Content: Get-Content strings carry PS* note properties that ConvertTo-Json serializes
+$xml = [IO.File]::ReadAllText((Resolve-Path "$PSScriptRoot\..\..\infra\apim-policy.xml"))
 $body = @{ properties = @{ format = 'rawxml'; value = $xml } } | ConvertTo-Json -Depth 5
-$tmp = New-TemporaryFile; Set-Content $tmp $body -Encoding utf8
+$tmp = New-TemporaryFile; [IO.File]::WriteAllText($tmp, $body)
 & $az rest --method put --url "$Arm/Microsoft.ApiManagement/service/$Apim/apis/skill-agent/operations/chat/policies/policy?api-version=2022-08-01" --body "@$tmp" -o none
 Remove-Item $tmp
 
