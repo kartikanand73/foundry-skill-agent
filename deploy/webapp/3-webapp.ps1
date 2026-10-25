@@ -20,11 +20,5 @@ Remove-Item $sf
 & $az webapp config set -n $App -g $Rg --web-sockets-enabled true --always-on true --http20-enabled true `
     --startup-file "python -m streamlit run app.py --server.port 8000 --server.address 0.0.0.0" -o none
 & $az webapp update -n $App -g $Rg --https-only true -o none
-step "zip deploy webapp/"
-$src = Resolve-Path "$PSScriptRoot\..\..\webapp"
-$zip = Join-Path $env:TEMP "webapp-$(Get-Date -Format yyyyMMddHHmmss).zip"
-Compress-Archive -Path "$src\*", "$src\.streamlit" -DestinationPath $zip -Force
-& $az webapp deploy -n $App -g $Rg --src-path $zip --type zip -o none
-Remove-Item $zip
-"site: https://$App.azurewebsites.net"
+& "$PSScriptRoot\3b-deploy-code.ps1"
 step "WEBAPP_DONE"
