@@ -278,6 +278,8 @@ Browser --Entra sign-in--> Streamlit (App Service B1) --subscription key--> APIM
   - "New chat" then an IT ticket question, answered by the it-ticket skill;
   - switching back to the first thread restored its history;
   - after step 4, signed-out visitors are redirected to login.microsoftonline.com.
+  - after signing in, the Snowflake question "total paid claims in Q1 2026" returned $370,685,724.65, served by hosted agent v3 (image `skill-agent:v3`). Through APIM, the follow-up about the denial rate returned 45.08%, measured in dollars.
+- **Redeploy the hosted agent:** `deploy/hosted/redeploy.ps1 -Tag vN` runs the ACR cloud build, sets the non-secret Snowflake settings in the azd environment, and runs `azd deploy`. The Snowflake PAT stays in Key Vault as `snowflake-pat`.
 - **Run locally:** `cd webapp; pip install -r requirements.txt; $env:APIM_BASE_URL="https://<apim>.azure-api.net/skill-agent"; $env:APIM_SUBSCRIPTION_KEY="<key>"; streamlit run app.py`
 - **Delete:** `az webapp delete -n <app> -g <rg>; az appservice plan delete -n <plan> -g <rg> --yes; az apim delete -n <apim> -g <rg> --yes; az ad app delete --id <auth app id>`
 
