@@ -8,11 +8,15 @@ $appPid = & $az webapp identity assign -n $App -g $Rg --query principalId -o tsv
 $kvId = & $az keyvault show -n $Kv -g $Rg --query id -o tsv
 & $az role assignment create --assignee-object-id $appPid --assignee-principal-type ServicePrincipal `
     --role "Key Vault Secrets User" --scope $kvId -o none
-step "settings"
-& $az webapp config appsettings set -n $App -g $Rg -o none --settings `
-    "APIM_BASE_URL=https://$Apim.azure-api.net/skill-agent" `
-    "APIM_SUBSCRIPTION_KEY=@Microsoft.KeyVault(VaultName=$Kv;SecretName=apim-subscription-key)" `
-    "SCM_DO_BUILD_DURING_DEPLOYMENT=true"
+step "settings (JSON file: az.cmd mangles the ( ) ; in Key Vault references)"
+$settings = @(
+  @{ name = 'APIM_BASE_URL'; value = "https://$Apim.azure-api.net/skill-agent"; slotSetting = $false },
+  @{ name = 'APIM_SUBSCRIPTION_KEY'; value = "@Microsoft.KeyVault(VaultName=$Kv;SecretName=apim-subscription-key)"; slotSetting = $false },
+  @{ name = 'SCM_DO_BUILD_DURING_DEPLOYMENT'; value = 'true'; slotSetting = $false }
+) | ConvertTo-Json
+$sf = Join-Path $env:TEMP "appsettings-$App.json"; [IO.File]::WriteAllText($sf, $settings)
+& $az webapp config appsettings set -n $App -g $Rg --settings "@$sf" -o none
+Remove-Item $sf
 & $az webapp config set -n $App -g $Rg --web-sockets-enabled true --always-on true --http20-enabled true `
     --startup-file "python -m streamlit run app.py --server.port 8000 --server.address 0.0.0.0" -o none
 & $az webapp update -n $App -g $Rg --https-only true -o none
