@@ -266,6 +266,18 @@ Browser --Entra sign-in--> Streamlit (App Service B1) --subscription key--> APIM
 - **`infra/apim-policy.xml`**: rate limit of 30/min, removes the caller's key, gets an Entra token for `https://ai.azure.com` with APIM's managed identity, and rewrites `/chat` to `/invocations?api-version=v1` (keeping `agent_session_id`).
 - **Secrets:** the APIM subscription key is in Key Vault, and the web app reads it through a Key Vault reference with its managed identity. APIM calls Foundry with no key at all.
 - **Deploy (PowerShell, from the repo root):** `deploy/webapp/0-verify-session.ps1` → `1-apim.ps1` → `2-test-apim.ps1` → `3-webapp.ps1` → `4-entra-auth.ps1`.
+- **Redeploy code only:** `deploy/webapp/3b-deploy-code.ps1`.
+- **Deploy gotchas (hit and fixed):**
+  - Don't zip with `Compress-Archive`. Its entries have no Unix permissions, so Kudu's rsync fails (exit 23, shown as "Kudu Status 400"). `make_zip.py` builds the zip instead.
+  - `az.cmd` mangles the `( ) ;` in Key Vault references, so app settings go in through a JSON file.
+  - A new app is still on the auth v1 format, and `az webapp auth` (v2) refuses it. Step 4 PUTs `authsettingsV2` through ARM, then restarts the app (`az webapp restart`) before sign-in is enforced.
+  - The redirect-to-sign-in only starts after that restart.
+- **Verified 2026-10-25 on the live site:**
+  - an HR question answered by the hr-policy skill;
+  - a follow-up in the same thread kept its context;
+  - "New chat" then an IT ticket question, answered by the it-ticket skill;
+  - switching back to the first thread restored its history;
+  - after step 4, signed-out visitors are redirected to login.microsoftonline.com.
 - **Run locally:** `cd webapp; pip install -r requirements.txt; $env:APIM_BASE_URL="https://<apim>.azure-api.net/skill-agent"; $env:APIM_SUBSCRIPTION_KEY="<key>"; streamlit run app.py`
 - **Delete:** `az webapp delete -n <app> -g <rg>; az appservice plan delete -n <plan> -g <rg> --yes; az apim delete -n <apim> -g <rg> --yes; az ad app delete --id <auth app id>`
 
