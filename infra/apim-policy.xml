@@ -23,10 +23,15 @@
     </outbound>
     <on-error>
         <base />
-        <return-response>
-            <set-status code="502" reason="Agent unavailable" />
-            <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-            <set-body>@("{\"error\":\"agent unavailable\",\"request_id\":\"" + context.RequestId + "\"}")</set-body>
-        </return-response>
+        <!-- only mask backend failures; auth (401), rate-limit (429) etc. keep their own status -->
+        <choose>
+            <when condition="@(context.LastError.Source == "forward-request")">
+                <return-response>
+                    <set-status code="502" reason="Agent unavailable" />
+                    <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
+                    <set-body>@("{\"error\":\"agent unavailable\",\"request_id\":\"" + context.RequestId + "\"}")</set-body>
+                </return-response>
+            </when>
+        </choose>
     </on-error>
 </policies>
