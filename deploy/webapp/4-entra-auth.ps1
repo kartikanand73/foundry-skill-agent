@@ -30,4 +30,5 @@ $bf = Join-Path $env:TEMP "authv2-$App.json"; [IO.File]::WriteAllText($bf, $body
 & $az rest --method put --url "$Arm/Microsoft.Web/sites/$App/config/authsettingsV2?api-version=2022-03-01" `
     --body "@$bf" --query "properties.globalValidation.unauthenticatedClientAction" -o tsv
 Remove-Item $bf
+& $az webapp restart -n $App -g $Rg -o none   # sign-in is enforced only after a restart
 step "AUTH_DONE  https://$App.azurewebsites.net"
