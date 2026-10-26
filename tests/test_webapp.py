@@ -29,10 +29,11 @@ def test_first_call_has_no_session_and_returns_assigned_one():
         seen.append(req)
         return httpx.Response(200, headers={"x-agent-session-id": "sess-A"},
                               json={"response": "hi", "skill": "hr-policy", "tool_calls": []})
-    r = make(h).chat("hello", user="kartik@x.com")
+    r = make(h).chat("hello", user={"oid": "oid-1", "name": "kartik@x.com", "roles": ["SkillAgent.HR"]})
     q = seen[0]
     assert str(q.url) == f"{BASE}/chat" and q.headers["Ocp-Apim-Subscription-Key"] == "KEY"
-    assert q.headers["x-client-user"] == "kartik@x.com" and json.loads(q.content) == {"message": "hello"}
+    assert json.loads(q.content) == {"message": "hello", "user": {"oid": "oid-1", "name": "kartik@x.com",
+                                                                  "roles": ["SkillAgent.HR"]}}
     assert r.session_id == "sess-A" and r.skill == "hr-policy"
 
 
@@ -101,7 +102,7 @@ def app(monkeypatch):
     calls = []
     counter = {"n": 0}
 
-    def fake_chat(self, message, session_id=None, user=None):
+    def fake_chat(self, message, session_id=None, user=None, history=None):
         calls.append((message, session_id))
         if session_id is None:
             counter["n"] += 1
@@ -148,7 +149,7 @@ def test_threads_keep_separate_sessions(app):
 def test_error_shown_not_crash(app, monkeypatch):
     at, _ = app
 
-    def boom(self, message, session_id=None, user=None):
+    def boom(self, message, session_id=None, user=None, history=None):
         raise ApimError("Too many requests right now - please wait a few seconds and retry.")
     monkeypatch.setattr(apim_client.ApimClient, "chat", boom)
     at.chat_input[0].set_value("hello").run()
@@ -170,3 +171,22 @@ def test_usage_parsed_from_apim():
     r = make(lambda req: httpx.Response(200, json={"response": "x", "skill": "it-ticket",
                                                    "usage": {"cost_usd": 0.01}})).chat("q")
     assert r.usage == {"cost_usd": 0.01}
+
+
+def test_principal_roles_parsed_from_easy_auth_header():
+    import base64 as b64
+    from apim_client import principal_from_headers
+    claims = {"auth_typ": "aad", "role_typ": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+              "claims": [{"typ": "name", "val": "Kartik"},
+                         {"typ": "roles", "val": "SkillAgent.IT"},
+                         {"typ": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "val": "SkillAgent.HR"}]}
+    enc = b64.b64encode(json.dumps(claims).encode()).decode().rstrip("=")
+    p = principal_from_headers("oid-1", "kartik@x.com", enc)
+    assert p == {"oid": "oid-1", "name": "kartik@x.com", "roles": ["SkillAgent.HR", "SkillAgent.IT"]}
+    assert principal_from_headers("o", None, "%%%not-base64")["roles"] == []
+
+
+def test_no_user_no_user_in_body():
+    seen = []
+    make(lambda req: seen.append(req) or httpx.Response(200, json={})).chat("x")
+    assert json.loads(seen[0].content) == {"message": "x"}

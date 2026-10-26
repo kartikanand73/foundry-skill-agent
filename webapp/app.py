@@ -10,7 +10,8 @@ import uuid
 
 import streamlit as st
 
-from apim_client import ApimClient, ApimError
+from apim_client import ApimClient, ApimError, principal_from_headers
+from thread_store import ThreadStore
 
 SKILL_BADGES = {
     "hr-policy": ("HR policy", ":blue"),
@@ -32,11 +33,6 @@ def _new_thread() -> str:
                                      "created": time.time()}
     st.session_state.active = tid
     return tid
-
-
-if "threads" not in st.session_state:
-    st.session_state.threads = {}
-    _new_thread()
 
 
 @st.cache_resource(show_spinner=False)
@@ -83,6 +79,22 @@ def _signed_in_user() -> str | None:
         return None
 
 
+def _principal() -> dict | None:
+    """Signed-in user from App Service authentication (Easy Auth).
+
+    App Service sets these headers itself after Entra sign-in and drops any a browser sends, so
+    they can be trusted here. X-MS-CLIENT-PRINCIPAL = base64 JSON of the ID token's claims.
+    """
+    try:
+        h = st.context.headers
+        oid = h.get("X-Ms-Client-Principal-Id")
+        if not oid:
+            return None
+        return principal_from_headers(oid, h.get("X-Ms-Client-Principal-Name"), h.get("X-Ms-Client-Principal"))
+    except Exception:
+        return None
+
+
 def _cost_line(u: dict | None) -> str | None:
     if not u:
         return None
@@ -95,6 +107,51 @@ def _thread_cost(t: dict) -> float:
     return sum((m.get("usage") or {}).get("cost_usd", 0) for m in t["messages"])
 
 
+@st.cache_resource(show_spinner=False)
+def _store() -> ThreadStore | None:
+    try:
+        return ThreadStore.from_env()
+    except Exception:
+        return None
+
+
+def _persist(tid: str) -> None:
+    """Save one thread for the signed-in user (no-op without a store or a signed-in user)."""
+    me, store = _principal(), _store()
+    if not (me and store) or tid not in st.session_state.threads:
+        return
+    try:
+        store.save(me["oid"], tid, st.session_state.threads[tid])
+    except Exception:
+        st.session_state.store_error = True
+
+
+def _forget(tid: str) -> None:
+    me, store = _principal(), _store()
+    if me and store:
+        try:
+            store.delete(me["oid"], tid)
+        except Exception:
+            st.session_state.store_error = True
+
+
+# ---------- state: this user's saved threads, else a fresh one ----------
+if "threads" not in st.session_state:
+    st.session_state.threads = {}
+    st.session_state.store_error = False
+    _me, _st = _principal(), _store()
+    if _me and _st:
+        try:
+            st.session_state.threads = _st.load(_me["oid"])
+        except Exception:
+            st.session_state.store_error = True
+    if st.session_state.threads:
+        st.session_state.active = max(st.session_state.threads,
+                                      key=lambda k: st.session_state.threads[k]["created"])
+    else:
+        _new_thread()
+
+
 def _badge(skill: str) -> str:
     label, color = SKILL_BADGES.get(skill, (skill or "agent", ":gray"))
     return f"{color}-badge[{label}]"
@@ -103,9 +160,10 @@ def _badge(skill: str) -> str:
 # ---------- sidebar: threads ----------
 with st.sidebar:
     st.title("💬 Skill Agent")
-    user = _signed_in_user()
-    if user:
-        st.caption(f"Signed in as {user}")
+    me = _principal()
+    if me:
+        st.caption(f"Signed in as {me['name'] or 'unknown'}")
+        st.caption("Roles: " + (" · ".join(me["roles"]) if me["roles"] else "none assigned"))
     if st.button("➕ New chat", use_container_width=True):
         _new_thread()
         st.rerun()
@@ -123,9 +181,11 @@ with st.sidebar:
             new_title = st.text_input("Rename", value=t["title"], key=f"title_{tid}")
             if st.button("Save", key=f"save_{tid}"):
                 t["title"] = new_title.strip() or t["title"]
+                _persist(tid)
                 st.rerun()
             if st.button("Delete", key=f"del_{tid}"):
                 del st.session_state.threads[tid]
+                _forget(tid)
                 if not st.session_state.threads:
                     _new_thread()
                 elif st.session_state.active == tid:
@@ -136,6 +196,12 @@ with st.sidebar:
     total = sum(_thread_cost(t) for t in st.session_state.threads.values())
     if total > 0:
         st.caption(f"💲 All threads this session: ${total:.4f} model cost")
+    if _store() and _principal():
+        st.caption("Your threads are saved for 30 days.")
+    else:
+        st.caption("Threads are kept for this browser session only.")
+    if st.session_state.get("store_error"):
+        st.caption("⚠️ Couldn't reach thread storage; this session's threads may not be saved.")
     st.caption("Ask about HR policies, IT tickets, Salesforce accounts or Snowflake claims metrics.")
 
 
@@ -152,9 +218,13 @@ for m in thread["messages"]:
         st.markdown(m["content"])
         if line := _cost_line(m.get("usage")):
             st.caption(line)
-        if m.get("tool_calls"):
+        if m.get("tool_calls") or m.get("identity"):
             with st.expander("Details"):
-                st.json(m["tool_calls"])
+                if m.get("identity"):
+                    st.caption("Identity the agent received")
+                    st.json(m["identity"])
+                if m.get("tool_calls"):
+                    st.json(m["tool_calls"])
 
 prompt = st.chat_input("Ask the agent…")
 if prompt:
@@ -174,12 +244,14 @@ if prompt:
                 if sp:
                     sp.set_attribute("webapp.thread", st.session_state.active)
                     sp.set_attribute("webapp.follow_up", bool(thread["session_id"]))
-                    sp.set_attribute("webapp.signed_in", bool(_signed_in_user()))
+                    sp.set_attribute("webapp.signed_in", bool(_principal()))
                 try:
-                    res = client.chat(prompt, session_id=thread["session_id"], user=_signed_in_user())
+                    prior = [{"role": m["role"], "content": m["content"]} for m in thread["messages"][:-1]
+                             if m.get("skill") != "error"][-12:]
+                    res = client.chat(prompt, session_id=thread["session_id"], user=_principal(), history=prior)
                     thread["session_id"] = res.session_id
                     msg = {"role": "assistant", "content": res.text or "_(no answer)_", "skill": res.skill,
-                           "tool_calls": res.tool_calls, "usage": res.usage}
+                           "tool_calls": res.tool_calls, "usage": res.usage, "identity": res.identity}
                 except ApimError as e:
                     msg = {"role": "assistant", "content": f"⚠️ {e}", "skill": "error"}
                 if sp:
@@ -190,8 +262,13 @@ if prompt:
         st.markdown(msg["content"])
         if line := _cost_line(msg.get("usage")):
             st.caption(line)
-        if msg.get("tool_calls"):
+        if msg.get("tool_calls") or msg.get("identity"):
             with st.expander("Details"):
-                st.json(msg["tool_calls"])
+                if msg.get("identity"):
+                    st.caption("Identity the agent received")
+                    st.json(msg["identity"])
+                if msg.get("tool_calls"):
+                    st.json(msg["tool_calls"])
     thread["messages"].append(msg)
+    _persist(st.session_state.active)
     st.rerun()

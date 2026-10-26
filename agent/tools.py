@@ -114,6 +114,7 @@ class ToolContext:
     session_key: str = ""
     salesforce: Any = None   # AgentforceClient | None
     snowflake: Any = None    # CortexAgentClient | None
+    user: Any = None         # identity.UserContext | None (signed-in user, from the web app)
 
 @dataclass(frozen=True)
 class ToolSpec:

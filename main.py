@@ -15,6 +15,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from agent import SkillAgent
+from agent.identity import parse_user
 from agent.trace import instrument_http
 
 instrument_http()   # dependency spans for model / Salesforce / Snowflake HTTP calls
@@ -34,14 +35,18 @@ async def handle_invoke(request: Request) -> Response:
         return JSONResponse({"error": "missing 'message' string"}, status_code=400)
 
     session_id = request.state.session_id  # resolved by the SDK (query param / platform env / generated)
-    # Foundry platform supplies a per-user id; scope demo memory by it when present.
-    user_id = getattr(request.state, "user_id", None)
-    key = f"{user_id}:{session_id}" if user_id else session_id
+    # Signed-in user from the web app (only the web app can call APIM). Conversation memory is keyed by
+    # user + session, so a session id alone never reaches another user's history.
+    user = parse_user(data.get("user"))
+    platform_user = getattr(request.state, "user_id", None)
+    owner = f"u:{user.oid}" if user else (f"p:{platform_user}" if platform_user else "anon")
+    key = f"{owner}:{session_id}"
 
-    reply = await asyncio.to_thread(agent.handle, key, message)
+    history = data.get("history") if isinstance(data.get("history"), list) else None
+    reply = await asyncio.to_thread(agent.handle, key, message, user, history)
     return JSONResponse({"response": reply.text, "skill": reply.skill,
                          "skill_version": reply.skill_version, "tool_calls": reply.tool_calls,
-                         "usage": reply.usage})
+                         "usage": reply.usage, "identity": reply.identity})
 
 
 if __name__ == "__main__":

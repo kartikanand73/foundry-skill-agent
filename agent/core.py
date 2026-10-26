@@ -14,6 +14,7 @@ from .snowflake import CortexAgentClient, SnowflakeConfig
 from .tools import REGISTRY, ToolContext, execute
 from .trace import span, trace
 from . import usage as _usage
+from .identity import UserContext, current_user
 
 CLARIFY, UNSUPPORTED = "clarify", "unsupported"
 
@@ -40,6 +41,7 @@ class AgentReply:
     skill_version: str | None = None
     tool_calls: list[dict] = field(default_factory=list)
     usage: dict | None = None      # tokens + estimated model cost for this question
+    identity: dict | None = None   # what the agent received about the signed-in user
 
 
 class SkillAgent:
@@ -65,13 +67,18 @@ class SkillAgent:
         self._lock = threading.Lock()
 
     # ---------- public entry point (CLI and Foundry host both call this) ----------
-    def handle(self, session_id: str, message: str) -> AgentReply:
+    def handle(self, session_id: str, message: str, user: UserContext | None = None,
+               seed_history: list[dict] | None = None) -> AgentReply:
         message = (message or "").strip()[:4000]
         if not message:
             return AgentReply("Please type a question.", CLARIFY)
         history = self._get_history(session_id)
+        if not history and seed_history:   # e.g. a saved thread resumed after the session's memory was lost
+            history = self._seed(session_id, seed_history)
         with span("skill_agent.turn", session=session_id[-64:], history_messages=len(history),
-                  message_chars=len(message)) as sp:
+                  message_chars=len(message), user_id_hash=user.id_hash if user else None,
+                  user_roles=",".join(user.roles) if user else None, signed_in=bool(user)) as sp:
+            user_token = current_user.set(user)
             usage = _usage.Usage()
             token = _usage.current.set(usage)
             try:
@@ -82,7 +89,9 @@ class SkillAgent:
                 reply = AgentReply("Sorry - I couldn't reach the model or something failed. Please try again.", "error")
             finally:
                 _usage.current.reset(token)
+                current_user.reset(user_token)
             reply.usage = usage.to_dict()
+            reply.identity = user.echo() if user else None
             sp(model_calls=usage.model_calls, input_tokens=usage.input_tokens,
                cached_input_tokens=usage.cached_input_tokens, output_tokens=usage.output_tokens,
                reasoning_tokens=usage.reasoning_tokens, cost_usd=usage.cost_usd)
@@ -164,7 +173,7 @@ class SkillAgent:
     def _run_skill(self, skill, message: str, history: list[dict], session_id: str = "") -> AgentReply:
         tools = [REGISTRY[t].schema for t in skill.allowed_tools if t in REGISTRY]  # step 6
         messages: list[dict] = [
-            {"role": "system", "content": f"{GUARDRAIL}\n\n{skill.instructions}"},
+            {"role": "system", "content": f"{GUARDRAIL}\n\n{skill.instructions}{self._user_line()}"},
             *history,
             {"role": "user", "content": message},
         ]
@@ -185,7 +194,8 @@ class SkillAgent:
                                             for tc in msg.tool_calls]})
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
-                ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake)
+                ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake,
+                                  current_user.get())
                 with span("skill_agent.tool", tool=tc.function.name, skill=skill.name, round=_round + 1) as sp:
                     result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
                     status = "error" if "error" in result else ("found" if result.get("found") else "not_found")
@@ -201,10 +211,26 @@ class SkillAgent:
                                                    tools=tools, tool_choice="none"))
         return AgentReply(resp.choices[0].message.content or "", skill.name, skill.version, calls_log)
 
+    def _user_line(self) -> str:
+        """Context only: the model is told who it is helping. Authorization, if added, is enforced in code."""
+        u = current_user.get()
+        if not u:
+            return ""
+        return f"\n\nSigned-in user: {u.name or 'unknown'}. Their app roles: {', '.join(u.roles) or 'none'}."
+
     # ---------- history ----------
     def _get_history(self, sid: str) -> list[dict]:
         with self._lock:
             return list(self._history.get(sid, ()))
+
+    def _seed(self, sid: str, turns: list[dict]) -> list[dict]:
+        clean = [{"role": t["role"], "content": str(t["content"])[:4000]} for t in turns
+                 if isinstance(t, dict) and t.get("role") in ("user", "assistant") and t.get("content")]
+        with self._lock:
+            h = self._history.setdefault(sid, deque(maxlen=2 * self.s.history_turns))
+            h.extend(clean[-2 * self.s.history_turns:])
+            trace("history_seeded", messages=len(h))
+            return list(h)
 
     def _remember(self, sid: str, user: str, assistant: str) -> None:
         with self._lock:
