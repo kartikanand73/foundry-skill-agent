@@ -26,7 +26,6 @@ new JProperty("skill", (string)j?["skill"] ?? ""));
 }" />
 <choose>
 <when condition="@((long)((JObject)context.Variables["usage"])["total"] > 0)">
-<retry condition="@{ var w = context.Variables.GetValueOrDefault<IResponse>("uW"); return w != null && (w.StatusCode == 409 || w.StatusCode == 412); }" count="3" interval="0" first-fast-retry="true">
 <send-request mode="new" response-variable-name="uR" timeout="10" ignore-error="true">
 <set-url>@("{{token-ledger-table-url}}/tokenusage(PartitionKey='" + "user-" + (string)context.Variables["userOid"] + "',RowKey='" + (string)context.Variables["day"] + "')")</set-url>
 <set-method>GET</set-method>
@@ -40,12 +39,6 @@ var r = context.Variables.GetValueOrDefault<IResponse>("uR");
 long old = (r != null && r.StatusCode == 200) ? ((long?)r.Body.As<JObject>(preserveContent: true)["tokens"] ?? 0L) : 0L;
 return old + (long)((JObject)context.Variables["usage"])["total"];
 }" />
-<set-variable name="uEtag" value="@{
-var r = context.Variables.GetValueOrDefault<IResponse>("uR");
-return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", "") : "";
-}" />
-<choose>
-<when condition="@((string)context.Variables["uEtag"] != "")">
 <send-request mode="new" response-variable-name="uW" timeout="10" ignore-error="true">
 <set-url>@("{{token-ledger-table-url}}/tokenusage(PartitionKey='" + "user-" + (string)context.Variables["userOid"] + "',RowKey='" + (string)context.Variables["day"] + "')")</set-url>
 <set-method>PUT</set-method>
@@ -53,27 +46,9 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-version" exists-action="override"><value>2019-02-02</value></set-header>
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-<set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["uEtag"])</value></set-header>
 <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["uNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
 <authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
-</when>
-<otherwise>
-<send-request mode="new" response-variable-name="uW" timeout="10" ignore-error="true">
-<set-url>{{token-ledger-table-url}}/tokenusage</set-url>
-<set-method>POST</set-method>
-<set-header name="Accept" exists-action="override"><value>application/json;odata=nometadata</value></set-header>
-<set-header name="x-ms-version" exists-action="override"><value>2019-02-02</value></set-header>
-<set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
-<set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-<set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<set-body>@(new JObject(new JProperty("PartitionKey", "user-" + (string)context.Variables["userOid"]), new JProperty("RowKey", (string)context.Variables["day"]), new JProperty("tokens", (long)context.Variables["uNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
-<authentication-managed-identity resource="https://storage.azure.com/" />
-</send-request>
-</otherwise>
-</choose>
-</retry>
-<retry condition="@{ var w = context.Variables.GetValueOrDefault<IResponse>("aW"); return w != null && (w.StatusCode == 409 || w.StatusCode == 412); }" count="3" interval="0" first-fast-retry="true">
 <send-request mode="new" response-variable-name="aR" timeout="10" ignore-error="true">
 <set-url>@("{{token-ledger-table-url}}/tokenusage(PartitionKey='" + "app" + "',RowKey='" + (string)context.Variables["month"] + "')")</set-url>
 <set-method>GET</set-method>
@@ -87,12 +62,6 @@ var r = context.Variables.GetValueOrDefault<IResponse>("aR");
 long old = (r != null && r.StatusCode == 200) ? ((long?)r.Body.As<JObject>(preserveContent: true)["tokens"] ?? 0L) : 0L;
 return old + (long)((JObject)context.Variables["usage"])["total"];
 }" />
-<set-variable name="aEtag" value="@{
-var r = context.Variables.GetValueOrDefault<IResponse>("aR");
-return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", "") : "";
-}" />
-<choose>
-<when condition="@((string)context.Variables["aEtag"] != "")">
 <send-request mode="new" response-variable-name="aW" timeout="10" ignore-error="true">
 <set-url>@("{{token-ledger-table-url}}/tokenusage(PartitionKey='" + "app" + "',RowKey='" + (string)context.Variables["month"] + "')")</set-url>
 <set-method>PUT</set-method>
@@ -100,26 +69,13 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-version" exists-action="override"><value>2019-02-02</value></set-header>
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-<set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["aEtag"])</value></set-header>
 <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["aNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
 <authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </when>
-<otherwise>
-<send-request mode="new" response-variable-name="aW" timeout="10" ignore-error="true">
-<set-url>{{token-ledger-table-url}}/tokenusage</set-url>
-<set-method>POST</set-method>
-<set-header name="Accept" exists-action="override"><value>application/json;odata=nometadata</value></set-header>
-<set-header name="x-ms-version" exists-action="override"><value>2019-02-02</value></set-header>
-<set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
-<set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-<set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<set-body>@(new JObject(new JProperty("PartitionKey", "app"), new JProperty("RowKey", (string)context.Variables["month"]), new JProperty("tokens", (long)context.Variables["aNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
-<authentication-managed-identity resource="https://storage.azure.com/" />
-</send-request>
-</otherwise>
 </choose>
-</retry>
+<choose>
+<when condition="@(context.Response.StatusCode == 200)">
 <send-request mode="new" response-variable-name="ledgerW" timeout="10" ignore-error="true">
 <set-url>{{token-ledger-table-url}}/tokenledger</set-url>
 <set-method>POST</set-method>
@@ -134,7 +90,7 @@ return new JObject(
 new JProperty("PartitionKey", "user-" + (string)context.Variables["userOid"]),
 new JProperty("RowKey", DateTime.UtcNow.ToString("yyyyMMddHHmmssfff") + "-" + context.RequestId.ToString("N")),
 new JProperty("day", (string)context.Variables["day"]),
-new JProperty("status", "ok"),
+new JProperty("status", ((string)u["skill"] == "blocked" || (string)u["skill"] == "forbidden" || (string)u["skill"] == "error") ? (string)u["skill"] : "ok"),
 new JProperty("skill", (string)u["skill"]),
 new JProperty("session_id", context.Variables.GetValueOrDefault<string>("sessionOut", (string)context.Variables["sessionIn"])),
 new JProperty("model_calls", (long)u["calls"]),

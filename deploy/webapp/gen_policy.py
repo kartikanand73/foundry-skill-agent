@@ -21,43 +21,26 @@ def used(name, resp):
         }}" />'''
 
 def counter(prefix, pk_expr, rk_var):
-    """Read-modify-write with ETag; retried on 409/412 (another call updated it first)."""
-    return f'''        <retry condition="@{{ var w = context.Variables.GetValueOrDefault&lt;IResponse&gt;(&quot;{prefix}W&quot;); return w != null &amp;&amp; (w.StatusCode == 409 || w.StatusCode == 412); }}" count="3" interval="0" first-fast-retry="true">
-{get(prefix + "R", pk_expr, rk_var, indent="            ")}
-            <set-variable name="{prefix}New" value="@{{
-                var r = context.Variables.GetValueOrDefault&lt;IResponse&gt;(&quot;{prefix}R&quot;);
-                long old = (r != null &amp;&amp; r.StatusCode == 200) ? ((long?)r.Body.As&lt;JObject&gt;(preserveContent: true)[&quot;tokens&quot;] ?? 0L) : 0L;
-                return old + (long)((JObject)context.Variables[&quot;usage&quot;])[&quot;total&quot;];
-            }}" />
-            <set-variable name="{prefix}Etag" value="@{{
-                var r = context.Variables.GetValueOrDefault&lt;IResponse&gt;(&quot;{prefix}R&quot;);
-                return (r != null &amp;&amp; r.StatusCode == 200) ? r.Headers.GetValueOrDefault(&quot;ETag&quot;, &quot;&quot;) : &quot;&quot;;
-            }}" />
-            <choose>
-                <when condition="@((string)context.Variables[&quot;{prefix}Etag&quot;] != &quot;&quot;)">
-                    <send-request mode="new" response-variable-name="{prefix}W" timeout="10" ignore-error="true">
-                        <set-url>@("{TBL}/tokenusage(PartitionKey='" + {pk_expr} + "',RowKey='" + (string)context.Variables["{rk_var}"] + "')")</set-url>
-                        <set-method>PUT</set-method>
-{HDRS.replace("            <", "                        <")}
-                        <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-                        <set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["{prefix}Etag"])</value></set-header>
-                        <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["{prefix}New"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
-{AUTH.replace("            <", "                        <")}
-                    </send-request>
-                </when>
-                <otherwise>
-                    <send-request mode="new" response-variable-name="{prefix}W" timeout="10" ignore-error="true">
-                        <set-url>{TBL}/tokenusage</set-url>
-                        <set-method>POST</set-method>
-{HDRS.replace("            <", "                        <")}
-                        <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
-                        <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-                        <set-body>@(new JObject(new JProperty("PartitionKey", {pk_expr}), new JProperty("RowKey", (string)context.Variables["{rk_var}"]), new JProperty("tokens", (long)context.Variables["{prefix}New"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
-{AUTH.replace("            <", "                        <")}
-                    </send-request>
-                </otherwise>
-            </choose>
-        </retry>'''
+    """Read the counter, then write old + this call's tokens (Insert-or-Replace).
+
+    Deliberately simple: no ETag/If-Match and no retry loop (the earlier ETag+retry version hung on the
+    update path). Two simultaneous calls from the same user can under-count one call in the COUNTER;
+    the per-call tokenledger row stays exact and is the source of truth.
+    """
+    return f'''{get(prefix + "R", pk_expr, rk_var)}
+        <set-variable name="{prefix}New" value="@{{
+            var r = context.Variables.GetValueOrDefault&lt;IResponse&gt;(&quot;{prefix}R&quot;);
+            long old = (r != null &amp;&amp; r.StatusCode == 200) ? ((long?)r.Body.As&lt;JObject&gt;(preserveContent: true)[&quot;tokens&quot;] ?? 0L) : 0L;
+            return old + (long)((JObject)context.Variables[&quot;usage&quot;])[&quot;total&quot;];
+        }}" />
+        <send-request mode="new" response-variable-name="{prefix}W" timeout="10" ignore-error="true">
+            <set-url>@("{TBL}/tokenusage(PartitionKey='" + {pk_expr} + "',RowKey='" + (string)context.Variables["{rk_var}"] + "')")</set-url>
+            <set-method>PUT</set-method>
+{HDRS}
+            <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
+            <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["{prefix}New"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+{AUTH}
+        </send-request>'''
 
 USER_PK = '"user-" + (string)context.Variables["userOid"]'
 APP_PK = '"app"'
@@ -224,7 +207,11 @@ api_policy = f'''<!-- API-level policy for "skill-agent" (runs for every operati
             <when condition="@((long)((JObject)context.Variables[&quot;usage&quot;])[&quot;total&quot;] &gt; 0)">
 {counter("u", USER_PK, "day").replace(chr(10) + "        ", chr(10) + "                ").replace("        <retry", "                <retry", 1)}
 {counter("a", APP_PK, "month").replace(chr(10) + "        ", chr(10) + "                ").replace("        <retry", "                <retry", 1)}
-{ledger_row('"ok"', '(JObject)context.Variables["usage"]').replace(chr(10) + "        ", chr(10) + "                ").replace("        <send-request", "                <send-request", 1)}
+            </when>
+        </choose>
+        <choose>
+            <when condition="@(context.Response.StatusCode == 200)">
+{ledger_row('((string)u["skill"] == "blocked" || (string)u["skill"] == "forbidden" || (string)u["skill"] == "error") ? (string)u["skill"] : "ok"', '(JObject)context.Variables["usage"]').replace(chr(10) + "        ", chr(10) + "                ").replace("        <send-request", "                <send-request", 1)}
             </when>
         </choose>
         <!-- tell the client where it stands -->

@@ -352,7 +352,7 @@ Every call through APIM is checked against token budgets and recorded. Tokens ar
 | Piece | Where | What |
 |---|---|---|
 | Budget check (inbound) | `infra/apim-policy.xml` (operation) | Reads `tokenusage(user-<oid>, <yyyy-MM-dd>)` and `tokenusage(app, <yyyy-MM>)`. If either is at its limit: **429**, plus a `rejected_*` ledger row. |
-| Charging (outbound) | `infra/apim-api-policy.xml` (API level) | One `tokenledger` row per call (user, skill, session, in/out/total tokens, cost, running totals). Adds the call's tokens to both counters with ETag concurrency, retried on conflict. |
+| Charging (outbound) | `infra/apim-api-policy.xml` (API level) | One `tokenledger` row per answered call (status `ok`, `blocked` or `forbidden`; user, skill, session, in/out/total tokens, cost, running totals). Adds the call's tokens to both counters: read, then write. Two simultaneous calls from one user can under-count the counter; the ledger stays exact. |
 | Limits | APIM named values | `token-limit-user-daily` = 50,000; `token-limit-app-monthly` = 2,000,000 |
 | Storage | `stskillagentka2026` tables `tokenledger`, `tokenusage` | APIM's managed identity has Storage Table Data Contributor on those two tables only |
 | Client view | Response headers `x-tokens-*`, `x-token-ledger` | The web app shows "Tokens today: N of 50,000" in the sidebar |
