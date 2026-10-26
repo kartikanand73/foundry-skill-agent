@@ -476,6 +476,11 @@ These read the hourly snapshot built by the **fulfillment-risk-platform** repo. 
   - Each source's freshness has a health dot: 🟢 under 2 h, 🟡 aging, 🔴 older than 24 h or named in the latest failed refresh.
   - The allocation rule is shown above the order lines. Selecting a line offers **💬 Ask the agent: "Why is order SO-… at risk?"**, which opens Chat in a new thread with that question.
   - Reads are cached for 60 s.
+- **⚡ Live operational signals** (bottom of the same screen; reloads every 15 s, separately from the snapshot):
+  - **Headline numbers:** events, rejected, duplicates and late in the last hour, plus median pipeline lag.
+  - **Recent events:** each shown with its customer and what the *current snapshot* says (order status, or SKU shortfall). Flags: late / duplicate / after snapshot.
+  - **Rejected events** with their reasons.
+  - **Data:** read-only views `fr.v_signal_*`, fed by Event Hubs → Azure Function in the fulfillment-risk-platform repo. Signals are **context only**: they never change the numbers above them.
 - **Skill:** `skills/fulfillment-risk/SKILL.md` with tools `get_fulfillment_risk` (all customers or one) and `get_order_fulfillment` (one order). Every answer ends with the snapshot and source times. The skill is read-only: it can't change orders, inventory or Salesforce.
 - **Access:**
   - Entra role `SkillAgent.FulfillmentRisk` (or Admin) controls both the screen and the skill.
