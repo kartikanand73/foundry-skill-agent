@@ -3,6 +3,7 @@ name: salesforce-agentforce
 version: 1.1.0
 description: Answers questions about Salesforce CRM data (customer accounts, contacts, opportunities, sales pipeline, customer cases) by asking the company's Agentforce agent.
 allowed_tools: [ask_agentforce]
+required_role: SkillAgent.Sales
 ---
 
 # Salesforce (Agentforce) assistance

@@ -44,6 +44,7 @@ services:
         version: 2.0.0
     env:
       MODEL_DEPLOYMENT_NAME: ${MODEL_DEPLOYMENT_NAME}
+      SKILL_AGENT_REQUIRE_ROLES: "true"   # every call must carry a signed-in user with roles
       MODEL_REASONING_EFFORT: ${MODEL_REASONING_EFFORT}
       REQUEST_TIMEOUT_SECONDS: "60"
       # Salesforce Agentforce (non-secret values only; the client secret lives in Key Vault)

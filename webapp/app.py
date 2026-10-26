@@ -21,6 +21,8 @@ SKILL_BADGES = {
     "clarify": ("Clarifying", ":gray"),
     "unsupported": ("Out of scope", ":gray"),
     "error": ("Error", ":red"),
+    "blocked": ("Blocked by safety policy", ":red"),
+    "forbidden": ("No access", ":orange"),
 }
 
 st.set_page_config(page_title="Skill Agent", page_icon="💬", layout="wide")

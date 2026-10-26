@@ -26,13 +26,13 @@ def test_parse_user_validates():
 
 def test_roles_reach_skill_prompt_and_reply_echo():
     a = agent()
-    u = parse_user({"oid": OID, "name": "Kartik", "roles": ["SkillAgent.IT"]})
+    u = parse_user({"oid": OID, "name": "Kartik", "roles": ["SkillAgent.IT", "SkillAgent.User"]})
     r = a.handle(f"u:{OID}:s1", "What's the status of INC1001?", u)
     skill_call = a.client.chat.completions.calls[1]["messages"][0]["content"]
-    assert "Their app roles: SkillAgent.IT" in skill_call
+    assert "Their app roles: SkillAgent.IT, SkillAgent.User" in skill_call
     router_call = a.client.chat.completions.calls[0]["messages"][0]["content"]
     assert "SkillAgent.IT" not in router_call          # router never sees identity
-    assert r.identity == {"name": "Kartik", "roles": ["SkillAgent.IT"], "user_id_hash": u.id_hash}
+    assert r.identity == {"name": "Kartik", "roles": ["SkillAgent.IT", "SkillAgent.User"], "user_id_hash": u.id_hash}
     assert current_user.get() is None                  # reset after the turn
 
 
@@ -46,11 +46,11 @@ def test_concurrent_users_do_not_leak():
     seen = {}
 
     def run(name):
-        u = UserContext(oid=OID.replace("1", name[0]), name=name, roles=(f"Role.{name}",))
+        u = UserContext(oid=OID.replace("1", name[0]), name=name, roles=(f"Role.{name}", "SkillAgent.Admin"))
         seen[name] = a.handle(f"u:{u.oid}:s", "What's the status of INC1001?", u).identity["roles"]
     ts = [threading.Thread(target=run, args=(n,)) for n in ("alice", "bob", "carol")]
     [t.start() for t in ts]; [t.join() for t in ts]
-    assert seen == {"alice": ["Role.alice"], "bob": ["Role.bob"], "carol": ["Role.carol"]}
+    assert seen == {n: [f"Role.{n}", "SkillAgent.Admin"] for n in ("alice", "bob", "carol")}
 
 
 def test_saved_thread_history_seeds_empty_session_only():

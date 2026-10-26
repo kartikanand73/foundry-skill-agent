@@ -365,6 +365,20 @@ Notes:
 - **Change a limit:** `az apim nv update -n apim-skillagent-ka2026 -g DB --named-value-id token-limit-user-daily --value 75000`
 - **Report:** `python deploy/webapp/ledger_report.py`
 
+## 3g. Guardrails: Foundry + code
+
+| Layer | What | Where |
+|---|---|---|
+| **Foundry guardrail** `skill-agent-guardrail` on the `gpt-5` deployment | Hate, sexual, violence and self-harm blocked at **Medium** on input and output; **jailbreak** and **indirect attack** blocked on input; protected material: text blocked, code annotated | `deploy/webapp/11-guardrail.ps1`. Portal: Foundry → Guardrails, or Models + endpoints → gpt-5 |
+| **Authorization** (code) | Every user needs `SkillAgent.User`. Each skill declares `required_role` in its SKILL.md; `SkillAgent.Admin` can use every skill. The check runs **before the skill loads**, and a refused request never reaches a tool. Hosted: `SKILL_AGENT_REQUIRE_ROLES=true`, so anonymous calls are refused. | `agent/guardrails.py`, `skills/*/SKILL.md` |
+| **Guardrail block handling** (code) | A blocked prompt (`content_filter` 400) or answer (`finish_reason=content_filter`) becomes a clear "blocked by the content safety policy (categories)" reply, with a `guardrail_blocked` trace event and span attributes | `agent/core.py` `_chat()` |
+| **Spotlighting** (code) | Tool results are wrapped in `<tool_result>` tags, and the system prompt says their content is data, never instructions | `agent/guardrails.py` |
+| Already in place | Router limited to the skill list, tool allowlist enforced in code, argument validation, max 3 tool rounds, read-only tools, 4,000-character input cap, sanitized errors; APIM identity check, rate limit and token budgets | see above |
+
+Why the model deployment: the hosted agent calls `gpt-5` directly, so the deployment's guardrail screens every router and skill call, including tool results sent back to the model. Foundry's agent-level tool call / tool response checks (preview) only apply to Foundry-managed tools, not Python tools inside a hosted container.
+
+Revert the model guardrail: run `11-guardrail.ps1 -Policy Microsoft.DefaultV2`. The script then only re-assigns the deployment, because a system policy can't be overwritten. Use the portal if it refuses.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:

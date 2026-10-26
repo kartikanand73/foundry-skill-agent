@@ -76,7 +76,8 @@ class _Completions:
         tool_names = [t["function"]["name"] for t in tools]
 
         if tool_msgs:
-            answer = self._answer(json.loads(tool_msgs[-1]["content"]))
+            from .guardrails import unspotlight
+            answer = self._answer(json.loads(unspotlight(tool_msgs[-1]["content"])))
         elif "get_ticket_status" in tool_names and tool_choice != "none":
             m = re.findall(r"\bINC\d+\b", _text(messages, "user").upper())
             if not m:

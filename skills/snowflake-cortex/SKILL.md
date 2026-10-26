@@ -3,6 +3,7 @@ name: snowflake-cortex
 version: 1.0.0
 description: Answers analytics and metrics questions from the Snowflake data warehouse (for example claims, costs, PMPM, denial rates, revenue, trends and KPIs) by asking the company's Snowflake Cortex Agent.
 allowed_tools: [ask_cortex_agent]
+required_role: SkillAgent.Analytics
 ---
 
 # Snowflake analytics (Cortex Agent)

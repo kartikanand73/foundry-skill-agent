@@ -3,6 +3,7 @@ name: hr-policy
 version: 1.0.0
 description: Answers questions about company HR policies such as vacation, paid time off, and holidays.
 allowed_tools: [lookup_policy]
+required_role: SkillAgent.HR
 ---
 
 # HR policy guidance

@@ -3,6 +3,7 @@ name: it-ticket
 version: 1.0.0
 description: Looks up the status of an existing IT support ticket (incident IDs like INC1001).
 allowed_tools: [get_ticket_status]
+required_role: SkillAgent.IT
 ---
 
 # IT ticket assistance

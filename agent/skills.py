@@ -28,6 +28,7 @@ class Skill:
     description: str
     allowed_tools: tuple[str, ...]
     instructions: str  # markdown body (frontmatter removed)
+    required_role: str | None = None   # Entra app role needed to use this skill (enforced in code)
 
 
 def _parse(path: Path) -> tuple[dict, str]:
@@ -77,4 +78,5 @@ class SkillStore:
             description=str(meta.get("description", "")),
             allowed_tools=tuple(tools),
             instructions=body,
+            required_role=str(meta["required_role"]) if meta.get("required_role") else None,
         )

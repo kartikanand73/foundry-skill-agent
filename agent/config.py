@@ -39,6 +39,7 @@ class Settings:
     reasoning_effort: str         # e.g. "low" for gpt-5; empty = model default
     credential: str               # default | azd | cli
     tenant_id: str
+    require_roles: bool = False   # hosted: every caller must be a signed-in user with roles
 
     @staticmethod
     def from_env() -> "Settings":
@@ -69,4 +70,5 @@ class Settings:
             reasoning_effort=_first("MODEL_REASONING_EFFORT"),
             credential=_first("AZURE_CREDENTIAL", default="default").lower(),
             tenant_id=_first("AZURE_TENANT_ID"),
+            require_roles=_first("SKILL_AGENT_REQUIRE_ROLES").lower() in ("1", "true", "yes"),
         )
