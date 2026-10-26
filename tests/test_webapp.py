@@ -36,6 +36,33 @@ def test_first_call_has_no_session_and_returns_assigned_one():
     assert r.session_id == "sess-A" and r.skill == "hr-policy"
 
 
+def test_bearer_token_sent_when_provider_set():
+    seen = []
+
+    def h(req):
+        seen.append(req)
+        return httpx.Response(200, json={"response": "ok", "skill": "it-ticket"})
+    c = ApimClient(BASE, "KEY", http=httpx.Client(transport=httpx.MockTransport(h)), token_provider=lambda: "TOK")
+    c.chat("x")
+    assert seen[0].headers["Authorization"] == "Bearer TOK" and seen[0].headers["Ocp-Apim-Subscription-Key"] == "KEY"
+
+
+def test_no_bearer_without_provider():
+    seen = []
+    make(lambda req: seen.append(req) or httpx.Response(200, json={})).chat("x")
+    assert "Authorization" not in seen[0].headers
+
+
+def test_token_failure_is_friendly():
+    def boom():
+        raise RuntimeError("IMDS down, secret=abc")
+    c = ApimClient(BASE, "KEY", http=httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200))),
+                   token_provider=boom)
+    with pytest.raises(ApimError) as e:
+        c.chat("x")
+    assert "sign-in token" in str(e.value) and "abc" not in str(e.value)
+
+
 def test_follow_up_sends_session():
     seen = []
 

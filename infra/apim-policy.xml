@@ -1,12 +1,33 @@
 <!-- Policy for API "skill-agent", operation POST /chat.
-     Caller -> APIM: subscription key (enforced by the API's subscriptionRequired=true).
-     APIM -> Foundry: Entra token from APIM's system-assigned managed identity (Foundry User role). -->
+     Caller -> APIM: BOTH a subscription key (subscriptionRequired=true) AND an Entra access token
+       issued to the web app's managed identity for the skill-agent API (validate-jwt). The key alone
+       no longer works, so a leaked key cannot bypass the web app's Entra sign-in.
+     APIM -> Foundry: Entra token from APIM's system-assigned managed identity (Foundry User role).
+     Named values: tenant-id, skill-agent-api-audience (api://<app id>), webapp-principal-id. -->
 <policies>
     <inbound>
         <base />
+        <!-- only the Streamlit web app's managed identity may call: audience + issuer + its object id -->
+        <validate-jwt header-name="Authorization" require-scheme="Bearer" failed-validation-httpcode="401"
+                      failed-validation-error-message="Caller is not authorized">
+            <openid-config url="https://login.microsoftonline.com/{{tenant-id}}/v2.0/.well-known/openid-configuration" />
+            <audiences>
+                <audience>{{skill-agent-api-audience}}</audience>
+            </audiences>
+            <issuers>
+                <issuer>https://sts.windows.net/{{tenant-id}}/</issuer>
+                <issuer>https://login.microsoftonline.com/{{tenant-id}}/v2.0</issuer>
+            </issuers>
+            <required-claims>
+                <claim name="oid" match="any">
+                    <value>{{webapp-principal-id}}</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
         <rate-limit calls="30" renewal-period="60" />
         <!-- never forward the caller's APIM key to Foundry -->
         <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+        <!-- replaces the caller's token: Foundry only ever sees APIM's own identity -->
         <authentication-managed-identity resource="https://ai.azure.com" />
         <set-backend-service base-url="{{foundry-agent-protocols-url}}" />
         <!-- /chat -> /invocations?api-version=v1 ; agent_session_id (if any) is kept -->

@@ -2,6 +2,7 @@
 
 POST {APIM_BASE_URL}/chat[?agent_session_id=<id>]
   Ocp-Apim-Subscription-Key: <key>
+  Authorization: Bearer <Entra token of the web app's managed identity, audience APIM_TOKEN_AUDIENCE>
   {"message": "..."}
 -> 200 {"response", "skill", "skill_version", "tool_calls"}
    header x-agent-session-id: <hosted session id>   (assigned by Foundry on the first call)
@@ -33,21 +34,32 @@ class ChatResult:
 
 class ApimClient:
     def __init__(self, base_url: str, subscription_key: str, timeout_s: float = 150.0,
-                 http: httpx.Client | None = None):
+                 http: httpx.Client | None = None, token_provider=None):
         if not base_url or not subscription_key:
             raise ApimError("The app isn't configured (APIM_BASE_URL / APIM_SUBSCRIPTION_KEY).")
         self.base_url = base_url.rstrip("/")
         self.key = subscription_key
         self.http = http or httpx.Client(timeout=timeout_s)
+        self.token_provider = token_provider   # () -> access token string; None = key only (local dev)
 
     @staticmethod
     def from_env() -> "ApimClient":
+        provider = None
+        audience = os.environ.get("APIM_TOKEN_AUDIENCE", "").strip()
+        if audience:   # App Service: token from the web app's system-assigned managed identity
+            from azure.identity import ManagedIdentityCredential, get_bearer_token_provider
+            provider = get_bearer_token_provider(ManagedIdentityCredential(), f"{audience}/.default")
         return ApimClient(os.environ.get("APIM_BASE_URL", ""), os.environ.get("APIM_SUBSCRIPTION_KEY", ""),
-                          float(os.environ.get("APIM_TIMEOUT_SECONDS", "150")))
+                          float(os.environ.get("APIM_TIMEOUT_SECONDS", "150")), token_provider=provider)
 
     def chat(self, message: str, session_id: str | None = None, user: str | None = None) -> ChatResult:
         params = {"agent_session_id": session_id} if session_id else None
         headers = {"Ocp-Apim-Subscription-Key": self.key, "Content-Type": "application/json"}
+        if self.token_provider:
+            try:
+                headers["Authorization"] = f"Bearer {self.token_provider()}"   # cached + refreshed by azure-identity
+            except Exception:
+                raise ApimError("The app couldn't get its sign-in token for the agent gateway. Please try again.")
         if user:
             headers["x-client-user"] = user[:200]
         try:
@@ -60,7 +72,7 @@ class ApimClient:
         if r.status_code == 429:
             raise ApimError("Too many requests right now - please wait a few seconds and retry.")
         if r.status_code in (401, 403):
-            raise ApimError("The gateway rejected the app's credentials (check the APIM subscription key).")
+            raise ApimError("The gateway rejected the app's credentials (subscription key or app identity token).")
         if r.status_code >= 400:
             raise ApimError(f"The agent returned an error (HTTP {r.status_code}). Please try again.")
         try:

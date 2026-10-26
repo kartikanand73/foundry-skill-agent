@@ -1,4 +1,5 @@
 # Snowflake skill through APIM: question + follow-up in the same hosted session.
+# NOTE: works only before step 7 (validate-jwt). After that, use 2c-test-apim-locked.ps1 and test through the web app.
 . "$PSScriptRoot\config.ps1"
 $key = & $az keyvault secret show --vault-name $Kv -n apim-subscription-key --query value -o tsv
 $h = @{ 'Ocp-Apim-Subscription-Key' = $key; 'Content-Type' = 'application/json' }
