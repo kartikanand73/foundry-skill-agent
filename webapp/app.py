@@ -40,6 +40,35 @@ if "threads" not in st.session_state:
 
 
 @st.cache_resource
+def _telemetry():
+    """Application Insights via OpenTelemetry, only when the connection string is configured.
+
+    Instruments httpx so every APIM call carries a W3C `traceparent`: APIM and the hosted agent's
+    spans then join the same end-to-end trace. Prompt and answer text are not recorded.
+    """
+    import os
+    if not os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+        return None
+    try:
+        from azure.monitor.opentelemetry import configure_azure_monitor
+        from opentelemetry import trace as otel
+        from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+        configure_azure_monitor()
+        HTTPXClientInstrumentor().instrument()
+        return otel.get_tracer("skill_agent.webapp")
+    except Exception:   # telemetry must never break the chat
+        return None
+
+
+_tracer = _telemetry()   # before the first httpx client is created
+
+
+def _span(name: str):
+    import contextlib
+    return _tracer.start_as_current_span(name) if _tracer else contextlib.nullcontext(None)
+
+
+@st.cache_resource
 def _client() -> ApimClient | None:
     try:
         return ApimClient.from_env()
@@ -122,7 +151,11 @@ if prompt:
             msg = {"role": "assistant", "content": "The app isn't configured to reach the agent yet.",
                    "skill": "error"}
         else:
-            with st.spinner("Thinking…"):
+            with st.spinner("Thinking…"), _span("webapp.chat_turn") as sp:
+                if sp:
+                    sp.set_attribute("webapp.thread", st.session_state.active)
+                    sp.set_attribute("webapp.follow_up", bool(thread["session_id"]))
+                    sp.set_attribute("webapp.signed_in", bool(_signed_in_user()))
                 try:
                     res = client.chat(prompt, session_id=thread["session_id"], user=_signed_in_user())
                     thread["session_id"] = res.session_id
@@ -130,6 +163,10 @@ if prompt:
                            "tool_calls": res.tool_calls}
                 except ApimError as e:
                     msg = {"role": "assistant", "content": f"⚠️ {e}", "skill": "error"}
+                if sp:
+                    sp.set_attribute("webapp.skill", msg["skill"])
+                    sp.set_attribute("webapp.agent_session", thread["session_id"] or "")
+                    sp.set_attribute("webapp.tools", ",".join(c.get("tool", "") for c in msg.get("tool_calls") or []))
         st.markdown(_badge(msg["skill"]))
         st.markdown(msg["content"])
         if msg.get("tool_calls"):

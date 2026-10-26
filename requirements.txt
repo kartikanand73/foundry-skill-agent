@@ -6,3 +6,5 @@ PyYAML>=6.0
 python-dotenv>=1.0
 httpx>=0.27              # Salesforce Agentforce Agent API calls
 azure-keyvault-secrets>=4.8   # Salesforce client secret from Key Vault (hosted)
+opentelemetry-api>=1.27        # spans; exporter is configured by the hosted runtime when App Insights is connected
+opentelemetry-instrumentation-httpx>=0.48b0   # dependency spans for httpx calls

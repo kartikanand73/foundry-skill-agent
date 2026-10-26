@@ -15,6 +15,9 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from agent import SkillAgent
+from agent.trace import instrument_http
+
+instrument_http()   # dependency spans for model / Salesforce / Snowflake HTTP calls
 
 agent = SkillAgent()
 app = InvocationAgentServerHost()

@@ -12,7 +12,7 @@ from .skills import SkillStore
 from .salesforce import AgentforceClient, SalesforceConfig
 from .snowflake import CortexAgentClient, SnowflakeConfig
 from .tools import REGISTRY, ToolContext, execute
-from .trace import trace
+from .trace import span, trace
 
 CLARIFY, UNSUPPORTED = "clarify", "unsupported"
 
@@ -68,14 +68,20 @@ class SkillAgent:
         if not message:
             return AgentReply("Please type a question.", CLARIFY)
         history = self._get_history(session_id)
-        try:
-            reply = self._handle(message, history, session_id)
-        except Exception as e:  # never leak stack traces or secrets to the user
-            hint = "check `az login` / role assignment" if "Authentication" in type(e).__name__ else _safe(e)
-            trace("error", type=type(e).__name__, detail=hint)
-            reply = AgentReply("Sorry - I couldn't reach the model or something failed. Please try again.", "error")
-        self._remember(session_id, message, reply.text)
-        trace("final_answer", skill=reply.skill, text=reply.text)
+        with span("skill_agent.turn", session=session_id[-64:], history_messages=len(history),
+                  message_chars=len(message)) as sp:
+            try:
+                reply = self._handle(message, history, session_id)
+            except Exception as e:  # never leak stack traces or secrets to the user
+                hint = "check `az login` / role assignment" if "Authentication" in type(e).__name__ else _safe(e)
+                trace("error", type=type(e).__name__, detail=hint)
+                reply = AgentReply("Sorry - I couldn't reach the model or something failed. Please try again.", "error")
+            sp(skill=reply.skill, skill_version=reply.skill_version, tool_calls=len(reply.tool_calls),
+               tools=",".join(c["tool"] for c in reply.tool_calls) or None,
+               tool_status=",".join(c["status"] for c in reply.tool_calls) or None,
+               outcome="error" if reply.skill == "error" else "ok")
+            self._remember(session_id, message, reply.text)
+            trace("final_answer", skill=reply.skill, text=reply.text)
         return reply
 
     def reset(self, session_id: str) -> None:
@@ -125,19 +131,22 @@ class SkillAgent:
             },
         }
         recent = history[-4:]  # router sees only a little text context, never prior skill prompts
-        resp = self.client.chat.completions.create(
-            model=self.s.model,
-            messages=[{"role": "system", "content": ROUTER_PROMPT.format(catalog=catalog_txt)},
-                      *recent, {"role": "user", "content": message}],
-            response_format={"type": "json_schema", "json_schema": schema},
-            **self._gen,
-        )
-        try:
-            data = json.loads(resp.choices[0].message.content or "{}")
-        except json.JSONDecodeError:
-            trace("route_parse_err")
-            return UNSUPPORTED, ""
-        trace("router", choice=data.get("skill"), reason=data.get("reason", ""))
+        with span("skill_agent.route", catalog_size=len(names)) as sp:
+            resp = self.client.chat.completions.create(
+                model=self.s.model,
+                messages=[{"role": "system", "content": ROUTER_PROMPT.format(catalog=catalog_txt)},
+                          *recent, {"role": "user", "content": message}],
+                response_format={"type": "json_schema", "json_schema": schema},
+                **self._gen,
+            )
+            try:
+                data = json.loads(resp.choices[0].message.content or "{}")
+            except json.JSONDecodeError:
+                trace("route_parse_err")
+                sp(choice="parse_error")
+                return UNSUPPORTED, ""
+            sp(choice=str(data.get("skill", "")))
+            trace("router", choice=data.get("skill"), reason=data.get("reason", ""))
         return str(data.get("skill", "")), str(data.get("clarification", ""))
 
     def _run_skill(self, skill, message: str, history: list[dict], session_id: str = "") -> AgentReply:
@@ -165,8 +174,10 @@ class SkillAgent:
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
                 ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake)
-                result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
-                status = "error" if "error" in result else ("found" if result.get("found") else "not_found")
+                with span("skill_agent.tool", tool=tc.function.name, skill=skill.name, round=_round + 1) as sp:
+                    result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
+                    status = "error" if "error" in result else ("found" if result.get("found") else "not_found")
+                    sp(status=status, error=str(result["error"])[:200] if "error" in result else None)
                 trace("tool_done", tool=tc.function.name, status=status)
                 calls_log.append({"tool": tc.function.name, "args": clean, "status": status})
                 messages.append({"role": "tool", "tool_call_id": tc.id,
