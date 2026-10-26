@@ -107,6 +107,95 @@ def _ask_about(order_id: str) -> None:
     st.session_state.screen = "💬 Chat"
 
 
+SIGNAL_LABEL = {"inventory.adjusted": "📦 Inventory adjusted", "stock.received": "🚚 Stock received",
+                "order.status_changed": "🔁 Order status", "shipment.delayed": "⏰ Shipment delayed"}
+CONTEXT_NOTE = ("Signals are context only. They never change the numbers above; fulfillment risk updates at the "
+                "next hourly refresh from Salesforce, Databricks and Snowflake.")
+
+
+def load_signals() -> dict:
+    """Live (uncached) read of the signal views; the section refreshes itself every 15 s."""
+    s = _q("SELECT * FROM fr.v_signal_summary")
+    return {"summary": s[0] if s else {},
+            "recent": _q("SELECT * FROM fr.v_signal_recent ORDER BY received_at DESC LIMIT 25"),
+            "rejected": _q("SELECT reason, detail, raw_preview, received_at FROM fr.v_signal_rejected_recent "
+                           "ORDER BY received_at DESC LIMIT 15")}
+
+
+def signal_detail(r: dict) -> str:
+    p = r.get("payload") or {}
+    t = r["event_type"]
+    if t == "inventory.adjusted":
+        return f"{r['product_sku']} @ {r['location']}: {p.get('delta', 0):+d} ({p.get('reason', '')})"
+    if t == "stock.received":
+        return f"{r['product_sku']} @ {r['location']}: +{p.get('quantity')} received"
+    if t == "order.status_changed":
+        return f"{r['order_id']}: {p.get('from_status')} → {p.get('to_status')}"
+    if t == "shipment.delayed":
+        return f"{r['order_id']}: now expected {p.get('expected_date')} ({p.get('reason', '')})"
+    return r.get("entity_key", "")
+
+
+def snapshot_context(r: dict) -> str:
+    if r.get("order_id"):
+        st_ = r.get("snapshot_order_status")
+        return f"order {st_}" if st_ else "order not open in snapshot"
+    if r.get("product_sku"):
+        su = r.get("snapshot_sku_short_units")
+        return f"SKU short {su} in snapshot" if su else "SKU not short in snapshot"
+    return ""
+
+
+def _signals_body() -> None:
+    try:
+        g = load_signals()
+    except Exception as e:
+        st.warning(f"Live signals unavailable right now ({type(e).__name__}).")
+        return
+    sm, now = g["summary"], datetime.now(timezone.utc)
+    k = st.columns(5)
+    k[0].metric("Events (1 h)", sm.get("accepted_1h", 0), help="Accepted events in the last hour (24 h: "
+                f"{sm.get('accepted_24h', 0)})")
+    k[1].metric("Rejected (1 h)", sm.get("rejected_1h", 0), help="Invalid events (bad JSON, unknown type, bad ids, "
+                f"future/stale timestamps). 24 h: {sm.get('rejected_24h', 0)}")
+    k[2].metric("Duplicates (1 h)", sm.get("duplicates_1h", 0), help="Redeliveries of an event_id already stored - "
+                "kept once (idempotent).")
+    k[3].metric("Late (1 h)", sm.get("late_1h", 0), help="Arrived after a newer event for the same order or "
+                "SKU@location; stored and flagged, does not replace the newer one.")
+    lag = sm.get("lag_p50_s_1h")
+    k[4].metric("Pipeline lag p50", f"{float(lag):.1f}s" if lag is not None else "—",
+                help="Event Hubs enqueue → stored in PostgreSQL, median over the last hour"
+                     + (f" (p95 {float(sm['lag_p95_s_1h']):.1f}s)" if sm.get("lag_p95_s_1h") is not None else ""))
+    rows = g["recent"]
+    if rows:
+        st.dataframe([{"Received": _ago(r["received_at"], now), "Event": SIGNAL_LABEL.get(r["event_type"], r["event_type"]),
+                       "Customer": r.get("customer_name") or r.get("customer_id") or "",
+                       "Detail": signal_detail(r), "Snapshot says": snapshot_context(r),
+                       "Flags": " ".join(x for x in (("⏪ late" if r["is_late"] else ""),
+                                                     (f"♻️ ×{r['duplicate_count'] + 1}" if r["duplicate_count"] else ""),
+                                                     ("🆕 after snapshot" if r.get("after_snapshot") else "")) if x),
+                       "Source": r["source"]} for r in rows], hide_index=True, width="stretch",
+                     column_config={"Snapshot says": st.column_config.TextColumn(
+                         help="Status in the current fulfillment-risk snapshot - unchanged by this event"),
+                         "Flags": st.column_config.TextColumn(
+                             help="⏪ late = older than the newest event for the same entity · ♻️ duplicate "
+                                  "deliveries · 🆕 arrived after the snapshot was taken (not reflected yet)")})
+    else:
+        st.caption("No events in the last 7 days.")
+    if g["rejected"]:
+        with st.expander(f"Rejected events ({len(g['rejected'])} most recent)"):
+            st.dataframe([{"Received": _ago(r["received_at"], now), "Reason": r["reason"], "Detail": r["detail"],
+                           "Body (start)": r["raw_preview"]} for r in g["rejected"]], hide_index=True, width="stretch")
+    st.caption(f"Live · refreshed {now:%H:%M:%S} UTC · Event Hubs → Azure Function → PostgreSQL")
+
+
+@st.fragment(run_every="15s")
+def signals_section() -> None:
+    st.markdown("#### ⚡ Live operational signals")
+    st.caption(f"ℹ️ {CONTEXT_NOTE}")
+    _signals_body()
+
+
 def render(principal: dict | None) -> None:
     st.subheader("📦 Fulfillment risk")
     st.caption("Which Salesforce customers have open Databricks orders that current Snowflake inventory can't "
@@ -203,5 +292,7 @@ def render(principal: dict | None) -> None:
                        "Started (UTC)": f"{r['started_at']:%m-%d %H:%M}", "Secs": float(r["duration_s"] or 0),
                        "At risk": r["customers_at_risk"], "Error": r["error"] or ""} for r in d["runs"]],
                      hide_index=True, width="stretch", height=260)
+    st.divider()
+    signals_section()
     st.caption(f"Read {_ago(d['loaded_at'], now)} from PostgreSQL view fr.v_fulfillment_risk_current "
                "(cached 60 s).")

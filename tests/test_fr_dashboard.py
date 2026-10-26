@@ -62,3 +62,15 @@ def test_ask_about_order_queues_chat(monkeypatch):
 def test_labels_and_rule_text():
     assert "prorated" in d.REV_HELP and "FULL value" in d.BLOCKED_HELP
     assert d.FIFO_RULE.startswith("Inventory allocated by order date") and "order ID" in d.FIFO_RULE
+
+
+def test_signal_rows_render_text():
+    order = {"event_type": "order.status_changed", "order_id": "SO-101996", "product_sku": None,
+             "payload": {"from_status": "Processing", "to_status": "OnHold"}, "snapshot_order_status": "UNFULFILLABLE"}
+    sku = {"event_type": "inventory.adjusted", "order_id": None, "product_sku": "P-1003", "location": "WEST-DC",
+           "payload": {"delta": -2, "reason": "cycle count"}, "snapshot_sku_short_units": None}
+    assert d.signal_detail(order) == "SO-101996: Processing → OnHold"
+    assert d.snapshot_context(order) == "order UNFULFILLABLE"
+    assert d.signal_detail(sku) == "P-1003 @ WEST-DC: -2 (cycle count)"
+    assert d.snapshot_context(sku) == "SKU not short in snapshot"
+    assert "never change" in d.CONTEXT_NOTE
