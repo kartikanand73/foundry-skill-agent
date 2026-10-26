@@ -81,7 +81,6 @@ return a != null && b != null && (a.StatusCode == 200 || a.StatusCode == 404) &&
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@{
 var u = new JObject(new JProperty("in", 0L), new JProperty("out", 0L), new JProperty("total", 0L), new JProperty("cost", 0.0), new JProperty("calls", 0L), new JProperty("skill", ""));
 return new JObject(
@@ -101,6 +100,7 @@ new JProperty("app_tokens_month", context.Variables.GetValueOrDefault<long>("aNe
 new JProperty("apim_request_id", context.RequestId.ToString())
 ).ToString();
 }</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 <return-response>
 <set-status code="429" reason="Daily token limit reached" />
@@ -118,7 +118,6 @@ new JProperty("apim_request_id", context.RequestId.ToString())
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@{
 var u = new JObject(new JProperty("in", 0L), new JProperty("out", 0L), new JProperty("total", 0L), new JProperty("cost", 0.0), new JProperty("calls", 0L), new JProperty("skill", ""));
 return new JObject(
@@ -138,6 +137,7 @@ new JProperty("app_tokens_month", context.Variables.GetValueOrDefault<long>("aNe
 new JProperty("apim_request_id", context.RequestId.ToString())
 ).ToString();
 }</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 <return-response>
 <set-status code="429" reason="Monthly token budget reached" />

@@ -54,8 +54,8 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["uEtag"])</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["uNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </when>
 <otherwise>
@@ -67,8 +67,8 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@(new JObject(new JProperty("PartitionKey", "user-" + (string)context.Variables["userOid"]), new JProperty("RowKey", (string)context.Variables["day"]), new JProperty("tokens", (long)context.Variables["uNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </otherwise>
 </choose>
@@ -101,8 +101,8 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["aEtag"])</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["aNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </when>
 <otherwise>
@@ -114,8 +114,8 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@(new JObject(new JProperty("PartitionKey", "app"), new JProperty("RowKey", (string)context.Variables["month"]), new JProperty("tokens", (long)context.Variables["aNew"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </otherwise>
 </choose>
@@ -128,7 +128,6 @@ return (r != null && r.StatusCode == 200) ? r.Headers.GetValueOrDefault("ETag", 
 <set-header name="x-ms-date" exists-action="override"><value>@(DateTime.UtcNow.ToString("R"))</value></set-header>
 <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
 <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-<authentication-managed-identity resource="https://storage.azure.com/" />
 <set-body>@{
 var u = (JObject)context.Variables["usage"];
 return new JObject(
@@ -148,6 +147,7 @@ new JProperty("app_tokens_month", context.Variables.GetValueOrDefault<long>("aNe
 new JProperty("apim_request_id", context.RequestId.ToString())
 ).ToString();
 }</set-body>
+<authentication-managed-identity resource="https://storage.azure.com/" />
 </send-request>
 </when>
 </choose>

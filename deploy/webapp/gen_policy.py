@@ -41,8 +41,8 @@ def counter(prefix, pk_expr, rk_var):
 {HDRS.replace("            <", "                        <")}
                         <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
                         <set-header name="If-Match" exists-action="override"><value>@((string)context.Variables["{prefix}Etag"])</value></set-header>
-{AUTH.replace("            <", "                        <")}
                         <set-body>@(new JObject(new JProperty("tokens", (long)context.Variables["{prefix}New"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+{AUTH.replace("            <", "                        <")}
                     </send-request>
                 </when>
                 <otherwise>
@@ -52,8 +52,8 @@ def counter(prefix, pk_expr, rk_var):
 {HDRS.replace("            <", "                        <")}
                         <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
                         <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-{AUTH.replace("            <", "                        <")}
                         <set-body>@(new JObject(new JProperty("PartitionKey", {pk_expr}), new JProperty("RowKey", (string)context.Variables["{rk_var}"]), new JProperty("tokens", (long)context.Variables["{prefix}New"]), new JProperty("updated", DateTime.UtcNow.ToString("o"))).ToString())</set-body>
+{AUTH.replace("            <", "                        <")}
                     </send-request>
                 </otherwise>
             </choose>
@@ -69,7 +69,6 @@ def ledger_row(status_expr, usage_expr):
 {HDRS}
             <set-header name="Content-Type" exists-action="override"><value>application/json</value></set-header>
             <set-header name="Prefer" exists-action="override"><value>return-no-content</value></set-header>
-{AUTH}
             <set-body>@{{
                 var u = {usage_expr};
                 return new JObject(
@@ -89,6 +88,7 @@ def ledger_row(status_expr, usage_expr):
                     new JProperty("apim_request_id", context.RequestId.ToString())
                 ).ToString();
             }}</set-body>
+{AUTH}
         </send-request>'''
 
 ZERO = 'new JObject(new JProperty("in", 0L), new JProperty("out", 0L), new JProperty("total", 0L), new JProperty("cost", 0.0), new JProperty("calls", 0L), new JProperty("skill", ""))'
