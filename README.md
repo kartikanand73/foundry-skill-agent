@@ -283,6 +283,38 @@ Browser --Entra sign-in--> Streamlit (App Service B1) --subscription key--> APIM
 - **Run locally:** `cd webapp; pip install -r requirements.txt; $env:APIM_BASE_URL="https://<apim>.azure-api.net/skill-agent"; $env:APIM_SUBSCRIPTION_KEY="<key>"; streamlit run app.py`
 - **Delete:** `az webapp delete -n <app> -g <rg>; az appservice plan delete -n <plan> -g <rg> --yes; az apim delete -n <apim> -g <rg> --yes; az ad app delete --id <auth app id>`
 
+## 3d. Observability: Application Insights (end-to-end traces)
+
+`deploy/webapp/5-app-insights.ps1` creates one workspace-based Application Insights resource (`appi-skillagent-ka2026`, with Log Analytics `log-skillagent-ka2026`) and wires every hop to it. After running it, redeploy the hosted agent (`deploy/hosted/redeploy.ps1 -Tag vN`) and the web app (`3b-deploy-code.ps1`).
+
+| Hop | How | Shows up as (`cloud_RoleName`) |
+|---|---|---|
+| Streamlit web app | `azure-monitor-opentelemetry` plus the httpx instrumentor: a `webapp.chat_turn` span, and `traceparent` sent to APIM | `skillagent-webapp` |
+| APIM | App Insights logger plus API diagnostics: W3C correlation, 100% sampling, **no bodies** | `apim-skillagent-ka2026 East US` |
+| Foundry platform | Project monitoring: the Foundry project has an App Insights connection | `agentsv2` |
+| Hosted agent | Connection string injected by Foundry; the runtime's OpenTelemetry distro exports the agent's spans | `skill-agent` |
+
+**Agent spans:**
+- `skill_agent.turn` records skill, version, tools, tool status and outcome.
+- `skill_agent.route` records the router's choice.
+- `skill_agent.tool` records tool, status and error.
+- Each trace line becomes a span event.
+- httpx dependency spans cover the model, Salesforce and Snowflake calls.
+
+**Prompt and answer text are not recorded.** Set `SKILL_AGENT_TRACE_CONTENT=1` to include them.
+
+**Check it:** run `deploy/webapp/6-verify-traces.ps1`, or use this KQL:
+
+```kusto
+union AppRequests, AppDependencies
+| where TimeGenerated > ago(1h)
+| summarize components=make_set(AppRoleName), spans=count() by OperationId
+```
+
+In the portal: App Insights → **Transaction search**, then open a turn to see the end-to-end view.
+
+**Verified 2026-10-25:** an APIM test turn was one OperationId spanning APIM, `agentsv2` and `skill-agent`, with `skill_agent.turn` and `skill_agent.tool` (it-ticket / get_ticket_status / found) inside it. Cost is pay-as-you-go ingestion, which is pennies for a demo. To remove it, delete the two resources and the project connection.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:

@@ -39,7 +39,7 @@ if "threads" not in st.session_state:
     _new_thread()
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def _telemetry():
     """Application Insights via OpenTelemetry, only when the connection string is configured.
 
