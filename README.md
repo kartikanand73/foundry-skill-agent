@@ -379,6 +379,51 @@ Why the model deployment: the hosted agent calls `gpt-5` directly, so the deploy
 
 Revert the model guardrail: run `11-guardrail.ps1 -Policy Microsoft.DefaultV2`. The script then only re-assigns the deployment, because a system policy can't be overwritten. Use the portal if it refuses.
 
+## 3h. Testing and inspecting the live system
+
+| Script (in `deploy/webapp/`) | What it checks |
+|---|---|
+| `inspect-config.ps1` | Read-only snapshot of every resource's live settings: web app, Entra roles and assignments, APIM (policies, named values, logging), Foundry guardrail, storage, Key Vault, identities. Never prints secret values. |
+| `2c-test-apim-locked.ps1` | APIM refuses calls with no key, with the key only, and with a non-web-app token (all 401) |
+| `2d-test-foundry-direct.ps1` | The Foundry agent endpoint refuses calls with no token (401); a Foundry token with no signed-in user gets "Please sign in"; **known gap:** a direct caller asserting a made-up user is answered |
+| `ledger_report.py` | Today's token counters and the latest ledger rows |
+| `recent-calls.ps1 -Minutes N` | Requests, dependencies and exceptions across all components (App Insights) |
+| `6-verify-traces.ps1` | End-to-end traces and agent spans |
+
+**Results from 2026-10-26:** 74 tests; 47 pass, 0 failing, 8 known gaps, 19 not run (they need a second user, a re-sign-in with fewer roles, or a dependency taken down).
+
+**Defect found and fixed:** the first update of an existing token counter hung APIM for 150 s. The ETag + retry update was replaced with read-then-write.
+
+**Known gaps:**
+
+1. **Direct calls can skip APIM.** Anyone with **Foundry User** on the Foundry account can call the agent directly with a made-up `user` (identity and budget bypass). Fix: limit that role to APIM's identity, or have APIM sign the user context and the agent verify it.
+2. **Exposed secrets.** The Snowflake PAT and Salesforce secret were shared in chat; rotate both.
+3. **Any tenant user can sign in.** "Assignment required" is off on `skillagent-chat-ka2026-auth`.
+4. **Broad subscription access.** 37 Owner/Contributor assignments exist at subscription level.
+5. **Key Vault scope.** The agent's identity can read all three Key Vault secrets.
+6. **Counter race.** Simultaneous calls can under-count the counter; the ledger stays exact.
+
+**Identities** (object IDs, for reading role assignments):
+
+| Identity | Object ID | Role listings show |
+|---|---|---|
+| Web app | `4db65470-…` | application ID `cbc9e8bb-…` |
+| APIM | `52aa6f83-…` | application ID `226532e6-…` |
+| Hosted agent | `450a6723-…` | |
+| Sign-in app registration | `skillagent-chat-ka2026-auth` | |
+| API audience app registration | `skillagent-api-ka2026` (`api://d4866a79-…`) | |
+
+**Where to look in APIM:**
+
+- **Security → Managed identities:** APIM's identity and its role assignments.
+- **APIs → skill-agent:**
+  - **Settings:** subscription required.
+  - **Design → POST /chat → Policies:** identity check, rate limit, budget check, routing.
+  - **Design → All operations → Policies:** charging.
+  - **Settings → Diagnostics:** App Insights logging, 100% sampling, W3C, no bodies.
+- **Named values:** limits, audience, allowed web-app identity.
+- **Subscriptions:** `streamlit-app` key. If you regenerate it, also update Key Vault `apim-subscription-key`.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:
@@ -420,6 +465,15 @@ az acr delete -n <acr> -g <rg> --yes
 ```
 
 `azd down` is **not** needed here and would not delete your existing project. Your Foundry account, project, `gpt-5` deployment and resource group `DB` are left untouched by both commands.
+
+Also created later; delete these too:
+
+- **App registrations:** `skillagent-chat-ka2026-auth` and `skillagent-api-ka2026`.
+- **Storage account:** `stskillagentka2026`.
+- **Monitoring:** Application Insights `appi-skillagent-ka2026` and Log Analytics `log-skillagent-ka2026`.
+- **Foundry guardrail:** first point the gpt-5 deployment back to `Microsoft.DefaultV2`, then delete `skill-agent-guardrail` (Foundry → Guardrails).
+- **Foundry project connection:** `appi-skillagent-ka2026`.
+
 
 ## 7. What was verified (2026-10-20)
 
