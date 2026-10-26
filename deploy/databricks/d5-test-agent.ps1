@@ -13,10 +13,10 @@ function Ask($label, $msg, $roles, $sid) {
   try {
     $r = Invoke-WebRequest -UseBasicParsing -Method Post -Uri $url -Headers $h -Body $body -ContentType 'application/json' -TimeoutSec 240
     $j = $r.Content | ConvertFrom-Json
-    "`n== $label  ($([int]((Get-Date) - $t0).TotalSeconds)s)  skill=$($j.skill) tools=$(($j.tool_calls | ForEach-Object { $_.tool + ':' + $_.status }) -join ',') tokens=$($j.usage.total_tokens)"
-    $j.response
+    Write-Host "`n== $label  ($([int]((Get-Date) - $t0).TotalSeconds)s)  skill=$($j.skill) tools=$(($j.tool_calls | ForEach-Object { $_.tool + ':' + $_.status }) -join ',') tokens=$($j.usage.total_tokens)"
+    Write-Host $j.response
     return $r.Headers['x-agent-session-id']
-  } catch { "`n== $label -> HTTP $([int]$_.Exception.Response.StatusCode)"; return $sid }
+  } catch { Write-Host "`n== $label -> HTTP $([int]$_.Exception.Response.StatusCode)"; return $sid }
 }
 $all = @('SkillAgent.User', 'SkillAgent.Orders')
 $sid = Ask '1. revenue by customer 2026' 'From our orders data in Databricks, what is total revenue by customer account in 2026?' $all $null
