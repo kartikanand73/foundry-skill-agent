@@ -23,13 +23,13 @@ foreach ($p in $set.properties.PSObject.Properties) {
 
 "`n== 2. Entra app roles and assignments"
 $authAppId = $auth.properties.identityProviders.azureActiveDirectory.registration.clientId
-$app = G "applications(appId='$authAppId')"
-Show 'sign-in app' "$($app.displayName) ($authAppId)"
-foreach ($r in $app.appRoles) { Show "role" "$($r.value)  enabled=$($r.isEnabled)" }
+$authReg = G "applications(appId='$authAppId')"
+Show 'sign-in app' "$($authReg.displayName) ($authAppId)"
+foreach ($r in $authReg.appRoles) { Show "role" "$($r.value)  enabled=$($r.isEnabled)" }
 $sp = G "servicePrincipals(appId='$authAppId')"
 Show 'assignment required to sign in' $sp.appRoleAssignmentRequired
 $asg = G "servicePrincipals/$($sp.id)/appRoleAssignedTo"
-foreach ($x in $asg.value) { $rn = ($app.appRoles | Where-Object id -eq $x.appRoleId).value; if (-not $rn) { $rn = "(default access, no role)" }; Show "assigned" "$($x.principalDisplayName) -> $rn" }
+foreach ($x in $asg.value) { $rn = ($authReg.appRoles | Where-Object id -eq $x.appRoleId).value; if (-not $rn) { $rn = "(default access, no role)" }; Show "assigned" "$($x.principalDisplayName) -> $rn" }
 
 "`n== 3. APIM $Apim"
 $api = A "Microsoft.ApiManagement/service/$Apim/apis/skill-agent" '2022-08-01'
