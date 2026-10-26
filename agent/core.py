@@ -11,6 +11,7 @@ from .llm import make_client
 from .skills import SkillStore
 from .salesforce import AgentforceClient, SalesforceConfig
 from .snowflake import CortexAgentClient, SnowflakeConfig
+from .databricks import GenieClient, GenieConfig
 from .tools import REGISTRY, ToolContext, execute
 from .trace import span, trace
 from . import usage as _usage
@@ -47,7 +48,7 @@ class AgentReply:
 
 
 class SkillAgent:
-    def __init__(self, settings: Settings | None = None, client=None, salesforce=None, snowflake=None):
+    def __init__(self, settings: Settings | None = None, client=None, salesforce=None, snowflake=None, genie=None):
         self.s = settings or Settings.from_env()
         self.client = client or make_client(self.s)
         self.skills = SkillStore(self.s.skills_dir)
@@ -65,6 +66,8 @@ class SkillAgent:
         self.salesforce = salesforce if salesforce is not None else (AgentforceClient(sf_cfg) if sf_cfg else None)
         sn_cfg = SnowflakeConfig.from_env()
         self.snowflake = snowflake if snowflake is not None else (CortexAgentClient(sn_cfg) if sn_cfg else None)
+        gn_cfg = GenieConfig.from_env()
+        self.genie = genie if genie is not None else (GenieClient(gn_cfg) if gn_cfg else None)
         self._history: dict[str, deque] = {}
         self._lock = threading.Lock()
 
@@ -127,6 +130,8 @@ class SkillAgent:
             self.salesforce.end(session_id)   # close the matching Agentforce session
         if self.snowflake:
             self.snowflake.end(session_id)
+        if self.genie:
+            self.genie.end(session_id)
 
     # ---------- steps ----------
     def _handle(self, message: str, history: list[dict], session_id: str = "") -> AgentReply:
@@ -213,7 +218,7 @@ class SkillAgent:
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
                 ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake,
-                                  current_user.get())
+                                  current_user.get(), self.genie or None)
                 with span("skill_agent.tool", tool=tc.function.name, skill=skill.name, round=_round + 1) as sp:
                     result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
                     status = "error" if "error" in result else ("found" if result.get("found") else "not_found")

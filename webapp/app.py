@@ -18,6 +18,7 @@ SKILL_BADGES = {
     "it-ticket": ("IT ticket", ":orange"),
     "salesforce-agentforce": ("Salesforce", ":violet"),
     "snowflake-cortex": ("Snowflake", ":green"),
+    "databricks-genie": ("Databricks", ":red"),
     "clarify": ("Clarifying", ":gray"),
     "unsupported": ("Out of scope", ":gray"),
     "error": ("Error", ":red"),
@@ -209,7 +210,7 @@ with st.sidebar:
         st.caption("Threads are kept for this browser session only.")
     if st.session_state.get("store_error"):
         st.caption("⚠️ Couldn't reach thread storage; this session's threads may not be saved.")
-    st.caption("Ask about HR policies, IT tickets, Salesforce accounts or Snowflake claims metrics.")
+    st.caption("Ask about HR policies, IT tickets, Salesforce accounts, Snowflake claims metrics or Databricks sales orders.")
 
 
 # ---------- main: active thread ----------

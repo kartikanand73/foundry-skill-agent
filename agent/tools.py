@@ -75,6 +75,23 @@ def ask_cortex_agent(ctx: "ToolContext", question: str) -> dict:
         return {"error": f"Snowflake: could not connect ({type(e).__name__})."}
 
 
+def ask_genie(ctx: "ToolContext", question: str) -> dict:
+    """Forward the question to the Databricks Genie space over the orders data (real HTTPS call)."""
+    if not ctx.genie:
+        return {"error": "Databricks: not configured for this agent (set DATABRICKS_HOST, GENIE_SPACE_ID)."}
+    from .databricks import GenieError
+    try:
+        return {"found": True, **ctx.genie.ask(ctx.session_key, question)}
+    except GenieError as e:
+        return {"error": f"Databricks: {e}"}
+    except httpx.TimeoutException:
+        return {"error": "Databricks: no response in time."}
+    except httpx.HTTPError as e:
+        return {"error": f"Databricks: could not connect ({type(e).__name__})."}
+    except Exception as e:  # token acquisition (azure.identity) failures
+        return {"error": f"Databricks: sign-in failed ({type(e).__name__})."}
+
+
 # ---------- argument validation ----------
 
 def _validate_topic(args: dict) -> dict:
@@ -115,6 +132,7 @@ class ToolContext:
     salesforce: Any = None   # AgentforceClient | None
     snowflake: Any = None    # CortexAgentClient | None
     user: Any = None         # identity.UserContext | None (signed-in user, from the web app)
+    genie: Any = None        # databricks.GenieClient | None
 
 @dataclass(frozen=True)
 class ToolSpec:
@@ -178,6 +196,22 @@ REGISTRY: dict[str, ToolSpec] = {
         }},
         validate=_validate_question,
         run=ask_cortex_agent,
+    ),
+    "ask_genie": ToolSpec(
+        name="ask_genie",
+        schema={"type": "function", "function": {
+            "name": "ask_genie",
+            "description": "Ask the company's Databricks Genie space a question about sales orders: orders, "
+                           "order lines, products, revenue, quantities, discounts, order status, channels and "
+                           "sales reps, by customer account. Returns its answer, the SQL it ran and result tables.",
+            "strict": True,
+            "parameters": {"type": "object", "additionalProperties": False, "required": ["question"],
+                           "properties": {"question": {"type": "string",
+                               "description": "A complete, self-contained question including customer names, "
+                                              "Salesforce account IDs, products and time periods mentioned earlier."}}},
+        }},
+        validate=_validate_question,
+        run=ask_genie,
     ),
 }
 

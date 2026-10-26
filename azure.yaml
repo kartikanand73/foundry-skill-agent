@@ -37,7 +37,7 @@ services:
       - ai-project
     kind: hosted
     name: skill-agent
-    description: Demo agent that routes to HR-policy, IT-ticket, Salesforce Agentforce or Snowflake Cortex skills and runs Python tools.
+    description: Demo agent that routes to HR-policy, IT-ticket, Salesforce Agentforce, Snowflake Cortex or Databricks Genie skills and runs Python tools.
     startupCommand: python main.py
     protocols:
       - protocol: invocations
@@ -60,6 +60,9 @@ services:
       SNOWFLAKE_AGENT_SCHEMA: ${SNOWFLAKE_AGENT_SCHEMA}
       SNOWFLAKE_AGENT_NAME: ${SNOWFLAKE_AGENT_NAME}
       SNOWFLAKE_KEYVAULT_URL: ${SALESFORCE_KEYVAULT_URL}
+      # Databricks Genie (no secret: the agent's own Entra identity is a Databricks service principal)
+      DATABRICKS_HOST: ${DATABRICKS_HOST}
+      GENIE_SPACE_ID: ${GENIE_SPACE_ID}
     container:
       resources:
         cpu: "0.25"           # smallest allowed size

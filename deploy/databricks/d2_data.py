@@ -24,7 +24,8 @@ ma = d.call("GET", "/api/2.1/unity-catalog/current-metastore-assignment", ok404=
 print("metastore:", (ma or {}).get("metastore_id"), "default catalog:", (ma or {}).get("default_catalog_name"))
 cats = [c["name"] for c in d.call("GET", "/api/2.1/unity-catalog/catalogs").get("catalogs", [])]
 print("catalogs:", cats)
-catalog = os.environ.get("ORDERS_CATALOG") or (ma or {}).get("default_catalog_name") or \
+catalog = os.environ.get("ORDERS_CATALOG") or ("skillagent" if "skillagent" in cats else None) or \
+    (ma or {}).get("default_catalog_name") or \
     next((c for c in cats if c not in ("system", "samples", "hive_metastore", "main")), "main")
 
 # --- SQL warehouse
