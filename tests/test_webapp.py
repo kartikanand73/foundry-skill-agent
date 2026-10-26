@@ -190,3 +190,22 @@ def test_no_user_no_user_in_body():
     seen = []
     make(lambda req: seen.append(req) or httpx.Response(200, json={})).chat("x")
     assert json.loads(seen[0].content) == {"message": "x"}
+
+
+def test_quota_headers_parsed():
+    hdrs = {"x-tokens-this-call": "1200", "x-tokens-user-today": "4800", "x-tokens-user-daily-limit": "50000",
+            "x-tokens-app-month": "90000", "x-tokens-app-monthly-limit": "2000000", "x-token-ledger": "ok"}
+    r = make(lambda req: httpx.Response(200, headers=hdrs, json={"response": "x"})).chat("q")
+    assert r.quota == {"this_call": 1200, "user_today": 4800, "user_daily_limit": 50000, "app_month": 90000,
+                       "app_monthly_limit": 2000000, "ledger": "ok"}
+    assert make(lambda req: httpx.Response(200, json={})).chat("q").quota is None
+
+
+def test_token_limit_429_message():
+    body = {"error": "rejected_user_daily_limit", "used": 50210, "limit": 50000,
+            "message": "You have used your daily token allowance. It resets at 00:00 UTC."}
+    with pytest.raises(ApimError) as e:
+        make(lambda req: httpx.Response(429, json=body)).chat("q")
+    assert "daily token allowance" in str(e.value) and "50,210 of 50,000" in str(e.value)
+    with pytest.raises(ApimError, match="Too many requests"):
+        make(lambda req: httpx.Response(429, json={"statusCode": 429})).chat("q")

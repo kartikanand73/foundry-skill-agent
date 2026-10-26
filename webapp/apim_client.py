@@ -34,6 +34,16 @@ def principal_from_headers(oid: str, name: str | None, encoded: str | None) -> d
     return {"oid": oid, "name": name, "roles": roles}
 
 
+def _quota(h) -> dict | None:
+    """Token budget headers set by the APIM policy (absent if the ledger isn't deployed)."""
+    if "x-tokens-user-today" not in h:
+        return None
+    num = lambda k: int(h.get(k, "0") or 0)
+    return {"this_call": num("x-tokens-this-call"), "user_today": num("x-tokens-user-today"),
+            "user_daily_limit": num("x-tokens-user-daily-limit"), "app_month": num("x-tokens-app-month"),
+            "app_monthly_limit": num("x-tokens-app-monthly-limit"), "ledger": h.get("x-token-ledger", "")}
+
+
 class ApimError(Exception):
     """User-presentable error (no secrets)."""
 
@@ -47,6 +57,7 @@ class ChatResult:
     session_id: str | None = None
     usage: dict | None = None       # tokens + estimated model cost for this question
     identity: dict | None = None    # what the agent says it received about the user
+    quota: dict | None = None       # token budget state from APIM headers
 
 
 class ApimClient:
@@ -97,6 +108,13 @@ class ApimClient:
         except httpx.HTTPError:
             raise ApimError("Couldn't reach the agent gateway. Please try again in a moment.")
         if r.status_code == 429:
+            try:
+                j = r.json()
+            except ValueError:
+                j = {}
+            if isinstance(j, dict) and str(j.get("error", "")).startswith("rejected_"):
+                raise ApimError(f"{j.get('message', 'Token limit reached.')} "
+                                f"(used {int(j.get('used', 0)):,} of {int(j.get('limit', 0)):,} tokens)")
             raise ApimError("Too many requests right now - please wait a few seconds and retry.")
         if r.status_code in (401, 403):
             raise ApimError("The gateway rejected the app's credentials (subscription key or app identity token).")
@@ -114,4 +132,5 @@ class ApimClient:
             session_id=r.headers.get("x-agent-session-id") or session_id,
             usage=data.get("usage"),
             identity=data.get("identity"),
+            quota=_quota(r.headers),
         )

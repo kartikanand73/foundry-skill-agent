@@ -193,6 +193,11 @@ with st.sidebar:
                                                   key=lambda k: st.session_state.threads[k]["created"])
                 st.rerun()
     st.divider()
+    if q := st.session_state.get("quota"):
+        st.caption(f"Tokens today: {q['user_today']:,} of {q['user_daily_limit']:,}")
+        st.progress(min(q["user_today"] / max(q["user_daily_limit"], 1), 1.0))
+        if q.get("ledger") not in ("ok", ""):
+            st.caption(f"Token ledger: {q['ledger']}")
     total = sum(_thread_cost(t) for t in st.session_state.threads.values())
     if total > 0:
         st.caption(f"💲 All threads this session: ${total:.4f} model cost")
@@ -250,6 +255,8 @@ if prompt:
                              if m.get("skill") != "error"][-12:]
                     res = client.chat(prompt, session_id=thread["session_id"], user=_principal(), history=prior)
                     thread["session_id"] = res.session_id
+                    if res.quota:
+                        st.session_state.quota = res.quota
                     msg = {"role": "assistant", "content": res.text or "_(no answer)_", "skill": res.skill,
                            "tool_calls": res.tool_calls, "usage": res.usage, "identity": res.identity}
                 except ApimError as e:

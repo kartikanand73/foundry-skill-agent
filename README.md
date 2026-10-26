@@ -345,6 +345,26 @@ AppDependencies
 - hosted-agent compute (~$0.03/hour while active at 0.25 vCPU / 0.5 GiB)
 - APIM, App Service, ACR or App Insights
 
+## 3f. Token budgets and ledger (APIM)
+
+Every call through APIM is checked against token budgets and recorded. Tokens are the agent's own count (router plus skill calls) from the response's `usage`.
+
+| Piece | Where | What |
+|---|---|---|
+| Budget check (inbound) | `infra/apim-policy.xml` (operation) | Reads `tokenusage(user-<oid>, <yyyy-MM-dd>)` and `tokenusage(app, <yyyy-MM>)`. If either is at its limit: **429**, plus a `rejected_*` ledger row. |
+| Charging (outbound) | `infra/apim-api-policy.xml` (API level) | One `tokenledger` row per call (user, skill, session, in/out/total tokens, cost, running totals). Adds the call's tokens to both counters with ETag concurrency, retried on conflict. |
+| Limits | APIM named values | `token-limit-user-daily` = 50,000; `token-limit-app-monthly` = 2,000,000 |
+| Storage | `stskillagentka2026` tables `tokenledger`, `tokenusage` | APIM's managed identity has Storage Table Data Contributor on those two tables only |
+| Client view | Response headers `x-tokens-*`, `x-token-ledger` | The web app shows "Tokens today: N of 50,000" in the sidebar |
+
+Notes:
+
+- **The policies are generated.** Edit `deploy/webapp/gen_policy.py`, then run `python deploy/webapp/gen_policy.py infra/apim-policy.xml infra/apim-api-policy.xml`. The split exists because Consumption caps each policy document at 16 KiB.
+- **Limits are soft.** Budgets are checked before a call and charged after it, so a single call can finish a little over a limit.
+- **The ledger fails open.** If the ledger can't be read, calls are allowed and flagged `x-token-ledger: degraded`.
+- **Change a limit:** `az apim nv update -n apim-skillagent-ka2026 -g DB --named-value-id token-limit-user-daily --value 75000`
+- **Report:** `python deploy/webapp/ledger_report.py`
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:
