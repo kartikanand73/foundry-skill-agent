@@ -268,6 +268,8 @@ Browser --Entra sign-in--> Streamlit (App Service B1) --subscription key--> APIM
 - **`infra/apim-policy.xml`**: rate limit of 30/min, removes the caller's key, gets an Entra token for `https://ai.azure.com` with APIM's managed identity, and rewrites `/chat` to `/invocations?api-version=v1` (keeping `agent_session_id`).
 - **Secrets:** the APIM subscription key is in Key Vault, and the web app reads it through a Key Vault reference with its managed identity. APIM calls Foundry with no key at all.
 - **Deploy (PowerShell, from the repo root):** `deploy/webapp/0-verify-session.ps1` → `1-apim.ps1` → `2-test-apim.ps1` → `3-webapp.ps1` → `4-entra-auth.ps1`.
+- **Lock APIM to the web app (step 7):** `deploy/webapp/7-apim-jwt.ps1`. APIM's `validate-jwt` requires an Entra token issued to the **web app's managed identity**: audience `api://<skillagent-api-ka2026 app id>`, `oid` = the web app's principal ID. That's on top of the subscription key, so a leaked key alone gets **401**. The web app gets the token with `ManagedIdentityCredential` (`APIM_TOKEN_AUDIENCE`). `2c-test-apim-locked.ps1` checks that the no-key, key-only and user-token calls are all refused.
+  - Verified 2026-10-26: key only gave 401 (it was 200 before); a chat through the web app answered normally.
 - **Redeploy code only:** `deploy/webapp/3b-deploy-code.ps1`.
 - **Deploy gotchas (hit and fixed):**
   - Don't zip with `Compress-Archive`. Its entries have no Unix permissions, so Kudu's rsync fails (exit 23, shown as "Kudu Status 400"). `make_zip.py` builds the zip instead.
