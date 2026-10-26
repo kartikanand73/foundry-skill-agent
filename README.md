@@ -315,6 +315,32 @@ In the portal: App Insights → **Transaction search**, then open a turn to see 
 
 **Verified 2026-10-25:** an APIM test turn was one OperationId spanning APIM, `agentsv2` and `skill-agent`, with `skill_agent.turn` and `skill_agent.tool` (it-ticket / get_ticket_status / found) inside it. Cost is pay-as-you-go ingestion, which is pennies for a demo. To remove it, delete the two resources and the project connection.
 
+## 3e. What did that question cost?
+
+Every model response reports exact token counts. The agent adds them up for one question (router call plus skill calls) and prices them.
+
+- **API response:** a `usage` object with `model_calls`, `input_tokens`, `cached_input_tokens`, `output_tokens`, `reasoning_tokens` and `cost_usd`.
+- **Web app:** shows `💲 $0.0xxx model cost · N in / M out tokens` under each answer, the thread total under the title, and the session total in the sidebar.
+- **Application Insights:** the same numbers are attributes on the `skill_agent.turn` span:
+
+```kusto
+AppDependencies
+| where Name == "skill_agent.turn"
+| extend skill=tostring(Properties["skill_agent.skill"]),
+         cost=todouble(Properties["skill_agent.cost_usd"]),
+         tin=toint(Properties["skill_agent.input_tokens"]), tout=toint(Properties["skill_agent.output_tokens"])
+| summarize questions=count(), cost_usd=sum(cost), avg_cost=avg(cost), input_tokens=sum(tin), output_tokens=sum(tout)
+    by skill, day=bin(TimeGenerated, 1d)
+| order by day desc, cost_usd desc
+```
+
+**Rates:** the defaults are gpt-5 Global Standard list prices, in USD per 1M tokens: input $1.25, cached input $0.125, output $10. Reasoning tokens are billed as output. Override them on the agent with `MODEL_PRICE_INPUT_PER_1M`, `MODEL_PRICE_CACHED_INPUT_PER_1M` and `MODEL_PRICE_OUTPUT_PER_1M`.
+
+**This is the model cost only.** It's an estimate from list prices; your Azure invoice is authoritative. It doesn't include:
+- Snowflake credits (on your Snowflake bill)
+- hosted-agent compute (~$0.03/hour while active at 0.25 vCPU / 0.5 GiB)
+- APIM, App Service, ACR or App Insights
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:

@@ -22,6 +22,10 @@ def _completion(message: dict) -> ChatCompletion:
         "created": int(time.time()), "model": "fake-scripted",
         "choices": [{"index": 0, "finish_reason": "tool_calls" if message.get("tool_calls") else "stop",
                      "message": {"role": "assistant", **message}}],
+        # fixed, plausible counts so usage/cost code paths are exercised offline
+        "usage": {"prompt_tokens": 1000, "completion_tokens": 200, "total_tokens": 1200,
+                  "prompt_tokens_details": {"cached_tokens": 0},
+                  "completion_tokens_details": {"reasoning_tokens": 64}},
     })
 
 

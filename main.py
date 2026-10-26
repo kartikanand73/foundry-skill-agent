@@ -40,7 +40,8 @@ async def handle_invoke(request: Request) -> Response:
 
     reply = await asyncio.to_thread(agent.handle, key, message)
     return JSONResponse({"response": reply.text, "skill": reply.skill,
-                         "skill_version": reply.skill_version, "tool_calls": reply.tool_calls})
+                         "skill_version": reply.skill_version, "tool_calls": reply.tool_calls,
+                         "usage": reply.usage})
 
 
 if __name__ == "__main__":

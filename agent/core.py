@@ -13,6 +13,7 @@ from .salesforce import AgentforceClient, SalesforceConfig
 from .snowflake import CortexAgentClient, SnowflakeConfig
 from .tools import REGISTRY, ToolContext, execute
 from .trace import span, trace
+from . import usage as _usage
 
 CLARIFY, UNSUPPORTED = "clarify", "unsupported"
 
@@ -38,6 +39,7 @@ class AgentReply:
     skill: str
     skill_version: str | None = None
     tool_calls: list[dict] = field(default_factory=list)
+    usage: dict | None = None      # tokens + estimated model cost for this question
 
 
 class SkillAgent:
@@ -70,12 +72,22 @@ class SkillAgent:
         history = self._get_history(session_id)
         with span("skill_agent.turn", session=session_id[-64:], history_messages=len(history),
                   message_chars=len(message)) as sp:
+            usage = _usage.Usage()
+            token = _usage.current.set(usage)
             try:
                 reply = self._handle(message, history, session_id)
             except Exception as e:  # never leak stack traces or secrets to the user
                 hint = "check `az login` / role assignment" if "Authentication" in type(e).__name__ else _safe(e)
                 trace("error", type=type(e).__name__, detail=hint)
                 reply = AgentReply("Sorry - I couldn't reach the model or something failed. Please try again.", "error")
+            finally:
+                _usage.current.reset(token)
+            reply.usage = usage.to_dict()
+            sp(model_calls=usage.model_calls, input_tokens=usage.input_tokens,
+               cached_input_tokens=usage.cached_input_tokens, output_tokens=usage.output_tokens,
+               reasoning_tokens=usage.reasoning_tokens, cost_usd=usage.cost_usd)
+            trace("usage", calls=usage.model_calls, input=usage.input_tokens, output=usage.output_tokens,
+                  cost_usd=usage.cost_usd)
             sp(skill=reply.skill, skill_version=reply.skill_version, tool_calls=len(reply.tool_calls),
                tools=",".join(c["tool"] for c in reply.tool_calls) or None,
                tool_status=",".join(c["status"] for c in reply.tool_calls) or None,
@@ -132,13 +144,13 @@ class SkillAgent:
         }
         recent = history[-4:]  # router sees only a little text context, never prior skill prompts
         with span("skill_agent.route", catalog_size=len(names)) as sp:
-            resp = self.client.chat.completions.create(
+            resp = _usage.record(self.client.chat.completions.create(
                 model=self.s.model,
                 messages=[{"role": "system", "content": ROUTER_PROMPT.format(catalog=catalog_txt)},
                           *recent, {"role": "user", "content": message}],
                 response_format={"type": "json_schema", "json_schema": schema},
                 **self._gen,
-            )
+            ))
             try:
                 data = json.loads(resp.choices[0].message.content or "{}")
             except json.JSONDecodeError:
@@ -160,8 +172,8 @@ class SkillAgent:
 
         for _round in range(self.s.max_tool_rounds):  # bounded loop
             kwargs = {"tools": tools, "tool_choice": "auto"} if tools else {}
-            resp = self.client.chat.completions.create(model=self.s.model, messages=messages,
-                                                       **self._gen, **kwargs)
+            resp = _usage.record(self.client.chat.completions.create(model=self.s.model, messages=messages,
+                                                       **self._gen, **kwargs))
             msg = resp.choices[0].message
             if not msg.tool_calls:
                 return AgentReply(msg.content or "", skill.name, skill.version, calls_log)
@@ -185,8 +197,8 @@ class SkillAgent:
 
         # Round budget exhausted: force a final answer from the evidence gathered so far.
         trace("tool_budget", rounds=self.s.max_tool_rounds)
-        resp = self.client.chat.completions.create(model=self.s.model, messages=messages, **self._gen,
-                                                   tools=tools, tool_choice="none")
+        resp = _usage.record(self.client.chat.completions.create(model=self.s.model, messages=messages, **self._gen,
+                                                   tools=tools, tool_choice="none"))
         return AgentReply(resp.choices[0].message.content or "", skill.name, skill.version, calls_log)
 
     # ---------- history ----------

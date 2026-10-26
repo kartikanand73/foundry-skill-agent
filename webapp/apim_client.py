@@ -28,6 +28,7 @@ class ChatResult:
     skill_version: str | None = None
     tool_calls: list = field(default_factory=list)
     session_id: str | None = None
+    usage: dict | None = None       # tokens + estimated model cost for this question
 
 
 class ApimClient:
@@ -72,4 +73,5 @@ class ApimClient:
             skill_version=data.get("skill_version"),
             tool_calls=data.get("tool_calls") or [],
             session_id=r.headers.get("x-agent-session-id") or session_id,
+            usage=data.get("usage"),
         )

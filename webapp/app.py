@@ -83,6 +83,18 @@ def _signed_in_user() -> str | None:
         return None
 
 
+def _cost_line(u: dict | None) -> str | None:
+    if not u:
+        return None
+    return (f"💲 ${u.get('cost_usd', 0):.4f} model cost · {u.get('input_tokens', 0):,} in / "
+            f"{u.get('output_tokens', 0):,} out tokens ({u.get('reasoning_tokens', 0):,} reasoning) · "
+            f"{u.get('model_calls', 0)} model calls")
+
+
+def _thread_cost(t: dict) -> float:
+    return sum((m.get("usage") or {}).get("cost_usd", 0) for m in t["messages"])
+
+
 def _badge(skill: str) -> str:
     label, color = SKILL_BADGES.get(skill, (skill or "agent", ":gray"))
     return f"{color}-badge[{label}]"
@@ -121,18 +133,25 @@ with st.sidebar:
                                                   key=lambda k: st.session_state.threads[k]["created"])
                 st.rerun()
     st.divider()
+    total = sum(_thread_cost(t) for t in st.session_state.threads.values())
+    if total > 0:
+        st.caption(f"💲 All threads this session: ${total:.4f} model cost")
     st.caption("Ask about HR policies, IT tickets, Salesforce accounts or Snowflake claims metrics.")
 
 
 # ---------- main: active thread ----------
 thread = st.session_state.threads[st.session_state.active]
 st.subheader(thread["title"])
+if (spent := _thread_cost(thread)) > 0:
+    st.caption(f"This thread so far: ${spent:.4f} model cost")
 
 for m in thread["messages"]:
     with st.chat_message(m["role"]):
         if m["role"] == "assistant" and m.get("skill"):
             st.markdown(_badge(m["skill"]))
         st.markdown(m["content"])
+        if line := _cost_line(m.get("usage")):
+            st.caption(line)
         if m.get("tool_calls"):
             with st.expander("Details"):
                 st.json(m["tool_calls"])
@@ -160,7 +179,7 @@ if prompt:
                     res = client.chat(prompt, session_id=thread["session_id"], user=_signed_in_user())
                     thread["session_id"] = res.session_id
                     msg = {"role": "assistant", "content": res.text or "_(no answer)_", "skill": res.skill,
-                           "tool_calls": res.tool_calls}
+                           "tool_calls": res.tool_calls, "usage": res.usage}
                 except ApimError as e:
                     msg = {"role": "assistant", "content": f"⚠️ {e}", "skill": "error"}
                 if sp:
@@ -169,6 +188,8 @@ if prompt:
                     sp.set_attribute("webapp.tools", ",".join(c.get("tool", "") for c in msg.get("tool_calls") or []))
         st.markdown(_badge(msg["skill"]))
         st.markdown(msg["content"])
+        if line := _cost_line(msg.get("usage")):
+            st.caption(line)
         if msg.get("tool_calls"):
             with st.expander("Details"):
                 st.json(msg["tool_calls"])

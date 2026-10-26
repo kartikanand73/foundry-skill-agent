@@ -79,7 +79,9 @@ def app(monkeypatch):
         if session_id is None:
             counter["n"] += 1
             session_id = f"sess-{counter['n']}"
-        return apim_client.ChatResult(text=f"answer to {message}", skill="hr-policy", session_id=session_id)
+        return apim_client.ChatResult(text=f"answer to {message}", skill="hr-policy", session_id=session_id,
+                                      usage={"cost_usd": 0.0123, "input_tokens": 4000, "output_tokens": 900,
+                                             "reasoning_tokens": 500, "model_calls": 3})
     monkeypatch.setattr(apim_client.ApimClient, "chat", fake_chat)
     at = AppTest.from_file(str(WEB / "app.py"), default_timeout=30)
     at.run()
@@ -125,3 +127,19 @@ def test_error_shown_not_crash(app, monkeypatch):
     at.chat_input[0].set_value("hello").run()
     msgs = at.session_state.threads[at.session_state.active]["messages"]
     assert msgs[-1]["skill"] == "error" and "Too many" in msgs[-1]["content"] and not at.exception
+
+
+def test_cost_shown_per_answer_and_thread(app):
+    at, _ = app
+    at.chat_input[0].set_value("q1").run()
+    at.chat_input[0].set_value("q2").run()
+    captions = [c.value for c in at.caption]
+    assert sum("$0.0123 model cost" in c for c in captions) == 2
+    assert any("This thread so far: $0.0246" in c for c in captions)
+    assert any("All threads this session: $0.0246" in c for c in captions)
+
+
+def test_usage_parsed_from_apim():
+    r = make(lambda req: httpx.Response(200, json={"response": "x", "skill": "it-ticket",
+                                                   "usage": {"cost_usd": 0.01}})).chat("q")
+    assert r.usage == {"cost_usd": 0.01}
