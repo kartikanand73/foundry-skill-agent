@@ -29,7 +29,7 @@ foreach ($r in $app.appRoles) { Show "role" "$($r.value)  enabled=$($r.isEnabled
 $sp = G "servicePrincipals(appId='$authAppId')"
 Show 'assignment required to sign in' $sp.appRoleAssignmentRequired
 $asg = G "servicePrincipals/$($sp.id)/appRoleAssignedTo"
-foreach ($x in $asg.value) { $rn = ($app.appRoles | Where-Object id -eq $x.appRoleId).value; Show "assigned" "$($x.principalDisplayName) -> $rn" }
+foreach ($x in $asg.value) { $rn = ($app.appRoles | Where-Object id -eq $x.appRoleId).value; if (-not $rn) { $rn = "(default access, no role)" }; Show "assigned" "$($x.principalDisplayName) -> $rn" }
 
 "`n== 3. APIM $Apim"
 $api = A "Microsoft.ApiManagement/service/$Apim/apis/skill-agent" '2022-08-01'
@@ -61,7 +61,7 @@ Show 'shared key access allowed' $sa.properties.allowSharedKeyAccess
 Show 'public blob access / min TLS' "$($sa.properties.allowBlobPublicAccess) / $($sa.properties.minimumTlsVersion)"
 $tables = A "Microsoft.Storage/storageAccounts/stskillagentka2026/tableServices/default/tables" '2023-05-01'
 Show 'tables' (($tables.value | ForEach-Object name) -join ', ')
-$ra = & $az role assignment list --scope $sa.id --include-inherited false --all --query "[].{who:principalName, type:principalType, role:roleDefinitionName, scope:scope}" -o json | ConvertFrom-Json
+$ra = & $az role assignment list --scope $sa.id --all --query "[].{who:principalName, type:principalType, role:roleDefinitionName, scope:scope}" -o json | ConvertFrom-Json
 foreach ($r in $ra) { Show "role" ("{0} [{1}] {2} on ...{3}" -f $r.role, $r.type, $r.who, ($r.scope -split 'stskillagentka2026')[-1]) }
 
 "`n== 6. Key Vault $Kv"
