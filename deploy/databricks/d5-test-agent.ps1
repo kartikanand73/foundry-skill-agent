@@ -8,7 +8,7 @@ function Ask($label, $msg, $roles, $sid) {
   $url = "$ProtocolsUrl/invocations?api-version=v1"
   if ($sid) { $url += "&agent_session_id=$sid" }
   $rl = ($roles | ForEach-Object { '"' + $_ + '"' }) -join ','
-  $body = '{"message":' + ($msg | ConvertTo-Json) + ',"user":{"oid":"d5-test-user","name":"D5 test","roles":[' + $rl + ']}}'
+  $body = '{"message":' + ($msg | ConvertTo-Json) + ',"user":{"oid":"00000000-0000-0000-0000-0000000000d5","name":"D5 test","roles":[' + $rl + ']}}'
   $t0 = Get-Date
   try {
     $r = Invoke-WebRequest -UseBasicParsing -Method Post -Uri $url -Headers $h -Body $body -ContentType 'application/json' -TimeoutSec 240
