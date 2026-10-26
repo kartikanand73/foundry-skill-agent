@@ -424,6 +424,47 @@ Revert the model guardrail: run `11-guardrail.ps1 -Policy Microsoft.DefaultV2`. 
 - **Named values:** limits, audience, allowed web-app identity.
 - **Subscriptions:** `streamlit-app` key. If you regenerate it, also update Key Vault `apim-subscription-key`.
 
+## 3i. Databricks Genie skill (sales orders)
+
+`databricks-genie` answers order questions by asking an **AI/BI Genie space** through the [Genie Conversation API](https://learn.microsoft.com/azure/databricks/genie/conversation-api). The skill needs the `SkillAgent.Orders` role.
+
+```
+POST {host}/api/2.0/genie/spaces/{space}/start-conversation          {"content": "..."}    first question
+POST {host}/api/2.0/genie/spaces/{space}/conversations/{cid}/messages {"content": "..."}    follow-up (same session)
+GET  .../conversations/{cid}/messages/{mid}                          poll until COMPLETED / FAILED
+GET  .../messages/{mid}/query-result/{attachment_id}                  rows of the SQL Genie ran (capped at 25 here)
+```
+
+- **No secret.** The hosted agent's own Entra identity (`450a6723-…`, the AgentIdentity) gets a token for the AzureDatabricks resource. It is a Databricks service principal with only:
+  - Databricks SQL access;
+  - CAN_USE on the warehouse;
+  - CAN_RUN on the space;
+  - USE CATALOG `skillagent`;
+  - USE SCHEMA + SELECT on `skillagent.sales`.
+- **Follow-ups:** one Genie conversation per agent session, so "and for Initech only?" keeps its context.
+- **Data:** synthetic orders, generated deterministically by `deploy/databricks/gen_orders.py`. Every order carries the **Salesforce Account Id**, so Genie and the Salesforce skill talk about the same customers.
+
+| Table (`skillagent.sales`) | Rows | Notes |
+|---|---|---|
+| `accounts` | 3 | Acme Corp `001fj000026lzjWAAQ`, Globex Inc `001fj000026l3pEAAQ`, Initech `001fj000026m1nLAAQ` |
+| `products` | 20 | Hardware, Software, Services, Supplies |
+| `orders` | 2,000 | 2025-01-01 → 2026-10-25; status, channel, sales rep, `order_total` |
+| `order_lines` | 5,975 | quantity, unit price, discount, `net_amount` |
+
+**Setup scripts** (`deploy/databricks/`, run as a workspace and account admin, all rerun-safe):
+
+| Step | What it does |
+|---|---|
+| `d1-workspace.ps1` | Creates the Premium workspace `dbw-skillagent-ka2026` in RG `DB` (eastus). There is no fixed fee; you pay only for compute while it runs. |
+| `d3_metastore.py <account-id>` | Unity Catalog setup: ADLS Gen2 `stdbxucka2026` (shared key off), access connector `ac-skillagent-ka2026`, assigns the existing eastus metastore, then creates a storage credential, external location and catalog `skillagent`. |
+| `d2_data.py` | Creates the serverless SQL warehouse `skillagent-genie-wh` (2X-Small, auto-stop 10 min) and loads the four tables. |
+| `d4_genie.py <warehouse-id>` | Creates the Genie space (instructions, example SQL, sample questions), adds the agent identity as a service principal and applies the grants. |
+| `test_genie.py "question" ...` | Asks the space as you, using the same client the agent uses. |
+
+**Settings:** `DATABRICKS_HOST` and `GENIE_SPACE_ID` live in `.env` and are passed to the hosted agent by `redeploy.ps1`. Neither is secret.
+
+**Cost:** the warehouse bills serverless SQL DBUs only while it runs. A 2X-Small uses about 4 DBU per hour, and the warehouse stops after 10 idle minutes. Check the current per-DBU rate on the [Azure Databricks pricing page](https://azure.microsoft.com/pricing/details/databricks/). The workspace and storage cost almost nothing when idle.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:
@@ -473,6 +514,10 @@ Also created later; delete these too:
 - **Monitoring:** Application Insights `appi-skillagent-ka2026` and Log Analytics `log-skillagent-ka2026`.
 - **Foundry guardrail:** first point the gpt-5 deployment back to `Microsoft.DefaultV2`, then delete `skill-agent-guardrail` (Foundry → Guardrails).
 - **Foundry project connection:** `appi-skillagent-ka2026`.
+- **Databricks:**
+  - Workspace `dbw-skillagent-ka2026`; deleting it also removes its managed RG `databricks-rg-dbw-skillagent-ka2026`.
+  - Access connector `ac-skillagent-ka2026` and storage `stdbxucka2026`.
+  - In the account console: catalog `skillagent`, storage credential `sc-skillagent` and external location `el-skillagent`. The shared eastus metastore stays.
 
 
 ## 7. What was verified (2026-10-20)
