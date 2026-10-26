@@ -61,8 +61,21 @@ Show 'shared key access allowed' $sa.properties.allowSharedKeyAccess
 Show 'public blob access / min TLS' "$($sa.properties.allowBlobPublicAccess) / $($sa.properties.minimumTlsVersion)"
 $tables = A "Microsoft.Storage/storageAccounts/stskillagentka2026/tableServices/default/tables" '2023-05-01'
 Show 'tables' (($tables.value | ForEach-Object name) -join ', ')
-$ra = (& $az role assignment list --all --query "[].{who:principalName, type:principalType, role:roleDefinitionName, scope:scope}" -o json) -join "`n" | ConvertFrom-Json | Where-Object { $_.scope -like '*stskillagentka2026*' }
-foreach ($r in $ra) { Show "role" ("{0} [{1}] {2} on ...{3}" -f $r.role, $r.type, $r.who, ($r.scope -split 'stskillagentka2026')[-1]) }
+$all = (& $az role assignment list --all --query "[].{who:principalName, id:principalId, type:principalType, role:roleDefinitionName, scope:scope}" -o json) -join "`n" | ConvertFrom-Json
+$ra = @($all) | ForEach-Object { $_ } | Where-Object { $_.scope -like '*stskillagentka2026*' }
+$ids = @{}
+$ids[(& $az webapp identity show -n $App -g $Rg --query principalId -o tsv)] = 'web app identity'
+$ids[(& $az apim show -n $Apim -g $Rg --query identity.principalId -o tsv)] = 'APIM identity'
+foreach ($r in $ra) {
+  $who = if ($ids.ContainsKey($r.id)) { $ids[$r.id] } else { $r.who }
+  Show "role" ("{0}: {1} on ...{2}" -f $who, $r.role, ($r.scope -split 'stskillagentka2026')[-1])
+}
+"`n== 5b. Managed identities (object ids)"
+foreach ($k in $ids.Keys) { Show $ids[$k] $k }
+Show 'hosted agent identity' (& azd env get-value AGENT_SKILL_AGENT_INSTANCE_IDENTITY_PRINCIPAL_ID 2>$null)
+"`n== 5c. Subscription-wide Owner/Contributor principals (can reach every resource here)"
+$broad = @($all) | ForEach-Object { $_ } | Where-Object { $_.scope -match '^/subscriptions/[^/]+$' -and $_.role -in 'Owner', 'Contributor' }
+Show 'count' $broad.Count
 
 "`n== 6. Key Vault $Kv"
 $kvr = A "Microsoft.KeyVault/vaults/$Kv" '2023-07-01'
