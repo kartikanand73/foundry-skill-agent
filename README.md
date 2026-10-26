@@ -1,6 +1,8 @@
-# foundry-skill-agent
+# foundry-skill-agent-platform
 
-A small, working Python agent that **picks an instruction package ("skill") per message, loads only that skill, exposes only that skill's tool, and runs real Python tools** against local synthetic JSON data. One core runtime is shared by a CLI and a Microsoft Foundry Hosted Agent entry point (with an Azure Container Apps fallback).
+End-to-end skill-routing agent on Microsoft Foundry Hosted Agents: a Streamlit chat app with threads (Entra sign-in, App Service) calls API Management, which calls the hosted agent. The agent routes each question to an HR, IT, Salesforce Agentforce or Snowflake Cortex skill. Every turn is traced in Application Insights and shows its model cost. See sections 3c-3e for the web front end, observability and cost per question.
+
+At its core is a small, working Python agent that **picks an instruction package ("skill") per message, loads only that skill, exposes only that skill's tool, and runs real Python tools** against local synthetic JSON data. One core runtime is shared by a CLI and a Microsoft Foundry Hosted Agent entry point (with an Azure Container Apps fallback).
 
 ```
 user message
