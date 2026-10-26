@@ -10,7 +10,7 @@ step "acr build $acr/skill-agent:$Tag"
 & $az acr build -r $acr -t "skill-agent:$Tag" . --no-logs -o none
 step "azd env (non-secret Snowflake + Databricks settings; the PAT stays in Key Vault)"
 $envFile = Get-Content "$root\.env"
-foreach ($k in 'SNOWFLAKE_ACCOUNT_URL','SNOWFLAKE_AGENT_DATABASE','SNOWFLAKE_AGENT_SCHEMA','SNOWFLAKE_AGENT_NAME','DATABRICKS_HOST','GENIE_SPACE_ID') {
+foreach ($k in 'SNOWFLAKE_ACCOUNT_URL','SNOWFLAKE_AGENT_DATABASE','SNOWFLAKE_AGENT_SCHEMA','SNOWFLAKE_AGENT_NAME','DATABRICKS_HOST','GENIE_SPACE_ID','FR_DATABASE_URL') {
   $v = (($envFile | Where-Object { $_ -like "$k=*" }) -replace "^$k=", '').Trim()
   if ($v) { azd env set $k $v }
 }

@@ -1,5 +1,5 @@
 """Ask the Genie space a question as YOU (az login), with the same client the agent uses.
-usage: python deploy/databricks/test_genie.py "question" [follow-up ...]"""
+usage: python deploy/databricks/ask_genie.py "question" [follow-up ...]"""
 import json
 import os
 import subprocess

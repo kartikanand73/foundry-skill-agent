@@ -92,6 +92,27 @@ def ask_genie(ctx: "ToolContext", question: str) -> dict:
         return {"error": f"Databricks: sign-in failed ({type(e).__name__})."}
 
 
+def get_fulfillment_risk(ctx: "ToolContext", customer: str) -> dict:
+    """Read the published fulfillment-risk snapshot (PostgreSQL, read-only)."""
+    if not ctx.fulfillment:
+        return {"error": "Fulfillment risk: not configured for this agent (set FR_DATABASE_URL)."}
+    from .fulfillment import FulfillmentError
+    try:
+        return ctx.fulfillment.risk(customer)
+    except FulfillmentError as e:
+        return {"error": f"Fulfillment risk: {e}"}
+
+
+def get_order_fulfillment(ctx: "ToolContext", order_id: str) -> dict:
+    if not ctx.fulfillment:
+        return {"error": "Fulfillment risk: not configured for this agent (set FR_DATABASE_URL)."}
+    from .fulfillment import FulfillmentError
+    try:
+        return ctx.fulfillment.order(order_id)
+    except FulfillmentError as e:
+        return {"error": f"Fulfillment risk: {e}"}
+
+
 # ---------- argument validation ----------
 
 def _validate_topic(args: dict) -> dict:
@@ -122,6 +143,20 @@ def _validate_question(args: dict) -> dict:
     return {"question": q.strip()}
 
 
+def _validate_customer(args: dict) -> dict:
+    c = args.get("customer", "")
+    if not isinstance(c, str) or len(c) > 100:
+        raise ToolArgumentError("'customer' must be a string (max 100 chars); use \"\" for all customers")
+    return {"customer": c.strip()}
+
+
+def _validate_order(args: dict) -> dict:
+    o = args.get("order_id")
+    if not isinstance(o, str) or not re.fullmatch(r"\s*[A-Za-z]{2}-\d{3,10}\s*", o):
+        raise ToolArgumentError("'order_id' must look like SO-101996")
+    return {"order_id": o.strip().upper()}
+
+
 # ---------- registry ----------
 
 @dataclass(frozen=True)
@@ -133,6 +168,7 @@ class ToolContext:
     snowflake: Any = None    # CortexAgentClient | None
     user: Any = None         # identity.UserContext | None (signed-in user, from the web app)
     genie: Any = None        # databricks.GenieClient | None
+    fulfillment: Any = None  # fulfillment.FulfillmentSnapshot | None
 
 @dataclass(frozen=True)
 class ToolSpec:
@@ -212,6 +248,36 @@ REGISTRY: dict[str, ToolSpec] = {
         }},
         validate=_validate_question,
         run=ask_genie,
+    ),
+    "get_fulfillment_risk": ToolSpec(
+        name="get_fulfillment_risk",
+        schema={"type": "function", "function": {
+            "name": "get_fulfillment_risk",
+            "description": "Read the published fulfillment-risk snapshot: which Salesforce customers have open "
+                           "(not yet shipped) Databricks orders that current Snowflake inventory cannot fulfil. "
+                           "Returns customer statuses, values short, short SKUs, at-risk order lines with reasons, "
+                           "and the snapshot time plus each source's freshness.",
+            "strict": True,
+            "parameters": {"type": "object", "additionalProperties": False, "required": ["customer"],
+                           "properties": {"customer": {"type": "string",
+                               "description": "Customer name or Salesforce Account Id to focus on, or \"\" for "
+                                              "all customers."}}},
+        }},
+        validate=_validate_customer,
+        run=get_fulfillment_risk,
+    ),
+    "get_order_fulfillment": ToolSpec(
+        name="get_order_fulfillment",
+        schema={"type": "function", "function": {
+            "name": "get_order_fulfillment",
+            "description": "Explain one open order from the fulfillment-risk snapshot: each line's allocated and "
+                           "short quantity, its place in the allocation queue, stock available before it, and why.",
+            "strict": True,
+            "parameters": {"type": "object", "additionalProperties": False, "required": ["order_id"],
+                           "properties": {"order_id": {"type": "string", "description": "Order id like SO-101996"}}},
+        }},
+        validate=_validate_order,
+        run=get_order_fulfillment,
     ),
 }
 

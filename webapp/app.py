@@ -12,6 +12,7 @@ import streamlit as st
 
 from apim_client import ApimClient, ApimError, principal_from_headers
 from thread_store import ThreadStore
+import fr_dashboard
 
 SKILL_BADGES = {
     "hr-policy": ("HR policy", ":blue"),
@@ -19,6 +20,7 @@ SKILL_BADGES = {
     "salesforce-agentforce": ("Salesforce", ":violet"),
     "snowflake-cortex": ("Snowflake", ":green"),
     "databricks-genie": ("Databricks", ":red"),
+    "fulfillment-risk": ("Fulfillment risk", ":orange"),
     "clarify": ("Clarifying", ":gray"),
     "unsupported": ("Out of scope", ":gray"),
     "error": ("Error", ":red"),
@@ -160,13 +162,22 @@ def _badge(skill: str) -> str:
     return f"{color}-badge[{label}]"
 
 
-# ---------- sidebar: threads ----------
+# ---------- sidebar: screen switch, then threads ----------
+main_area = st.container()
 with st.sidebar:
     st.title("💬 Skill Agent")
     me = _principal()
     if me:
         st.caption(f"Signed in as {me['name'] or 'unknown'}")
         st.caption("Roles: " + (" · ".join(me["roles"]) if me["roles"] else "none assigned"))
+    screen = st.radio("Screen", ["💬 Chat", "📦 Fulfillment risk"], key="screen", horizontal=True,
+                      label_visibility="collapsed")
+    if screen == "📦 Fulfillment risk":
+        st.caption("Hourly snapshot: Salesforce customers × Databricks open orders × Snowflake inventory. "
+                   "Read-only.")
+        with main_area, _span("webapp.fulfillment_dashboard"):
+            fr_dashboard.render(me)
+        st.stop()
     if st.button("➕ New chat", use_container_width=True):
         _new_thread()
         st.rerun()
@@ -210,7 +221,7 @@ with st.sidebar:
         st.caption("Threads are kept for this browser session only.")
     if st.session_state.get("store_error"):
         st.caption("⚠️ Couldn't reach thread storage; this session's threads may not be saved.")
-    st.caption("Ask about HR policies, IT tickets, Salesforce accounts, Snowflake claims metrics or Databricks sales orders.")
+    st.caption("Ask about HR policies, IT tickets, Salesforce accounts, Snowflake claims metrics, Databricks sales orders or fulfillment risk.")
 
 
 # ---------- main: active thread ----------

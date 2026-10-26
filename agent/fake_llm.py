@@ -50,6 +50,10 @@ class _Completions:
         hr = any(w in last for w in ("vacation", "pto", "holiday", "time off", "leave", "policy"))
         it = any(w in last for w in ("ticket", "inc", "incident")) or (
             re.search(r"\binc\d+", last) or ("ticket id" in context and re.search(r"\d{3,}", last)))
+        fr = any(w in last for w in ("fulfil", "at risk", "at-risk", "inventory", "backorder", "shortfall"))
+        if fr and not (hr or it):
+            return _completion({"content": json.dumps({"skill": "fulfillment-risk", "reason": "scripted rule",
+                                                       "clarification": ""})})
         gn = any(w in last for w in ("databricks", "genie", "order"))
         if gn and not (hr or it):
             return _completion({"content": json.dumps({"skill": "databricks-genie", "reason": "scripted rule",
@@ -88,6 +92,11 @@ class _Completions:
                 answer = "Sure - what is your ticket ID? It looks like INC1001."
             else:
                 return self._call("get_ticket_status", {"ticket_id": m[-1]})
+        elif "get_fulfillment_risk" in tool_names and tool_choice != "none":
+            m = re.search(r"\b[A-Za-z]{2}-\d{3,10}\b", messages[-1]["content"])
+            if m:
+                return self._call("get_order_fulfillment", {"order_id": m.group(0)})
+            return self._call("get_fulfillment_risk", {"customer": ""})
         elif "ask_genie" in tool_names and tool_choice != "none":
             return self._call("ask_genie", {"question": messages[-1]["content"]})
         elif "ask_cortex_agent" in tool_names and tool_choice != "none":
@@ -112,6 +121,8 @@ class _Completions:
     @staticmethod
     def _answer(r: dict) -> str:
         if "error" in r:
+            if r["error"].startswith("Fulfillment"):
+                return f"The fulfillment-risk snapshot is unavailable right now ({r['error']})"
             if r["error"].startswith("Databricks"):
                 return f"Databricks is unavailable right now ({r['error']})"
             if r["error"].startswith("Snowflake"):
@@ -119,6 +130,19 @@ class _Completions:
             if "Salesforce" in r["error"]:
                 return f"Salesforce is unavailable right now ({r['error']})"
             return f"I couldn't complete the lookup: {r['error']}"
+        if str(r.get("source", "")).startswith("Fulfillment") or ("snapshot" in r and not r.get("found")):
+            snap = r.get("snapshot") or {}
+            fresh = (f"Snapshot {snap.get('snapshot_at')} · Salesforce {snap.get('salesforce_as_of')} · "
+                     f"Databricks {snap.get('databricks_as_of')} · Snowflake {snap.get('snowflake_as_of')} (UTC)")
+            if not r.get("found"):
+                return f"From the fulfillment-risk snapshot: {r.get('message')}\n\n{fresh}"
+            if "lines" in r:
+                body = "; ".join(f"line {l['line_number']} {l['product_sku']}: {l['status']} ({l['reason']})"
+                                 for l in r["lines"])
+            else:
+                body = "; ".join(f"{c['customer_name']}: {c['status']}, short ${c['short_value']:,.2f}"
+                                 for c in r["customers"])
+            return f"From the fulfillment-risk snapshot: {body}\n\n{fresh}"
         if str(r.get("source", "")).startswith("Databricks"):
             extra = f" (SQL: {r['sql'][0]})" if r.get("sql") else ""
             return f"From Databricks: {r['answer'] or 'no data returned.'}{extra}"

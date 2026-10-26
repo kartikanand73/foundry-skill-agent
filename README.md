@@ -459,7 +459,7 @@ GET  .../messages/{mid}/query-result/{attachment_id}                  rows of th
 | `d3_metastore.py <account-id>` | Unity Catalog setup: ADLS Gen2 `stdbxucka2026` (shared key off), access connector `ac-skillagent-ka2026`, assigns the existing eastus metastore, then creates a storage credential, external location and catalog `skillagent`. |
 | `d2_data.py` | Creates the serverless SQL warehouse `skillagent-genie-wh` (2X-Small, auto-stop 10 min) and loads the four tables. |
 | `d4_genie.py <warehouse-id>` | Creates the Genie space (instructions, example SQL, sample questions), adds the agent identity as a service principal and applies the grants. |
-| `test_genie.py "question" ...` | Asks the space as you, using the same client the agent uses. |
+| `ask_genie.py "question" ...` | Asks the space as you, using the same client the agent uses. |
 
 **Settings:** `DATABRICKS_HOST` and `GENIE_SPACE_ID` live in `.env` and are passed to the hosted agent by `redeploy.ps1`. Neither is secret.
 

@@ -12,6 +12,7 @@ from .skills import SkillStore
 from .salesforce import AgentforceClient, SalesforceConfig
 from .snowflake import CortexAgentClient, SnowflakeConfig
 from .databricks import GenieClient, GenieConfig
+from .fulfillment import FulfillmentConfig, FulfillmentSnapshot
 from .tools import REGISTRY, ToolContext, execute
 from .trace import span, trace
 from . import usage as _usage
@@ -48,7 +49,7 @@ class AgentReply:
 
 
 class SkillAgent:
-    def __init__(self, settings: Settings | None = None, client=None, salesforce=None, snowflake=None, genie=None):
+    def __init__(self, settings: Settings | None = None, client=None, salesforce=None, snowflake=None, genie=None, fulfillment=None):
         self.s = settings or Settings.from_env()
         self.client = client or make_client(self.s)
         self.skills = SkillStore(self.s.skills_dir)
@@ -68,6 +69,8 @@ class SkillAgent:
         self.snowflake = snowflake if snowflake is not None else (CortexAgentClient(sn_cfg) if sn_cfg else None)
         gn_cfg = GenieConfig.from_env()
         self.genie = genie if genie is not None else (GenieClient(gn_cfg) if gn_cfg else None)
+        fr_cfg = FulfillmentConfig.from_env()
+        self.fulfillment = fulfillment if fulfillment is not None else (FulfillmentSnapshot(fr_cfg) if fr_cfg else None)
         self._history: dict[str, deque] = {}
         self._lock = threading.Lock()
 
@@ -218,7 +221,7 @@ class SkillAgent:
             for tc in msg.tool_calls:  # steps 7-9
                 trace("tool_request", tool=tc.function.name, args=tc.function.arguments)
                 ctx = ToolContext(self.s.data_dir, session_id, self.salesforce, self.snowflake,
-                                  current_user.get(), self.genie or None)
+                                  current_user.get(), self.genie or None, self.fulfillment or None)
                 with span("skill_agent.tool", tool=tc.function.name, skill=skill.name, round=_round + 1) as sp:
                     result, clean = execute(tc.function.name, tc.function.arguments, skill.allowed_tools, ctx)
                     status = "error" if "error" in result else ("found" if result.get("found") else "not_found")

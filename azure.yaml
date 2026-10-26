@@ -63,6 +63,8 @@ services:
       # Databricks Genie (no secret: the agent's own Entra identity is a Databricks service principal)
       DATABRICKS_HOST: ${DATABRICKS_HOST}
       GENIE_SPACE_ID: ${GENIE_SPACE_ID}
+      # Fulfillment-risk snapshot (PostgreSQL, Entra auth as the agent identity -> role fr_reader; no password)
+      FR_DATABASE_URL: ${FR_DATABASE_URL}
     container:
       resources:
         cpu: "0.25"           # smallest allowed size

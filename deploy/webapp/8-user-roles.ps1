@@ -18,6 +18,7 @@ $roles = @(
   @{ v = 'SkillAgent.Sales';     id = 'b2566cfb-361a-5dfd-b4ea-9d2f276942d5'; d = 'Salesforce CRM questions' },
   @{ v = 'SkillAgent.Analytics'; id = 'a396c75a-c14f-52e1-ad82-609956e22379'; d = 'Snowflake analytics questions' },
   @{ v = 'SkillAgent.Orders';    id = 'a7990314-4f01-5c06-a2f7-155b24add397'; d = 'Databricks sales-orders questions (Genie)' },
+  @{ v = 'SkillAgent.FulfillmentRisk'; id = 'a023cabc-b8a1-5b0a-8ef1-36cc423ad192'; d = 'Fulfillment-risk dashboard and skill' },
   @{ v = 'SkillAgent.Admin';     id = '1bc665f4-ca8b-597b-aaad-ebd553c5d190'; d = 'Administers the skill agent' }
 )
 step "define app roles"
