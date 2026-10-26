@@ -1,11 +1,11 @@
 """D3: Unity Catalog for the workspace (needs a Databricks ACCOUNT admin, i.e. you after first account-console sign-in).
 
-  1. ADLS Gen2 storage `stdbxucka2026` (HNS, shared key off) + container `uc`       (ARM)
+  1. ADLS Gen2 storage `stdbxucka2026` (HNS, shared key off) + container `unitycatalog`       (ARM)
   2. Databricks Access Connector `ac-skillagent-ka2026` (system identity) with
      Storage Blob Data Contributor on that storage account                          (ARM)
   3. Metastore for eastus (reuses an existing one in the account if present) and assign it to the workspace
   4. Storage credential (the access connector) + external location + catalog `skillagent`
-     whose managed tables live in abfss://uc@stdbxucka2026.dfs.core.windows.net/skillagent
+     whose managed tables live in abfss://unitycatalog@stdbxucka2026.dfs.core.windows.net/skillagent
 
 usage: python deploy/databricks/d3_metastore.py <databricks-account-id>      (rerun-safe)
 """
@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from dbx import Dbx, workspace_url  # noqa: E402
 
 SUB, RG, LOC, WS = "fe74279e-6ca8-48ff-bf54-90305b257322", "DB", "eastus", "dbw-skillagent-ka2026"
-SA, CONTAINER, AC, CATALOG = "stdbxucka2026", "uc", "ac-skillagent-ka2026", "skillagent"
+SA, CONTAINER, AC, CATALOG = "stdbxucka2026", "unitycatalog", "ac-skillagent-ka2026", "skillagent"
 ARM = f"https://management.azure.com/subscriptions/{SUB}/resourceGroups/{RG}/providers"
 acct_id = sys.argv[1]
 AZ = "az.cmd" if sys.platform == "win32" else "az"
