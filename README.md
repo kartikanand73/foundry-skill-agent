@@ -465,6 +465,26 @@ GET  .../messages/{mid}/query-result/{attachment_id}                  rows of th
 
 **Cost:** the warehouse bills serverless SQL DBUs only while it runs. A 2X-Small uses about 4 DBU per hour, and the warehouse stops after 10 idle minutes. Check the current per-DBU rate on the [Azure Databricks pricing page](https://azure.microsoft.com/pricing/details/databricks/). The workspace and storage cost almost nothing when idle.
 
+## 3j. Fulfillment risk: dashboard screen + skill
+
+These read the hourly snapshot built by the **fulfillment-risk-platform** repo. That repo joins Salesforce customers with Databricks open orders and Snowflake inventory, and stores only the result in PostgreSQL `psql-fr-ka2026` (centralus), database `fr`. Nothing here recalculates or queries the three source systems.
+
+- **Screen:** the sidebar switch **💬 Chat / 📦 Fulfillment risk** (`webapp/fr_dashboard.py`). It shows:
+  - a freshness banner (snapshot time and each source's age; amber if stale, red if refreshes failed since);
+  - KPIs, a customers table, order lines with the reason for each shortfall, short SKUs, and refresh history.
+  - Reads are cached for 60 s.
+- **Skill:** `skills/fulfillment-risk/SKILL.md` with tools `get_fulfillment_risk` (all customers or one) and `get_order_fulfillment` (one order). Every answer ends with the snapshot and source times. The skill is read-only: it can't change orders, inventory or Salesforce.
+- **Access:**
+  - Entra role `SkillAgent.FulfillmentRisk` (or Admin) controls both the screen and the skill.
+  - In PostgreSQL, the web app identity (`skillagent-chat-ka2026`) and the hosted agent identity (`skill-agent`) both have `fr_reader`: SELECT on the `fr.v_*` views only.
+  - Sign-in uses Entra tokens; there are no passwords.
+- **Setup:** in fulfillment-risk-platform, `provision.py --only 10` (database principals). Here, `deploy/webapp/12-fulfillment-risk.ps1 [-AlsoUpn <user>]` (app setting and role), then `redeploy.ps1 -Tag vN` and `3b-deploy-code.ps1`.
+- **Test:** `deploy/webapp/13-test-fulfillment.ps1` checks four things on the hosted agent:
+  - which customers are at risk;
+  - a follow-up "why Globex?";
+  - one order explained;
+  - a user without the role is refused.
+
 ## 4. Fallback: Azure Container Apps
 
 Same image, same `main.py`, scale-to-zero:
