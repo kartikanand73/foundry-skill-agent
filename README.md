@@ -472,6 +472,9 @@ These read the hourly snapshot built by the **fulfillment-risk-platform** repo. 
 - **Screen:** the sidebar switch **💬 Chat / 📦 Fulfillment risk** (`webapp/fr_dashboard.py`). It shows:
   - a freshness banner (snapshot time and each source's age; amber if stale, red if refreshes failed since);
   - KPIs, a customers table, order lines with the reason for each shortfall, short SKUs, and refresh history.
+  - Terms (shown as tooltips): **Revenue at risk** = short units × net unit price, the prorated shortage. **Blocked order value** = the full value of orders that can't ship complete.
+  - Each source's freshness has a health dot: 🟢 under 2 h, 🟡 aging, 🔴 older than 24 h or named in the latest failed refresh.
+  - The allocation rule is shown above the order lines. Selecting a line offers **💬 Ask the agent: "Why is order SO-… at risk?"**, which opens Chat in a new thread with that question.
   - Reads are cached for 60 s.
 - **Skill:** `skills/fulfillment-risk/SKILL.md` with tools `get_fulfillment_risk` (all customers or one) and `get_order_fulfillment` (one order). Every answer ends with the snapshot and source times. The skill is read-only: it can't change orders, inventory or Salesforce.
 - **Access:**

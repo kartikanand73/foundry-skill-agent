@@ -225,6 +225,9 @@ with st.sidebar:
 
 
 # ---------- main: active thread ----------
+pending = st.session_state.pop("pending_prompt", None)   # "Ask the agent" from the fulfillment-risk screen
+if pending and st.session_state.threads[st.session_state.active]["messages"]:
+    _new_thread()                                          # ask it in a fresh thread
 thread = st.session_state.threads[st.session_state.active]
 st.subheader(thread["title"])
 if (spent := _thread_cost(thread)) > 0:
@@ -245,7 +248,7 @@ for m in thread["messages"]:
                 if m.get("tool_calls"):
                     st.json(m["tool_calls"])
 
-prompt = st.chat_input("Ask the agent…")
+prompt = st.chat_input("Ask the agent…") or pending
 if prompt:
     if not thread["messages"]:
         thread["title"] = (prompt[:40] + "…") if len(prompt) > 40 else prompt

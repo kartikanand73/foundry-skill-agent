@@ -11,6 +11,14 @@ import streamlit as st
 
 REQUIRED_ROLES = ("SkillAgent.FulfillmentRisk", "SkillAgent.Admin")
 OSSRDBMS_SCOPE = "https://ossrdbms-aad.database.windows.net/.default"
+REV_HELP = ("Revenue at risk = units that can't be allocated × the line's net unit price (after discount). "
+            "The prorated value of the shortage only.")
+BLOCKED_HELP = ("Blocked order value = the FULL value of every order that can't ship complete, including lines "
+                "that are in stock. What's held up if you only ship complete orders.")
+FIFO_RULE = ("Inventory allocated by order date, then customer tier, then order ID "
+             "(oldest order first; stock pooled across locations, reserved units excluded).")
+SOURCES = (("Salesforce", "salesforce"), ("Databricks", "databricks"), ("Snowflake", "snowflake"))
+HEALTH = {"ok": "🟢", "aging": "🟡", "stale": "🔴", "failing": "🔴"}
 STATUS_STYLE = {"UNFULFILLABLE": ("🔴", ":red"), "PARTIAL": ("🟠", ":orange"), "DATA_ISSUE": ("🟣", ":violet"),
                 "FULFILLABLE": ("🟢", ":green")}
 
@@ -75,6 +83,30 @@ def freshness_level(status: dict, now: datetime, max_age_h: float = 24.0) -> str
         (now - status["snapshot_at"]).total_seconds() > 2 * 3600 else "ok"
 
 
+def source_health(key: str, as_of: datetime | None, now: datetime, runs: list[dict], fresh_h: float = 2.0,
+                  max_age_h: float = 24.0) -> str:
+    """ok | aging | stale | failing for one source.
+    failing = the latest refresh failed and its error names this source (the snapshot keeps the last good data);
+    stale = older than the publish gate (24 h); aging = older than ~2 hourly cycles."""
+    latest = runs[0] if runs else None
+    if latest and latest["status"] in ("failed", "abandoned") and key in (latest.get("error") or "").lower():
+        return "failing"
+    if not as_of:
+        return "stale"
+    age_h = (now - as_of).total_seconds() / 3600
+    return "stale" if age_h > max_age_h else "aging" if age_h > fresh_h else "ok"
+
+
+def ask_prompt(order_id: str) -> str:
+    return f"Why is order {order_id} at risk?"
+
+
+def _ask_about(order_id: str) -> None:
+    """Button callback: switch to the chat screen with the question queued (callbacks may set widget state)."""
+    st.session_state.pending_prompt = ask_prompt(order_id)
+    st.session_state.screen = "💬 Chat"
+
+
 def render(principal: dict | None) -> None:
     st.subheader("📦 Fulfillment risk")
     st.caption("Which Salesforce customers have open Databricks orders that current Snowflake inventory can't "
@@ -97,9 +129,11 @@ def render(principal: dict | None) -> None:
         return
     now = datetime.now(timezone.utc)
     level = freshness_level(s, now)
-    banner = (f"**Snapshot** {s['snapshot_at']:%Y-%m-%d %H:%M} UTC ({_ago(s['snapshot_at'], now)}) · "
-              f"Salesforce {_ago(s['salesforce_as_of'], now)} · Databricks {_ago(s['databricks_as_of'], now)} · "
-              f"Snowflake {_ago(s['snowflake_as_of'], now)}")
+    health = {key: source_health(key, s[f"{key}_as_of"], now, d["runs"]) for _, key in SOURCES}
+    banner = (f"**Snapshot** {s['snapshot_at']:%Y-%m-%d %H:%M} UTC ({_ago(s['snapshot_at'], now)})  \n" +
+              " · ".join(f"{HEALTH[health[key]]} {label} {_ago(s[f'{key}_as_of'], now)}"
+                         + (" (last refresh failed here)" if health[key] == "failing" else "")
+                         for label, key in SOURCES))
     if level == "failing":
         c1.error(banner + f"  \n⚠️ {s['failures_since_snapshot']} refresh(es) failed since this snapshot; "
                           "showing the last successful one.")
@@ -113,30 +147,43 @@ def render(principal: dict | None) -> None:
     k[0].metric("Customers at risk", f"{sm.get('customers_at_risk', 0)} of {sm.get('customers_with_open_orders', 0)}")
     k[1].metric("Orders at risk", f"{sm.get('at_risk_orders', 0)} of {sm.get('open_orders', 0)}")
     k[2].metric("Units short", f"{sm.get('short_units', 0):,}")
-    k[3].metric("Value short", _money(sm.get("short_value")))
+    k[3].metric("Revenue at risk", _money(sm.get("short_value")), help=REV_HELP)
     k[4].metric("SKUs short", sm.get("skus_short", 0))
 
     st.markdown("#### Customers")
     cust_rows = [{"": STATUS_STYLE.get(c["status"], ("⚪", ""))[0], "Customer": c["customer_name"] or c["customer_id"],
                   "Status": c["status"], "Open orders": c["open_orders"], "At-risk orders": c["at_risk_orders"],
-                  "Units short": c["short_units"], "Value short": float(c["short_value"]),
+                  "Units short": c["short_units"], "Revenue at risk": float(c["short_value"]),
                   "Blocked order value": float(c["blocked_order_value"]), "Worst order": c["worst_order_id"] or "",
                   "Salesforce Id": c["customer_id"]} for c in d["customers"]]
     st.dataframe(cust_rows, hide_index=True, width="stretch", column_config={
-        "Value short": st.column_config.NumberColumn(format="$%.2f"),
-        "Blocked order value": st.column_config.NumberColumn(format="$%.2f")})
+        "Revenue at risk": st.column_config.NumberColumn(format="$%.2f", help=REV_HELP),
+        "Blocked order value": st.column_config.NumberColumn(format="$%.2f", help=BLOCKED_HELP)})
 
     names = [c["customer_name"] or c["customer_id"] for c in d["customers"]]
     at_risk = [c["customer_name"] or c["customer_id"] for c in d["customers"] if c["status"] != "FULFILLABLE"]
+    st.markdown("#### Order lines")
+    st.info(f"ℹ️ {FIFO_RULE}")
     pick = st.selectbox("Order lines for", ["All at-risk customers"] + names)
     lines = [l for l in d["lines"] if (pick == "All at-risk customers" and l["customer_name"] in at_risk
                                        and l["status"] != "FULFILLABLE") or (l["customer_name"] or l["customer_id"]) == pick]
-    st.dataframe([{"": STATUS_STYLE.get(l["status"], ("⚪", ""))[0], "Order": l["order_id"], "Line": l["line_number"],
-                   "Customer": l["customer_name"], "SKU": l["product_sku"], "Ordered": str(l["order_date"]),
-                   "Qty": l["quantity"], "Allocated": l["allocated_qty"], "Short": l["short_qty"],
-                   "Value short": float(l["short_value"]), "Queue #": l["allocation_rank"], "Why": l["reason"]}
-                  for l in lines], hide_index=True, width="stretch",
-                 column_config={"Value short": st.column_config.NumberColumn(format="$%.2f")})
+    event = st.dataframe(
+        [{"": STATUS_STYLE.get(l["status"], ("⚪", ""))[0], "Order": l["order_id"], "Line": l["line_number"],
+          "Customer": l["customer_name"], "SKU": l["product_sku"], "Ordered": str(l["order_date"]),
+          "Qty": l["quantity"], "Allocated": l["allocated_qty"], "Short": l["short_qty"],
+          "Revenue at risk": float(l["short_value"]), "Queue #": l["allocation_rank"], "Why": l["reason"]}
+         for l in lines], hide_index=True, width="stretch", key="fr_lines", on_select="rerun",
+        selection_mode="single-row",
+        column_config={"Revenue at risk": st.column_config.NumberColumn(format="$%.2f", help=REV_HELP),
+                       "Queue #": st.column_config.NumberColumn(help="Position in the allocation queue (1 = served "
+                                                                     "first). " + FIFO_RULE)})
+    rows = (getattr(getattr(event, "selection", None), "rows", None) or []) if event is not None else []
+    if rows and rows[0] < len(lines):
+        oid = lines[rows[0]]["order_id"]
+        st.button(f"💬 Ask the agent: “{ask_prompt(oid)}”", key="fr_ask", type="primary", on_click=_ask_about,
+                  args=(oid,), help="Opens Chat with this question; answered from the same snapshot.")
+    else:
+        st.caption("Select an order line to ask the agent why that order is at risk.")
 
     left, right = st.columns(2)
     with left:
@@ -157,4 +204,4 @@ def render(principal: dict | None) -> None:
                        "At risk": r["customers_at_risk"], "Error": r["error"] or ""} for r in d["runs"]],
                      hide_index=True, width="stretch", height=260)
     st.caption(f"Read {_ago(d['loaded_at'], now)} from PostgreSQL view fr.v_fulfillment_risk_current "
-               "(cached 60 s). Ask the chat for explanations, e.g. *Why is SO-101996 at risk?*")
+               "(cached 60 s).")

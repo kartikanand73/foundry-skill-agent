@@ -34,3 +34,31 @@ def test_freshness_levels():
 def test_ago_and_money():
     assert d._ago(NOW - timedelta(minutes=5), NOW) == "5 min ago" and d._ago(NOW - timedelta(hours=5), NOW) == "5 h ago"
     assert d._money("20253.4") == "$20,253.40"
+
+
+def runs(status="succeeded", error=None):
+    return [{"status": status, "error": error}]
+
+
+def test_source_health():
+    fresh = NOW - timedelta(minutes=20)
+    assert d.source_health("snowflake", fresh, NOW, runs()) == "ok"
+    assert d.source_health("snowflake", NOW - timedelta(hours=3), NOW, runs()) == "aging"
+    assert d.source_health("snowflake", NOW - timedelta(hours=30), NOW, runs()) == "stale"
+    failed = runs("failed", "SourceError: snowflake: HTTP 403 Insufficient privileges")
+    assert d.source_health("snowflake", fresh, NOW, failed) == "failing"
+    assert d.source_health("salesforce", fresh, NOW, failed) == "ok"          # only the source that failed
+    assert d.source_health("databricks", None, NOW, runs()) == "stale"
+
+
+def test_ask_about_order_queues_chat(monkeypatch):
+    import types
+    state = types.SimpleNamespace()
+    monkeypatch.setattr(d.st, "session_state", state)
+    d._ask_about("SO-101996")
+    assert vars(state) == {"pending_prompt": "Why is order SO-101996 at risk?", "screen": "💬 Chat"}
+
+
+def test_labels_and_rule_text():
+    assert "prorated" in d.REV_HELP and "FULL value" in d.BLOCKED_HELP
+    assert d.FIFO_RULE.startswith("Inventory allocated by order date") and "order ID" in d.FIFO_RULE
