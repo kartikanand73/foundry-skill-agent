@@ -3,6 +3,8 @@
 # Streamlit app (X-MS-CLIENT-PRINCIPAL), which shows it under your name and sends it to the agent.
 # Rerun-safe (fixed role ids; existing assignments are skipped). Sign out and back in afterwards:
 #   https://<app>.azurewebsites.net/.auth/logout
+#   -Upn someone@tenant   assign to that user instead of you;  -Roles 'SkillAgent.User','SkillAgent.Orders' to limit
+param([string]$Upn = '', [string[]]$Roles = @())
 . "$PSScriptRoot\config.ps1"
 $ErrorActionPreference = 'Continue'
 $authApp = & $az ad app list --display-name "$App-auth" --query "[0].appId" -o tsv
@@ -24,8 +26,9 @@ $f = Join-Path $env:TEMP 'approles.json'; [IO.File]::WriteAllText($f, ($def | Co
 & $az ad app update --id $authApp --app-roles "@$f" -o none
 Remove-Item $f
 
-step "assign all roles to the signed-in Azure CLI user (demo)"
-$me = & $az ad signed-in-user show --query id -o tsv
+if ($Upn) { $me = & $az ad user show --id $Upn --query id -o tsv; step "assign roles to $Upn ($me)" }
+else { $me = & $az ad signed-in-user show --query id -o tsv; step "assign all roles to the signed-in Azure CLI user (demo)" }
+if ($Roles.Count) { $roles = $roles | Where-Object { $Roles -contains $_.v } }
 $have = (& $az rest --method get --url "https://graph.microsoft.com/v1.0/servicePrincipals/$spId/appRoleAssignedTo" --query "value[?principalId=='$me'].appRoleId" -o tsv)
 foreach ($r in $roles) {
   if ($have -contains $r.id) { "  $($r.v): already assigned"; continue }
