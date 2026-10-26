@@ -1,10 +1,10 @@
 # Read-only: print how every piece is configured right now (names and settings, never secret values).
 . "$PSScriptRoot\config.ps1"
 $ErrorActionPreference = 'Continue'
-$arm = @{ Authorization = "Bearer " + (& $az account get-access-token --resource https://management.azure.com/ --query accessToken -o tsv) }
-$graph = @{ Authorization = "Bearer " + (& $az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv) }
-function A($path, $ver) { Invoke-RestMethod -Headers $arm -Uri "$Arm/$path`?api-version=$ver" }
-function G($path) { Invoke-RestMethod -Headers $graph -Uri "https://graph.microsoft.com/v1.0/$path" }
+$armHdr = @{ Authorization = "Bearer " + (& $az account get-access-token --resource https://management.azure.com/ --query accessToken -o tsv) }
+$graphHdr = @{ Authorization = "Bearer " + (& $az account get-access-token --resource https://graph.microsoft.com --query accessToken -o tsv) }
+function A($path, $ver) { Invoke-RestMethod -Headers $armHdr -Uri "$Arm/$path`?api-version=$ver" }
+function G($path) { Invoke-RestMethod -Headers $graphHdr -Uri "https://graph.microsoft.com/v1.0/$path" }
 function Show($label, $value) { "  {0,-40} {1}" -f $label, $value }
 
 "== 1. Web app $App"
@@ -15,7 +15,7 @@ $auth = A "Microsoft.Web/sites/$App/config/authsettingsV2" '2023-12-01'
 Show 'auth enabled' $auth.properties.platform.enabled
 Show 'unauthenticated action' $auth.properties.globalValidation.unauthenticatedClientAction
 Show 'identity provider' ($auth.properties.identityProviders.azureActiveDirectory.registration.openIdIssuer)
-$set = Invoke-RestMethod -Method Post -Headers $arm -Uri "$Arm/Microsoft.Web/sites/$App/config/appsettings/list?api-version=2023-12-01"
+$set = Invoke-RestMethod -Method Post -Headers $armHdr -Uri "$Arm/Microsoft.Web/sites/$App/config/appsettings/list?api-version=2023-12-01"
 foreach ($p in $set.properties.PSObject.Properties) {
   $v = if ($p.Value -like '@Microsoft.KeyVault*') { 'Key Vault reference' } elseif ($p.Name -match 'SECRET|KEY|CONNECTION') { '(set, hidden)' } else { $p.Value }
   Show "setting $($p.Name)" $v
