@@ -63,6 +63,9 @@ def main():
         cfg["triggerType"] = "Manual"
         cfg.pop("scheduleTriggerConfig", None)
         cfg["manualTriggerConfig"] = {"parallelism": 1, "replicaCompletionCount": 1}
+        if cfg.get("secrets"):   # GET omits secret values; re-supply them in memory (never printed)
+            cfg["secrets"] = az("containerapp", "job", "secret", "list", "-g", RG, "-n", "job-fr-refresh",
+                                "--show-values")
         body = {"location": job["location"], "identity": job.get("identity"),
                 "properties": {"environmentId": job["properties"]["environmentId"],
                                "workloadProfileName": job["properties"].get("workloadProfileName"),
