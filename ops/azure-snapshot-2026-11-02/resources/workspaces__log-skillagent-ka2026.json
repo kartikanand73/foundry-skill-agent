@@ -1,0 +1,38 @@
+{
+ "etag": "\"ef021506-0000-0100-0000-6ade986a0000\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.OperationalInsights/workspaces/log-skillagent-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "log-skillagent-ka2026",
+ "plan": null,
+ "properties": {
+  "createdDate": "2026-10-26T00:01:34.1841231Z",
+  "customerId": "7e5a351f-a3e5-4dc9-9e52-5014f6595751",
+  "features": {
+   "enableLogAccessUsingOnlyResourcePermissions": true,
+   "legacy": 0,
+   "searchVersion": 1
+  },
+  "modifiedDate": "2026-10-26T00:01:46.4606794Z",
+  "provisioningState": "Succeeded",
+  "publicNetworkAccessForIngestion": "Enabled",
+  "publicNetworkAccessForQuery": "Enabled",
+  "retentionInDays": 30,
+  "sku": {
+   "lastSkuUpdate": "2026-10-26T00:01:34.1841231Z",
+   "name": "PerGB2018"
+  },
+  "workspaceCapping": {
+   "dailyQuotaGb": -1.0,
+   "dataIngestionStatus": "RespectQuota",
+   "quotaNextResetTime": "2026-10-26T18:00:00Z"
+  }
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "tags": null,
+ "type": "Microsoft.OperationalInsights/workspaces"
+}

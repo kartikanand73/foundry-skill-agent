@@ -1,0 +1,112 @@
+{
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Web/sites/skillagent-chat-ka2026/config/authsettingsV2",
+ "location": "East US",
+ "name": "authsettingsV2",
+ "properties": {
+  "clearInboundClaimsMapping": "false",
+  "globalValidation": {
+   "redirectToProvider": "azureactivedirectory",
+   "requireAuthentication": true,
+   "unauthenticatedClientAction": "RedirectToLoginPage"
+  },
+  "httpSettings": {
+   "forwardProxy": {
+    "convention": "NoProxy"
+   },
+   "requireHttps": true,
+   "routes": {
+    "apiPrefix": "/.auth"
+   }
+  },
+  "identityProviders": {
+   "apple": {
+    "enabled": true,
+    "login": {},
+    "registration": {}
+   },
+   "azureActiveDirectory": {
+    "enabled": true,
+    "login": {
+     "disableWWWAuthenticate": false
+    },
+    "registration": {
+     "clientId": "e19254ce-c604-4ca9-8667-945de3ac8a1e",
+     "clientSecretSettingName": "<redacted>",
+     "openIdIssuer": "https://login.microsoftonline.com/19540d9a-5368-4dae-a52d-642342e1f5c7/v2.0"
+    },
+    "validation": {
+     "allowedAudiences": [
+      "api://e19254ce-c604-4ca9-8667-945de3ac8a1e",
+      "e19254ce-c604-4ca9-8667-945de3ac8a1e"
+     ],
+     "defaultAuthorizationPolicy": {
+      "allowedPrincipals": {}
+     },
+     "jwtClaimChecks": {}
+    }
+   },
+   "facebook": {
+    "enabled": true,
+    "login": {},
+    "registration": {}
+   },
+   "gitHub": {
+    "enabled": true,
+    "login": {},
+    "registration": {}
+   },
+   "google": {
+    "enabled": true,
+    "login": {},
+    "registration": {},
+    "validation": {}
+   },
+   "legacyMicrosoftAccount": {
+    "enabled": true,
+    "login": {},
+    "registration": {},
+    "validation": {}
+   },
+   "twitter": {
+    "enabled": true,
+    "registration": {}
+   }
+  },
+  "login": {
+   "cookieExpiration": {
+    "convention": "FixedTime",
+    "timeToExpiration": "08:00:00"
+   },
+   "nonce": {
+    "nonceExpirationInterval": "00:05:00",
+    "validateNonce": true
+   },
+   "preserveUrlFragmentsForLogins": false,
+   "routes": {},
+   "tokenStore": {
+    "azureBlobStorage": {},
+    "enabled": true,
+    "fileSystem": {},
+    "tokenRefreshExtensionHours": 72.0
+   }
+  },
+  "platform": {
+   "enabled": true,
+   "runtimeVersion": "~1"
+  },
+  "prmConfig": {
+   "disableMetadata": false,
+   "hideAuthorizationServers": false,
+   "resourceInfo": {
+    "documentationUri": {},
+    "name": {},
+    "policyUri": {},
+    "tosUri": {}
+   }
+  }
+ },
+ "tags": {
+  "hidden-link: /app-insights-resource-id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/components/appi-skillagent-ka2026"
+ },
+ "type": "Microsoft.Web/sites/config"
+}

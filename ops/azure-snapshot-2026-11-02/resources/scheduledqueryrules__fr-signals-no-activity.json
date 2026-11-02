@@ -1,0 +1,49 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/scheduledqueryrules/fr-signals-no-activity",
+ "identity": null,
+ "kind": "LogAlert",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "fr-signals-no-activity",
+ "plan": null,
+ "properties": {
+  "autoMitigate": true,
+  "createdWithApiVersion": "2023-03-15-preview",
+  "criteria": {
+   "allOf": [
+    {
+     "failingPeriods": {
+      "minFailingPeriodsToAlert": 1,
+      "numberOfEvaluationPeriods": 1
+     },
+     "operator": "LessThan",
+     "query": "traces | where cloud_RoleName == 'func-fr-signals-ka2026' and message startswith 'fr_signals_batch'",
+     "threshold": 1.0,
+     "timeAggregation": "Count"
+    }
+   ]
+  },
+  "description": "No signal batches processed for 2 hours (enable when a real producer exists)",
+  "displayName": "fr-signals-no-activity",
+  "enabled": false,
+  "evaluationFrequency": "PT30M",
+  "scopes": [
+   "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/components/appi-skillagent-ka2026"
+  ],
+  "severity": 3,
+  "windowSize": "PT2H"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T22:19:27.6774965Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T22:19:27.6774965Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.Insights/scheduledQueryRules"
+}

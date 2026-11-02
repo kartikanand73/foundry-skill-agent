@@ -1,0 +1,50 @@
+{
+ "etag": "W/\"1309e232-e2c9-48e6-be27-be2881015792\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/natGateways/nat-gateway",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "nat-gateway",
+ "plan": null,
+ "properties": {
+  "flowlogs": {
+   "logsVersions": {}
+  },
+  "idleTimeoutInMinutes": 20,
+  "provisioningState": "Succeeded",
+  "publicIpAddresses": [
+   {
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/publicIPAddresses/nat-gw-public-ip",
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026"
+   }
+  ],
+  "resourceGuid": "3e87d6e2-465f-49f7-950b-e728b21544cf",
+  "scope": "Public",
+  "subnets": [
+   {
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/virtualNetworks/workers-vnet/subnets/public-subnet",
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026"
+   },
+   {
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/virtualNetworks/workers-vnet/subnets/private-subnet",
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026"
+   }
+  ]
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "StandardV2",
+  "size": null,
+  "tier": "Regional"
+ },
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.Network/natGateways"
+}

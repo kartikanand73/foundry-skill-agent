@@ -1,0 +1,23 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourcegroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dbmanagedidentity",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "dbmanagedidentity",
+ "plan": null,
+ "properties": {
+  "clientId": "957a3668-869f-4f0f-98a2-9d6776b3474e",
+  "isolationScope": "None",
+  "principalId": "7c0b1db9-c86b-493d-b69b-328aefc072c3",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7"
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": null,
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}

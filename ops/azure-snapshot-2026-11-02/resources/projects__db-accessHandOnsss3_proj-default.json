@@ -1,0 +1,43 @@
+{
+ "etag": "\"8a0499d7-0000-0100-0000-6ad7a10c0000\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3/projects/proj-default",
+ "identity": {
+  "principalId": "9b9588d6-6276-41fd-b227-3915a89821cf",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+ },
+ "kind": "AIServices",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "db-accessHandOnsss3/proj-default",
+ "plan": null,
+ "properties": {
+  "agentIdentity": {
+   "agentIdentityBlueprintId": "77c5b1ab-e997-4b95-ab2f-d5c3fe16c99f",
+   "agentIdentityBlueprintObjectId": "c92ff210-6127-4bb8-b88a-4f14d67eff19",
+   "agentIdentityId": "33e1cb6f-eed8-426d-9647-33b86fb82233"
+  },
+  "description": "Default project created with the resource",
+  "displayName": "proj-default",
+  "endpoints": {
+   "AI Foundry API": "https://db-accesshandonsss3.services.ai.azure.com/api/projects/proj-default"
+  },
+  "internalId": "cc24ee6f161743fc928335aef696ee11",
+  "isDefault": true,
+  "provisioningState": "Succeeded"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2025-11-19T16:50:36.8595975Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2025-11-19T16:50:36.8595975Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.CognitiveServices/accounts/projects"
+}

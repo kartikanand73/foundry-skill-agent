@@ -1,0 +1,27 @@
+{
+ "id": "87f818da0e78701c",
+ "name": "skillagent-genie-wh",
+ "size": "XXSMALL",
+ "cluster_size": "2X-Small",
+ "min_num_clusters": 1,
+ "max_num_clusters": 1,
+ "auto_stop_mins": 10,
+ "auto_resume": true,
+ "creator_name": "kartikanand@gmail.com",
+ "creator_id": 7618660403924756,
+ "tags": {},
+ "spot_instance_policy": "COST_OPTIMIZED",
+ "enable_photon": true,
+ "enable_serverless_compute": true,
+ "warehouse_type": "PRO",
+ "num_clusters": 1,
+ "num_active_sessions": 0,
+ "state": "STOPPING",
+ "jdbc_url": "jdbc:spark://adb-7405606799698174.14.azuredatabricks.net:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/87f818da0e78701c;",
+ "odbc_params": {
+  "hostname": "adb-7405606799698174.14.azuredatabricks.net",
+  "path": "<redacted>",
+  "protocol": "https",
+  "port": 443
+ }
+}

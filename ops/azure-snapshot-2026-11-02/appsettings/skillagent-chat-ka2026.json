@@ -1,0 +1,62 @@
+[
+ {
+  "name": "APIM_BASE_URL",
+  "slotSetting": false,
+  "value": "https://apim-skillagent-ka2026.azure-api.net/skill-agent"
+ },
+ {
+  "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+  "slotSetting": false,
+  "value": "true"
+ },
+ {
+  "name": "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "OTEL_SERVICE_NAME",
+  "slotSetting": false,
+  "value": "skillagent-webapp"
+ },
+ {
+  "name": "APIM_TOKEN_AUDIENCE",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "WEBSITE_HTTPLOGGING_RETENTION_DAYS",
+  "slotSetting": false,
+  "value": "3"
+ },
+ {
+  "name": "THREAD_STORE_URL",
+  "slotSetting": false,
+  "value": "https://stskillagentka2026.table.core.windows.net"
+ },
+ {
+  "name": "THREAD_TABLE",
+  "slotSetting": false,
+  "value": "threads"
+ },
+ {
+  "name": "THREAD_RETENTION_DAYS",
+  "slotSetting": false,
+  "value": "30"
+ },
+ {
+  "name": "FR_DATABASE_URL",
+  "slotSetting": false,
+  "value": "host=psql-fr-ka2026.postgres.database.azure.com dbname=fr user=skillagent-chat-ka2026"
+ },
+ {
+  "name": "APIM_SUBSCRIPTION_KEY",
+  "slotSetting": false,
+  "value": "<redacted>"
+ }
+]

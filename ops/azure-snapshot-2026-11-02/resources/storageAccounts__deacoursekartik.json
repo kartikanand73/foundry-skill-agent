@@ -1,0 +1,80 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/deacoursekartik",
+ "identity": null,
+ "kind": "StorageV2",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "deacoursekartik",
+ "plan": null,
+ "properties": {
+  "accessTier": "Hot",
+  "allowBlobPublicAccess": false,
+  "allowCrossTenantReplication": false,
+  "allowSharedKeyAccess": true,
+  "creationTime": "2025-08-20T13:03:45.3086491Z",
+  "defaultToOAuthAuthentication": false,
+  "dnsEndpointType": "Standard",
+  "dualStackEndpointPreference": {
+   "defaultDualStackEndpoints": false,
+   "publishIpv4Endpoint": false,
+   "publishIpv6Endpoint": false
+  },
+  "encryption": {
+   "keySource": "<redacted>",
+   "requireInfrastructureEncryption": false,
+   "services": {
+    "blob": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2025-08-20T13:03:45.4649000Z"
+    },
+    "file": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2025-08-20T13:03:45.4649000Z"
+    }
+   }
+  },
+  "isHnsEnabled": true,
+  "isSftpEnabled": false,
+  "keyCreationTime": {
+   "key1": "<redacted>",
+   "key2": "<redacted>"
+  },
+  "largeFileSharesState": "Enabled",
+  "minimumTlsVersion": "TLS1_2",
+  "networkAcls": {
+   "bypass": "AzureServices",
+   "defaultAction": "Allow",
+   "ipRules": [],
+   "ipv6Rules": [],
+   "virtualNetworkRules": []
+  },
+  "primaryEndpoints": {
+   "blob": "https://deacoursekartik.blob.core.windows.net/",
+   "dfs": "https://deacoursekartik.dfs.core.windows.net/",
+   "file": "https://deacoursekartik.file.core.windows.net/",
+   "queue": "https://deacoursekartik.queue.core.windows.net/",
+   "table": "https://deacoursekartik.table.core.windows.net/",
+   "web": "https://deacoursekartik.z13.web.core.windows.net/"
+  },
+  "primaryLocation": "eastus",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "statusOfPrimary": "available",
+  "supportsHttpsTrafficOnly": true
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "Standard_LRS",
+  "size": null,
+  "tier": "Standard"
+ },
+ "tags": {},
+ "type": "Microsoft.Storage/storageAccounts"
+}

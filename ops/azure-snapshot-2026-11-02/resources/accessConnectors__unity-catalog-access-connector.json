@@ -1,0 +1,33 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Databricks/accessConnectors/unity-catalog-access-connector",
+ "identity": {
+  "principalId": "4d3ec43c-56a0-4448-b0dd-6d7e9e81391d",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+ },
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "unity-catalog-access-connector",
+ "plan": null,
+ "properties": {
+  "provisioningState": "Succeeded"
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T15:55:54.1017957+00:00",
+  "createdBy": "d9327919-6775-4843-9037-3fb0fb0473cb",
+  "createdByType": "Application",
+  "lastModifiedAt": "2026-10-26T15:55:54.1017957+00:00",
+  "lastModifiedBy": "d9327919-6775-4843-9037-3fb0fb0473cb",
+  "lastModifiedByType": "Application"
+ },
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.Databricks/accessConnectors"
+}

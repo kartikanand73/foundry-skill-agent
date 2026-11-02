@@ -1,0 +1,41 @@
+{
+ "etag": "W/\"6027a9e7-32f3-48a1-82bd-d4976a614fca\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/publicIPAddresses/nat-gw-public-ip",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "nat-gw-public-ip",
+ "plan": null,
+ "properties": {
+  "ddosSettings": {
+   "protectionMode": "VirtualNetworkInherited"
+  },
+  "idleTimeoutInMinutes": 20,
+  "ipAddress": "48.223.128.122",
+  "ipTags": [],
+  "natGateway": {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/natGateways/nat-gateway",
+   "resourceGroup": "databricks-rg-dbw-skillagent-ka2026"
+  },
+  "provisioningState": "Succeeded",
+  "publicIPAddressVersion": "IPv4",
+  "publicIPAllocationMethod": "Static",
+  "resourceGuid": "54a8f236-fefb-4f72-8471-5eae60d01c33"
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "StandardV2",
+  "size": null,
+  "tier": "Regional"
+ },
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.Network/publicIPAddresses"
+}

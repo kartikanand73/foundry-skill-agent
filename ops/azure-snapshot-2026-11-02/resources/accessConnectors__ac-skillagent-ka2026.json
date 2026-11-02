@@ -1,0 +1,30 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Databricks/accessConnectors/ac-skillagent-ka2026",
+ "identity": {
+  "principalId": "8bb0d069-6b82-4b68-bfad-66faf92afb60",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+ },
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "ac-skillagent-ka2026",
+ "plan": null,
+ "properties": {
+  "provisioningState": "Succeeded"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T16:24:35.3448406+00:00",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T16:24:35.3448406+00:00",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.Databricks/accessConnectors"
+}

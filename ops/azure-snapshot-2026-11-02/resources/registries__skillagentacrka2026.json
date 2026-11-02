@@ -1,0 +1,67 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ContainerRegistry/registries/skillagentacrka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "skillagentacrka2026",
+ "plan": null,
+ "properties": {
+  "adminUserEnabled": false,
+  "anonymousPullEnabled": false,
+  "creationDate": "2026-10-20T19:34:47.4578936Z",
+  "dataEndpointEnabled": false,
+  "dataEndpointHostNames": [],
+  "encryption": {
+   "status": "disabled"
+  },
+  "loginServer": "skillagentacrka2026.azurecr.io",
+  "networkRuleBypassAllowedForTasks": false,
+  "networkRuleBypassOptions": "AzureServices",
+  "policies": {
+   "azureADAuthenticationAsArmPolicy": {
+    "status": "enabled"
+   },
+   "exportPolicy": {
+    "status": "enabled"
+   },
+   "quarantinePolicy": {
+    "status": "disabled"
+   },
+   "retentionPolicy": {
+    "days": 7,
+    "lastUpdatedTime": "2026-10-20T19:34:54.8319634+00:00",
+    "status": "disabled"
+   },
+   "trustPolicy": {
+    "status": "disabled",
+    "type": "Notary"
+   }
+  },
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "roleAssignmentMode": "LegacyRegistryPermissions",
+  "zoneRedundancy": "Disabled"
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "Basic",
+  "size": null,
+  "tier": "Basic"
+ },
+ "systemData": {
+  "createdAt": "2026-10-20T19:34:47.4578936+00:00",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-20T19:34:47.4578936+00:00",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": {},
+ "type": "Microsoft.ContainerRegistry/registries"
+}

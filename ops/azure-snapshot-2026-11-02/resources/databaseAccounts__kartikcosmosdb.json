@@ -1,0 +1,151 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.DocumentDB/databaseAccounts/kartikcosmosdb",
+ "identity": {
+  "principalId": null,
+  "tenantId": null,
+  "type": "None",
+  "userAssignedIdentities": null
+ },
+ "kind": "GlobalDocumentDB",
+ "location": "East US",
+ "managedBy": null,
+ "name": "kartikcosmosdb",
+ "plan": null,
+ "properties": {
+  "EnabledApiTypes": "Sql",
+  "analyticalStorageConfiguration": {
+   "schemaType": "WellDefined"
+  },
+  "backupPolicy": {
+   "periodicModeProperties": {
+    "backupIntervalInMinutes": 240,
+    "backupRetentionIntervalInHours": 8,
+    "backupStorageRedundancy": "Geo"
+   },
+   "type": "Periodic"
+  },
+  "capabilities": [],
+  "capacity": {
+   "totalThroughputLimit": 1000
+  },
+  "capacityMode": "Provisioned",
+  "configurationOverrides": {},
+  "consistencyPolicy": {
+   "defaultConsistencyLevel": "Session",
+   "maxIntervalInSeconds": 5,
+   "maxStalenessPrefix": 100
+  },
+  "cors": [],
+  "databaseAccountOfferType": "Standard",
+  "defaultIdentity": "FirstPartyIdentity",
+  "defaultPriorityLevel": "High",
+  "disableKeyBasedMetadataWriteAccess": false,
+  "disableLocalAuth": false,
+  "documentEndpoint": "https://kartikcosmosdb.documents.azure.com:443/",
+  "enableAnalyticalStorage": false,
+  "enableAutomaticFailover": true,
+  "enableBurstCapacity": false,
+  "enableFreeTier": true,
+  "enableMultipleWriteLocations": false,
+  "enablePartitionKeyMonitor": false,
+  "enablePartitionMerge": false,
+  "enablePerRegionPerPartitionAutoscale": true,
+  "enablePriorityBasedExecution": false,
+  "enforceHierarchicalPartitionKeyIdLastLevel": false,
+  "failoverPolicies": [
+   {
+    "failoverPriority": 0,
+    "id": "kartikcosmosdb-eastus",
+    "locationName": "East US"
+   },
+   {
+    "failoverPriority": 1,
+    "id": "kartikcosmosdb-westus",
+    "locationName": "West US"
+   }
+  ],
+  "instanceId": "67fecc5e-7e70-4446-afa7-6d03312ce173",
+  "ipRules": [],
+  "isVirtualNetworkFilterEnabled": false,
+  "keysMetadata": {
+   "primaryMasterKey": {
+    "generationTime": "2025-10-06T14:21:17.6538343+00:00"
+   },
+   "primaryReadonlyMasterKey": {
+    "generationTime": "2025-10-06T14:21:17.6538343+00:00"
+   },
+   "secondaryMasterKey": {
+    "generationTime": "2025-10-06T14:21:17.6538343+00:00"
+   },
+   "secondaryReadonlyMasterKey": {
+    "generationTime": "2025-10-06T14:21:17.6538343+00:00"
+   }
+  },
+  "locations": [
+   {
+    "documentEndpoint": "https://kartikcosmosdb-eastus.documents.azure.com:443/",
+    "failoverPriority": 0,
+    "id": "kartikcosmosdb-eastus",
+    "isZoneRedundant": false,
+    "locationName": "East US",
+    "provisioningState": "Succeeded"
+   },
+   {
+    "documentEndpoint": "https://kartikcosmosdb-westus.documents.azure.com:443/",
+    "failoverPriority": 1,
+    "id": "kartikcosmosdb-westus",
+    "isZoneRedundant": false,
+    "locationName": "West US",
+    "provisioningState": "Succeeded"
+   }
+  ],
+  "minimalTlsVersion": "Tls12",
+  "networkAclBypass": "None",
+  "networkAclBypassResourceIds": [],
+  "perPartitionAutomaticFailoverEnabled": false,
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "readLocations": [
+   {
+    "documentEndpoint": "https://kartikcosmosdb-eastus.documents.azure.com:443/",
+    "failoverPriority": 0,
+    "id": "kartikcosmosdb-eastus",
+    "isZoneRedundant": false,
+    "locationName": "East US",
+    "provisioningState": "Succeeded"
+   },
+   {
+    "documentEndpoint": "https://kartikcosmosdb-westus.documents.azure.com:443/",
+    "failoverPriority": 1,
+    "id": "kartikcosmosdb-westus",
+    "isZoneRedundant": false,
+    "locationName": "West US",
+    "provisioningState": "Succeeded"
+   }
+  ],
+  "sqlEndpoint": "https://kartikcosmosdb.documents.azure.com:443/",
+  "virtualNetworkRules": [],
+  "writeLocations": [
+   {
+    "documentEndpoint": "https://kartikcosmosdb-eastus.documents.azure.com:443/",
+    "failoverPriority": 0,
+    "id": "kartikcosmosdb-eastus",
+    "isZoneRedundant": false,
+    "locationName": "East US",
+    "provisioningState": "Succeeded"
+   }
+  ]
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2025-10-06T14:21:17.6538343+00:00"
+ },
+ "tags": {
+  "defaultExperience": "Core (SQL)",
+  "hidden-cosmos-mmspecial": "",
+  "hidden-workload-type": "Learning"
+ },
+ "type": "Microsoft.DocumentDB/databaseAccounts"
+}

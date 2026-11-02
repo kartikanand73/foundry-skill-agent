@@ -1,0 +1,326 @@
+[
+ {
+  "name": "deacoursekartik",
+  "type": "Microsoft.Storage/storageAccounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Standard_LRS",
+  "ours": false,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/deacoursekartik"
+ },
+ {
+  "name": "kartikcosmosdb",
+  "type": "Microsoft.DocumentDb/databaseAccounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": false,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.DocumentDb/databaseAccounts/kartikcosmosdb"
+ },
+ {
+  "name": "db-accessHandOnsss3",
+  "type": "Microsoft.CognitiveServices/accounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "S0",
+  "ours": false,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3"
+ },
+ {
+  "name": "db-accessHandOnsss3/proj-default",
+  "type": "Microsoft.CognitiveServices/accounts/projects",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": false,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3/projects/proj-default"
+ },
+ {
+  "name": "skillagentacrka2026",
+  "type": "Microsoft.ContainerRegistry/registries",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Basic",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ContainerRegistry/registries/skillagentacrka2026"
+ },
+ {
+  "name": "kv-skillagent-ka2026",
+  "type": "Microsoft.KeyVault/vaults",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.KeyVault/vaults/kv-skillagent-ka2026"
+ },
+ {
+  "name": "apim-skillagent-ka2026",
+  "type": "Microsoft.ApiManagement/service",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Consumption",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026"
+ },
+ {
+  "name": "asp-skillagent-ka2026",
+  "type": "Microsoft.Web/serverFarms",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "B1",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Web/serverFarms/asp-skillagent-ka2026"
+ },
+ {
+  "name": "skillagent-chat-ka2026",
+  "type": "Microsoft.Web/sites",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Web/sites/skillagent-chat-ka2026"
+ },
+ {
+  "name": "log-skillagent-ka2026",
+  "type": "Microsoft.OperationalInsights/workspaces",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.OperationalInsights/workspaces/log-skillagent-ka2026"
+ },
+ {
+  "name": "appi-skillagent-ka2026",
+  "type": "Microsoft.Insights/components",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Insights/components/appi-skillagent-ka2026"
+ },
+ {
+  "name": "Application Insights Smart Detection",
+  "type": "microsoft.insights/actiongroups",
+  "location": "global",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/actiongroups/Application Insights Smart Detection"
+ },
+ {
+  "name": "Failure Anomalies - appi-skillagent-ka2026",
+  "type": "microsoft.alertsmanagement/smartDetectorAlertRules",
+  "location": "global",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.alertsmanagement/smartDetectorAlertRules/Failure Anomalies - appi-skillagent-ka2026"
+ },
+ {
+  "name": "stskillagentka2026",
+  "type": "Microsoft.Storage/storageAccounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Standard_LRS",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/stskillagentka2026"
+ },
+ {
+  "name": "dbw-skillagent-ka2026",
+  "type": "Microsoft.Databricks/workspaces",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "premium",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Databricks/workspaces/dbw-skillagent-ka2026"
+ },
+ {
+  "name": "stdbxucka2026",
+  "type": "Microsoft.Storage/storageAccounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Standard_LRS",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/stdbxucka2026"
+ },
+ {
+  "name": "ac-skillagent-ka2026",
+  "type": "Microsoft.Databricks/accessConnectors",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Databricks/accessConnectors/ac-skillagent-ka2026"
+ },
+ {
+  "name": "id-fr-refresh-ka2026",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-fr-refresh-ka2026"
+ },
+ {
+  "name": "psql-fr-ka2026",
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+  "location": "centralus",
+  "group": "DB",
+  "sku": "Standard_B1ms",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-fr-ka2026"
+ },
+ {
+  "name": "cae-fr-ka2026",
+  "type": "Microsoft.App/managedEnvironments",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.App/managedEnvironments/cae-fr-ka2026"
+ },
+ {
+  "name": "job-fr-refresh",
+  "type": "Microsoft.App/jobs",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.App/jobs/job-fr-refresh"
+ },
+ {
+  "name": "id-fr-signals-ka2026",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-fr-signals-ka2026"
+ },
+ {
+  "name": "evhns-fr-ka2026",
+  "type": "Microsoft.EventHub/namespaces",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Standard",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.EventHub/namespaces/evhns-fr-ka2026"
+ },
+ {
+  "name": "stfrsigka2026",
+  "type": "Microsoft.Storage/storageAccounts",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "Standard_LRS",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/stfrsigka2026"
+ },
+ {
+  "name": "plan-fr-signals-ka2026",
+  "type": "Microsoft.Web/serverFarms",
+  "location": "eastus",
+  "group": "DB",
+  "sku": "FC1",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Web/serverFarms/plan-fr-signals-ka2026"
+ },
+ {
+  "name": "func-fr-signals-ka2026",
+  "type": "Microsoft.Web/sites",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Web/sites/func-fr-signals-ka2026"
+ },
+ {
+  "name": "fr-signals-rejected",
+  "type": "Microsoft.Insights/scheduledqueryrules",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Insights/scheduledqueryrules/fr-signals-rejected"
+ },
+ {
+  "name": "fr-signals-function-failures",
+  "type": "Microsoft.Insights/scheduledqueryrules",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Insights/scheduledqueryrules/fr-signals-function-failures"
+ },
+ {
+  "name": "fr-signals-no-activity",
+  "type": "Microsoft.Insights/scheduledqueryrules",
+  "location": "eastus",
+  "group": "DB",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Insights/scheduledqueryrules/fr-signals-no-activity"
+ },
+ {
+  "name": "unity-catalog-access-connector",
+  "type": "Microsoft.Databricks/accessConnectors",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Databricks/accessConnectors/unity-catalog-access-connector"
+ },
+ {
+  "name": "dbmanagedidentity",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dbmanagedidentity"
+ },
+ {
+  "name": "dbstoragenshxdt4wbrulu",
+  "type": "Microsoft.Storage/storageAccounts",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": "Standard_ZRS",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Storage/storageAccounts/dbstoragenshxdt4wbrulu"
+ },
+ {
+  "name": "workers-sg",
+  "type": "Microsoft.Network/networkSecurityGroups",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg"
+ },
+ {
+  "name": "nat-gw-public-ip",
+  "type": "Microsoft.Network/publicIPAddresses",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": "StandardV2",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/publicIPAddresses/nat-gw-public-ip"
+ },
+ {
+  "name": "nat-gateway",
+  "type": "Microsoft.Network/natGateways",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": "StandardV2",
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/natGateways/nat-gateway"
+ },
+ {
+  "name": "workers-vnet",
+  "type": "Microsoft.Network/virtualNetworks",
+  "location": "eastus",
+  "group": "databricks-rg-dbw-skillagent-ka2026",
+  "sku": null,
+  "ours": true,
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/virtualNetworks/workers-vnet"
+ }
+]

@@ -1,0 +1,40 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/FE74279E-6CA8-48FF-BF54-90305B257322/resourceGroups/DB/providers/microsoft.insights/actionGroups/Application Insights Smart Detection",
+ "identity": null,
+ "kind": null,
+ "location": "Global",
+ "managedBy": null,
+ "name": "Application Insights Smart Detection",
+ "plan": null,
+ "properties": {
+  "armRoleReceivers": [
+   {
+    "name": "Monitoring Contributor",
+    "roleId": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+    "useCommonAlertSchema": true
+   },
+   {
+    "name": "Monitoring Reader",
+    "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+    "useCommonAlertSchema": true
+   }
+  ],
+  "automationRunbookReceivers": [],
+  "azureAppPushReceivers": [],
+  "azureFunctionReceivers": [],
+  "emailReceivers": [],
+  "enabled": true,
+  "eventHubReceivers": [],
+  "groupShortName": "SmartDetect",
+  "itsmReceivers": [],
+  "logicAppReceivers": [],
+  "smsReceivers": [],
+  "voiceReceivers": [],
+  "webhookReceivers": []
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "tags": null,
+ "type": "Microsoft.Insights/ActionGroups"
+}

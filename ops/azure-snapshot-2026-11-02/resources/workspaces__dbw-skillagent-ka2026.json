@@ -1,0 +1,87 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Databricks/workspaces/dbw-skillagent-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "dbw-skillagent-ka2026",
+ "plan": null,
+ "properties": {
+  "authorizations": [
+   {
+    "principalId": "9a74af6f-d153-4348-988a-e2672920bee9",
+    "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+   }
+  ],
+  "computeMode": "Hybrid",
+  "createdBy": {
+   "applicationId": "04b07795-8ddb-461a-bbee-02f9e1bf7b46",
+   "oid": "002198c8-8095-4cba-8930-dd928930c2da",
+   "puid": "0003BFFDCA1A36FE"
+  },
+  "createdDateTime": "2026-10-26T15:54:43.2278493Z",
+  "isUcEnabled": false,
+  "managedResourceGroupId": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026",
+  "parameters": {
+   "enableFedRampCertification": {
+    "type": "Bool",
+    "value": false
+   },
+   "enableNoPublicIp": {
+    "type": "Bool",
+    "value": true
+   },
+   "prepareEncryption": {
+    "type": "Bool",
+    "value": false
+   },
+   "requireInfrastructureEncryption": {
+    "type": "Bool",
+    "value": false
+   },
+   "resourceTags": {
+    "type": "Object",
+    "value": {
+     "application": "databricks",
+     "databricks-environment": "true"
+    }
+   },
+   "storageAccountName": {
+    "type": "String",
+    "value": "dbstoragenshxdt4wbrulu"
+   },
+   "storageAccountSkuName": {
+    "type": "String",
+    "value": "Standard_ZRS"
+   }
+  },
+  "provisioningState": "Succeeded",
+  "updatedBy": {
+   "applicationId": "04b07795-8ddb-461a-bbee-02f9e1bf7b46",
+   "oid": "002198c8-8095-4cba-8930-dd928930c2da",
+   "puid": "0003BFFDCA1A36FE"
+  },
+  "workspaceId": "7405606799698174",
+  "workspaceUrl": "adb-7405606799698174.14.azuredatabricks.net"
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "premium",
+  "size": null,
+  "tier": null
+ },
+ "systemData": {
+  "createdAt": "2026-10-26T15:54:43.2082378+00:00",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T15:54:43.2082378+00:00",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.Databricks/workspaces"
+}

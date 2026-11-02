@@ -1,0 +1,74 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Storage/storageAccounts/dbstoragenshxdt4wbrulu",
+ "identity": null,
+ "kind": "StorageV2",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "dbstoragenshxdt4wbrulu",
+ "plan": null,
+ "properties": {
+  "accessTier": "Hot",
+  "allowBlobPublicAccess": false,
+  "allowCrossTenantDelegationSas": false,
+  "allowCrossTenantReplication": false,
+  "allowSharedKeyAccess": true,
+  "creationTime": "2026-10-26T15:55:54.1978045Z",
+  "defaultToOAuthAuthentication": false,
+  "encryption": {
+   "keySource": "<redacted>",
+   "services": {
+    "blob": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2026-10-26T15:55:54.5869266Z"
+    },
+    "file": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2026-10-26T15:55:54.5869266Z"
+    }
+   }
+  },
+  "isHnsEnabled": true,
+  "keyCreationTime": {
+   "key1": "<redacted>",
+   "key2": "<redacted>"
+  },
+  "minimumTlsVersion": "TLS1_2",
+  "networkAcls": {
+   "bypass": "AzureServices",
+   "defaultAction": "Allow",
+   "ipRules": [],
+   "ipv6Rules": [],
+   "virtualNetworkRules": []
+  },
+  "primaryEndpoints": {
+   "blob": "https://dbstoragenshxdt4wbrulu.blob.core.windows.net/",
+   "dfs": "https://dbstoragenshxdt4wbrulu.dfs.core.windows.net/",
+   "file": "https://dbstoragenshxdt4wbrulu.file.core.windows.net/",
+   "queue": "https://dbstoragenshxdt4wbrulu.queue.core.windows.net/",
+   "table": "https://dbstoragenshxdt4wbrulu.table.core.windows.net/",
+   "web": "https://dbstoragenshxdt4wbrulu.z13.web.core.windows.net/"
+  },
+  "primaryLocation": "eastus",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "statusOfPrimary": "available",
+  "supportsHttpsTrafficOnly": true
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "Standard_ZRS",
+  "size": null,
+  "tier": "Standard"
+ },
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.Storage/storageAccounts"
+}

@@ -1,0 +1,57 @@
+[
+ {
+  "name": "AzureWebJobsStorage__accountName",
+  "slotSetting": false,
+  "value": "stfrsigka2026"
+ },
+ {
+  "name": "AzureWebJobsStorage__credential",
+  "slotSetting": false,
+  "value": "managedidentity"
+ },
+ {
+  "name": "AzureWebJobsStorage__clientId",
+  "slotSetting": false,
+  "value": "1cc8318d-391f-4543-b2c5-8b30f6f166a1"
+ },
+ {
+  "name": "EventHubConnection__fullyQualifiedNamespace",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "EventHubConnection__credential",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "EventHubConnection__clientId",
+  "slotSetting": false,
+  "value": "<redacted>"
+ },
+ {
+  "name": "EVENTHUB_NAME",
+  "slotSetting": false,
+  "value": "fr-signals"
+ },
+ {
+  "name": "EVENTHUB_CONSUMER_GROUP",
+  "slotSetting": false,
+  "value": "fr-signals-processor"
+ },
+ {
+  "name": "AZURE_CLIENT_ID",
+  "slotSetting": false,
+  "value": "1cc8318d-391f-4543-b2c5-8b30f6f166a1"
+ },
+ {
+  "name": "FR_DATABASE_URL",
+  "slotSetting": false,
+  "value": "host=psql-fr-ka2026.postgres.database.azure.com dbname=fr user=id-fr-signals-ka2026"
+ },
+ {
+  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+  "slotSetting": false,
+  "value": "<redacted>"
+ }
+]

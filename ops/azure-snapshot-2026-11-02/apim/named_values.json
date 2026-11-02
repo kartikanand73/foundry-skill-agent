@@ -1,0 +1,92 @@
+{
+ "count": 8,
+ "value": [
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/foundry-agent-protocols-url",
+   "name": "foundry-agent-protocols-url",
+   "properties": {
+    "displayName": "foundry-agent-protocols-url",
+    "secret": false,
+    "tags": null,
+    "value": "https://db-accesshandonsss3.services.ai.azure.com/api/projects/proj-default/agents/skill-agent/endpoint/protocols"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/6ade988ce660210e6476a04f",
+   "name": "6ade988ce660210e6476a04f",
+   "properties": {
+    "displayName": "Logger-Credentials--6ade988ce660210e6476a050",
+    "secret": true,
+    "tags": null
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/skill-agent-api-audience",
+   "name": "skill-agent-api-audience",
+   "properties": {
+    "displayName": "skill-agent-api-audience",
+    "secret": false,
+    "tags": null,
+    "value": "api://d4866a79-657e-434f-a7a4-e9619ea1bf4e"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/tenant-id",
+   "name": "tenant-id",
+   "properties": {
+    "displayName": "tenant-id",
+    "secret": false,
+    "tags": null,
+    "value": "19540d9a-5368-4dae-a52d-642342e1f5c7"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/token-ledger-table-url",
+   "name": "token-ledger-table-url",
+   "properties": {
+    "displayName": "token-ledger-table-url",
+    "secret": false,
+    "tags": null,
+    "value": "https://stskillagentka2026.table.core.windows.net"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/token-limit-app-monthly",
+   "name": "token-limit-app-monthly",
+   "properties": {
+    "displayName": "token-limit-app-monthly",
+    "secret": false,
+    "tags": null,
+    "value": "2000000"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/token-limit-user-daily",
+   "name": "token-limit-user-daily",
+   "properties": {
+    "displayName": "token-limit-user-daily",
+    "secret": false,
+    "tags": null,
+    "value": "50000"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  },
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/namedValues/webapp-principal-id",
+   "name": "webapp-principal-id",
+   "properties": {
+    "displayName": "webapp-principal-id",
+    "secret": false,
+    "tags": null,
+    "value": "4db65470-6741-4b59-82ca-4a18868ad14f"
+   },
+   "type": "Microsoft.ApiManagement/service/namedValues"
+  }
+ ]
+}

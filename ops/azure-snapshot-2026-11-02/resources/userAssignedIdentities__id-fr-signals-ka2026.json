@@ -1,0 +1,20 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourcegroups/DB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-fr-signals-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "id-fr-signals-ka2026",
+ "plan": null,
+ "properties": {
+  "clientId": "1cc8318d-391f-4543-b2c5-8b30f6f166a1",
+  "isolationScope": "None",
+  "principalId": "f66fe8ec-f1de-4323-8322-f561b01bafcb",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "tags": {},
+ "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}

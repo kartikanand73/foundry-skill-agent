@@ -1,0 +1,93 @@
+{
+ "etag": "AAAAATLS174=",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026",
+ "identity": {
+  "principalId": "52aa6f83-8ccf-44a0-9a5c-0110150710b1",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+ },
+ "kind": null,
+ "location": "East US",
+ "managedBy": null,
+ "name": "apim-skillagent-ka2026",
+ "plan": null,
+ "properties": {
+  "additionalLocations": null,
+  "apiVersionConstraint": {
+   "minApiVersion": null
+  },
+  "certificates": null,
+  "configurationApi": null,
+  "createdAtUtc": "2026-10-25T17:31:45.5496362Z",
+  "customProperties": {
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "False",
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "False",
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "False",
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "False",
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "False",
+   "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "False"
+  },
+  "dataApiUrl": null,
+  "developerPortalStatus": "Enabled",
+  "developerPortalUrl": null,
+  "disableGateway": false,
+  "gatewayRegionalUrl": null,
+  "gatewayUrl": "https://apim-skillagent-ka2026.azure-api.net",
+  "hostnameConfigurations": [
+   {
+    "certificate": null,
+    "certificatePassword": null,
+    "certificateSource": "BuiltIn",
+    "certificateStatus": null,
+    "defaultSslBinding": true,
+    "encodedCertificate": null,
+    "hostName": "apim-skillagent-ka2026.azure-api.net",
+    "identityClientId": null,
+    "keyVaultId": null,
+    "negotiateClientCertificate": false,
+    "type": "Proxy"
+   }
+  ],
+  "legacyPortalStatus": "Disabled",
+  "managementApiUrl": null,
+  "natGatewayState": "Disabled",
+  "notificationSenderEmail": "kartikanand@gmail.com",
+  "outboundPublicIPAddresses": null,
+  "platformVersion": "mtv1",
+  "portalUrl": null,
+  "privateEndpointConnections": null,
+  "privateIPAddresses": null,
+  "provisioningState": "Succeeded",
+  "publicIPAddresses": null,
+  "publicIpAddressId": null,
+  "publicNetworkAccess": "Enabled",
+  "publisherEmail": "kartikanand@gmail.com",
+  "publisherName": "Kartik Anand",
+  "scmUrl": null,
+  "targetProvisioningState": "",
+  "virtualNetworkConfiguration": null,
+  "virtualNetworkType": "None"
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": 0,
+  "family": null,
+  "model": null,
+  "name": "Consumption",
+  "size": null,
+  "tier": null
+ },
+ "systemData": {
+  "createdAt": "2026-10-25T17:31:44.7310236Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-25T17:31:44.7310236Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": {},
+ "type": "Microsoft.ApiManagement/service",
+ "zones": null
+}

@@ -1,0 +1,78 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.App/managedEnvironments/cae-fr-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "East US",
+ "managedBy": null,
+ "name": "cae-fr-ka2026",
+ "plan": null,
+ "properties": {
+  "appInsightsConfiguration": null,
+  "appLogsConfiguration": {
+   "destination": "log-analytics",
+   "logAnalyticsConfiguration": {
+    "customerId": "7e5a351f-a3e5-4dc9-9e52-5014f6595751",
+    "sharedKey": null
+   }
+  },
+  "customDomainConfiguration": {
+   "certificateKeyVaultProperties": null,
+   "certificatePassword": null,
+   "certificateValue": null,
+   "customDomainVerificationId": "<redacted>",
+   "dnsSuffix": null,
+   "expirationDate": null,
+   "subjectName": null,
+   "thumbprint": null
+  },
+  "daprAIConnectionString": null,
+  "daprAIInstrumentationKey": null,
+  "daprConfiguration": {
+   "version": "1.16.4-msft.13"
+  },
+  "defaultDomain": "orangeground-de97de2c.eastus.azurecontainerapps.io",
+  "environmentMode": "WorkloadProfiles",
+  "eventStreamEndpoint": "https://eastus.azurecontainerapps.dev/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/managedEnvironments/cae-fr-ka2026/eventstream",
+  "infrastructureResourceGroup": null,
+  "ingressConfiguration": null,
+  "kedaConfiguration": {
+   "version": "2.20.2"
+  },
+  "openTelemetryConfiguration": null,
+  "peerAuthentication": {
+   "mtls": {
+    "enabled": false
+   }
+  },
+  "peerTrafficConfiguration": {
+   "encryption": {
+    "enabled": false
+   }
+  },
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "staticIp": "128.203.80.66",
+  "vnetConfiguration": null,
+  "workloadProfiles": [
+   {
+    "enableFips": false,
+    "name": "Consumption",
+    "workloadProfileType": "Consumption"
+   }
+  ],
+  "zoneRedundant": false
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T19:53:27.506186",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T19:53:27.506186",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.App/managedEnvironments"
+}

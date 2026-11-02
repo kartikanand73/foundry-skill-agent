@@ -1,0 +1,40 @@
+{
+ "count": 1,
+ "value": [
+  {
+   "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.ApiManagement/service/apim-skillagent-ka2026/apis/skill-agent",
+   "name": "skill-agent",
+   "properties": {
+    "a2aProperties": null,
+    "agent": null,
+    "apiRevision": "1",
+    "authenticationSettings": {
+     "oAuth2": null,
+     "oAuth2AuthenticationSettings": [],
+     "openid": null,
+     "openidAuthenticationSettings": []
+    },
+    "backendId": null,
+    "description": null,
+    "displayName": "Skill Agent",
+    "effectivePath": null,
+    "isAgent": false,
+    "isCurrent": true,
+    "jsonRpcProperties": null,
+    "mcpProperties": null,
+    "path": "<redacted>",
+    "protocols": [
+     "https"
+    ],
+    "serviceUrl": "https://db-accesshandonsss3.services.ai.azure.com/api/projects/proj-default/agents/skill-agent/endpoint/protocols",
+    "subscriptionKeyParameterNames": {
+     "bearer": null,
+     "header": "Ocp-Apim-Subscription-Key",
+     "query": "subscription-key"
+    },
+    "subscriptionRequired": true
+   },
+   "type": "Microsoft.ApiManagement/service/apis"
+  }
+ ]
+}

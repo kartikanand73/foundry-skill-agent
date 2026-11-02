@@ -1,0 +1,146 @@
+[
+ {
+  "etag": "\"ac7346e8-0a63-4655-8601-b7897a319db5\"",
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3/deployments/gpt-5",
+  "name": "gpt-5",
+  "properties": {
+   "callRateLimit": null,
+   "capabilities": {
+    "agentsV2": "true",
+    "area": "US",
+    "assistants": "true",
+    "chatCompletion": "true",
+    "responses": "true"
+   },
+   "capacitySettings": null,
+   "currentCapacity": 50,
+   "deploymentState": "Running",
+   "dynamicThrottlingEnabled": null,
+   "model": {
+    "callRateLimit": null,
+    "format": "OpenAI",
+    "name": "gpt-5",
+    "publisher": null,
+    "source": null,
+    "sourceAccount": null,
+    "version": "2025-08-07"
+   },
+   "parentDeploymentName": null,
+   "provisioningState": "Succeeded",
+   "raiPolicyName": "skill-agent-guardrail",
+   "rateLimits": [
+    {
+     "count": 500.0,
+     "dynamicThrottlingEnabled": null,
+     "key": "<redacted>",
+     "matchPatterns": null,
+     "minCount": null,
+     "renewalPeriod": 60.0
+    },
+    {
+     "count": 50000.0,
+     "dynamicThrottlingEnabled": null,
+     "key": "<redacted>",
+     "matchPatterns": null,
+     "minCount": null,
+     "renewalPeriod": 60.0
+    }
+   ],
+   "routing": null,
+   "scaleSettings": null,
+   "serviceTier": null,
+   "speculativeDecoding": null,
+   "spilloverDeploymentName": null,
+   "versionUpgradeOption": "OnceNewDefaultVersionAvailable"
+  },
+  "resourceGroup": "DB",
+  "sku": {
+   "capacity": 50,
+   "family": null,
+   "name": "GlobalStandard",
+   "size": null,
+   "tier": null
+  },
+  "systemData": {
+   "createdAt": "2026-10-20T17:12:38.493554+00:00",
+   "createdBy": "kartikanand@gmail.com",
+   "createdByType": "User",
+   "lastModifiedAt": "2026-10-26T13:29:29.564139+00:00",
+   "lastModifiedBy": "kartikanand@gmail.com",
+   "lastModifiedByType": "User"
+  },
+  "tags": null,
+  "type": "Microsoft.CognitiveServices/accounts/deployments"
+ },
+ {
+  "etag": "\"eb9d0ebd-a490-4809-85b2-b65c803bef65\"",
+  "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3/deployments/text-embedding-3-small",
+  "name": "text-embedding-3-small",
+  "properties": {
+   "callRateLimit": null,
+   "capabilities": {
+    "area": "US",
+    "embeddings": "true",
+    "embeddingsMaxInputs": "2048"
+   },
+   "capacitySettings": null,
+   "currentCapacity": 120,
+   "deploymentState": "Running",
+   "dynamicThrottlingEnabled": null,
+   "model": {
+    "callRateLimit": null,
+    "format": "OpenAI",
+    "name": "text-embedding-3-small",
+    "publisher": null,
+    "source": null,
+    "sourceAccount": null,
+    "version": "1"
+   },
+   "parentDeploymentName": null,
+   "provisioningState": "Succeeded",
+   "raiPolicyName": "Microsoft.DefaultV2",
+   "rateLimits": [
+    {
+     "count": 120.0,
+     "dynamicThrottlingEnabled": null,
+     "key": "<redacted>",
+     "matchPatterns": null,
+     "minCount": null,
+     "renewalPeriod": 10.0
+    },
+    {
+     "count": 120000.0,
+     "dynamicThrottlingEnabled": null,
+     "key": "<redacted>",
+     "matchPatterns": null,
+     "minCount": null,
+     "renewalPeriod": 60.0
+    }
+   ],
+   "routing": null,
+   "scaleSettings": null,
+   "serviceTier": null,
+   "speculativeDecoding": null,
+   "spilloverDeploymentName": null,
+   "versionUpgradeOption": "OnceNewDefaultVersionAvailable"
+  },
+  "resourceGroup": "DB",
+  "sku": {
+   "capacity": 120,
+   "family": null,
+   "name": "Standard",
+   "size": null,
+   "tier": null
+  },
+  "systemData": {
+   "createdAt": "2026-10-20T17:12:51.758715+00:00",
+   "createdBy": "kartikanand@gmail.com",
+   "createdByType": "User",
+   "lastModifiedAt": "2026-10-20T17:12:51.758715+00:00",
+   "lastModifiedBy": "kartikanand@gmail.com",
+   "lastModifiedByType": "User"
+  },
+  "tags": null,
+  "type": "Microsoft.CognitiveServices/accounts/deployments"
+ }
+]

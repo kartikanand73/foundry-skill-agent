@@ -1,0 +1,73 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-fr-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "Central US",
+ "managedBy": null,
+ "name": "psql-fr-ka2026",
+ "plan": null,
+ "properties": {
+  "authConfig": {
+   "activeDirectoryAuth": "Enabled",
+   "passwordAuth": "<redacted>",
+   "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7"
+  },
+  "availabilityZone": "2",
+  "backup": {
+   "backupRetentionDays": 7,
+   "earliestRestoreDate": "2026-10-26T19:46:30.6138939+00:00",
+   "geoRedundantBackup": "Disabled",
+   "immutableBackup": "Disabled"
+  },
+  "dataEncryption": {
+   "type": "SystemManaged"
+  },
+  "fipsMode": "Disabled",
+  "fullyQualifiedDomainName": "psql-fr-ka2026.postgres.database.azure.com",
+  "highAvailability": {
+   "mode": "Disabled",
+   "state": "NotEnabled"
+  },
+  "maintenanceWindow": {
+   "customWindow": "Disabled",
+   "dayOfWeek": 0,
+   "startHour": 0,
+   "startMinute": 0
+  },
+  "minorVersion": "15",
+  "network": {
+   "publicNetworkAccess": "Enabled"
+  },
+  "privateEndpointConnections": [],
+  "replica": {
+   "capacity": 5,
+   "role": "Primary"
+  },
+  "replicaCapacity": 5,
+  "replicationRole": "Primary",
+  "state": "Ready",
+  "storage": {
+   "autoGrow": "Disabled",
+   "iops": 120,
+   "storageSizeGB": 32,
+   "tier": "P4",
+   "type": "Premium_LRS"
+  },
+  "version": "16"
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "Standard_B1ms",
+  "size": null,
+  "tier": "Burstable"
+ },
+ "systemData": {
+  "createdAt": "2026-10-26T19:40:29.4334159Z"
+ },
+ "tags": null,
+ "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+}

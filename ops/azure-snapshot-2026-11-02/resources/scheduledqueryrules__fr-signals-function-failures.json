@@ -1,0 +1,49 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/scheduledqueryrules/fr-signals-function-failures",
+ "identity": null,
+ "kind": "LogAlert",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "fr-signals-function-failures",
+ "plan": null,
+ "properties": {
+  "autoMitigate": true,
+  "createdWithApiVersion": "2023-03-15-preview",
+  "criteria": {
+   "allOf": [
+    {
+     "failingPeriods": {
+      "minFailingPeriodsToAlert": 1,
+      "numberOfEvaluationPeriods": 1
+     },
+     "operator": "GreaterThan",
+     "query": "requests | where cloud_RoleName == 'func-fr-signals-ka2026' and success == false",
+     "threshold": 0.0,
+     "timeAggregation": "Count"
+    }
+   ]
+  },
+  "description": "The signals Function failed (batch will be retried; check exceptions)",
+  "displayName": "fr-signals-function-failures",
+  "enabled": true,
+  "evaluationFrequency": "PT5M",
+  "scopes": [
+   "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/components/appi-skillagent-ka2026"
+  ],
+  "severity": 1,
+  "windowSize": "PT5M"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T22:19:20.9590749Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T22:19:20.9590749Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.Insights/scheduledQueryRules"
+}

@@ -1,0 +1,50 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/scheduledqueryrules/fr-signals-rejected",
+ "identity": null,
+ "kind": "LogAlert",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "fr-signals-rejected",
+ "plan": null,
+ "properties": {
+  "autoMitigate": true,
+  "createdWithApiVersion": "2023-03-15-preview",
+  "criteria": {
+   "allOf": [
+    {
+     "failingPeriods": {
+      "minFailingPeriodsToAlert": 1,
+      "numberOfEvaluationPeriods": 1
+     },
+     "metricMeasureColumn": "rejected",
+     "operator": "GreaterThan",
+     "query": "traces | where cloud_RoleName == 'func-fr-signals-ka2026' and message startswith 'fr_signals_batch' | extend rejected = toint(extract(@'rejected=(\\d+)', 1, message)) | project timestamp, rejected",
+     "threshold": 5.0,
+     "timeAggregation": "Total"
+    }
+   ]
+  },
+  "description": "More than 5 signal events rejected in 15 minutes (bad producer or schema drift)",
+  "displayName": "fr-signals-rejected",
+  "enabled": true,
+  "evaluationFrequency": "PT5M",
+  "scopes": [
+   "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/microsoft.insights/components/appi-skillagent-ka2026"
+  ],
+  "severity": 2,
+  "windowSize": "PT15M"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "systemData": {
+  "createdAt": "2026-10-26T22:19:12.6698385Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2026-10-26T22:19:12.6698385Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": null,
+ "type": "Microsoft.Insights/scheduledQueryRules"
+}

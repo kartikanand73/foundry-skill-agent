@@ -1,0 +1,197 @@
+{
+ "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "workers-sg",
+ "plan": null,
+ "properties": {
+  "defaultSecurityRules": [
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/AllowVnetInBound",
+    "name": "AllowVnetInBound",
+    "properties": {
+     "access": "Allow",
+     "description": "Allow inbound traffic from all VMs in VNET",
+     "destinationAddressPrefix": "VirtualNetwork",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Inbound",
+     "priority": 65000,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "VirtualNetwork",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   },
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+    "name": "AllowAzureLoadBalancerInBound",
+    "properties": {
+     "access": "Allow",
+     "description": "Allow inbound traffic from azure load balancer",
+     "destinationAddressPrefix": "*",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Inbound",
+     "priority": 65001,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "AzureLoadBalancer",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   },
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/DenyAllInBound",
+    "name": "DenyAllInBound",
+    "properties": {
+     "access": "Deny",
+     "description": "Deny all inbound traffic",
+     "destinationAddressPrefix": "*",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Inbound",
+     "priority": 65500,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "*",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   },
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/AllowVnetOutBound",
+    "name": "AllowVnetOutBound",
+    "properties": {
+     "access": "Allow",
+     "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+     "destinationAddressPrefix": "VirtualNetwork",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Outbound",
+     "priority": 65000,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "VirtualNetwork",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   },
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/AllowInternetOutBound",
+    "name": "AllowInternetOutBound",
+    "properties": {
+     "access": "Allow",
+     "description": "Allow outbound traffic from all VMs to Internet",
+     "destinationAddressPrefix": "Internet",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Outbound",
+     "priority": 65001,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "*",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   },
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/defaultSecurityRules/DenyAllOutBound",
+    "name": "DenyAllOutBound",
+    "properties": {
+     "access": "Deny",
+     "description": "Deny all outbound traffic",
+     "destinationAddressPrefix": "*",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Outbound",
+     "priority": 65500,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "*",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+   }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGuid": "9c2cfa07-31aa-4c75-9749-65e3160fd7a7",
+  "securityRules": [
+   {
+    "etag": "W/\"59dd1d82-6a65-4f17-8d0e-6954e2f47bf4\"",
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/databricks-rg-dbw-skillagent-ka2026/providers/Microsoft.Network/networkSecurityGroups/workers-sg/securityRules/databricks-worker-to-worker",
+    "name": "databricks-worker-to-worker",
+    "properties": {
+     "access": "Allow",
+     "description": "Required for worker nodes communication within a cluster.",
+     "destinationAddressPrefix": "VirtualNetwork",
+     "destinationAddressPrefixes": [],
+     "destinationPortRange": "*",
+     "destinationPortRanges": [],
+     "direction": "Inbound",
+     "priority": 200,
+     "protocol": "*",
+     "provisioningState": "Succeeded",
+     "sourceAddressPrefix": "VirtualNetwork",
+     "sourceAddressPrefixes": [],
+     "sourcePortRange": "*",
+     "sourcePortRanges": []
+    },
+    "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+    "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+   }
+  ],
+  "subnets": [
+   {
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DATABRICKS-RG-DBW-SKILLAGENT-KA2026/providers/Microsoft.Network/virtualNetworks/WORKERS-VNET/subnets/PRIVATE-SUBNET",
+    "resourceGroup": "DATABRICKS-RG-DBW-SKILLAGENT-KA2026"
+   },
+   {
+    "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DATABRICKS-RG-DBW-SKILLAGENT-KA2026/providers/Microsoft.Network/virtualNetworks/WORKERS-VNET/subnets/PUBLIC-SUBNET",
+    "resourceGroup": "DATABRICKS-RG-DBW-SKILLAGENT-KA2026"
+   }
+  ]
+ },
+ "resourceGroup": "databricks-rg-dbw-skillagent-ka2026",
+ "sku": null,
+ "tags": {
+  "application": "databricks",
+  "databricks-environment": "true"
+ },
+ "type": "Microsoft.Network/networkSecurityGroups"
+}

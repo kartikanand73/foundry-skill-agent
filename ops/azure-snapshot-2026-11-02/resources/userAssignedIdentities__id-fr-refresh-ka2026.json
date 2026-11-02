@@ -1,0 +1,20 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourcegroups/DB/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-fr-refresh-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "id-fr-refresh-ka2026",
+ "plan": null,
+ "properties": {
+  "clientId": "c3dcd314-3311-4d66-8d5a-a3c909fd81f7",
+  "isolationScope": "None",
+  "principalId": "969a6750-d0e2-4ec5-b69d-18533cac1fcd",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7"
+ },
+ "resourceGroup": "DB",
+ "sku": null,
+ "tags": {},
+ "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}

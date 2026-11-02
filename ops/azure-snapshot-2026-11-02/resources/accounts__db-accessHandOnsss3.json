@@ -1,0 +1,2368 @@
+{
+ "etag": "\"8804b798-0000-0100-0000-6adf55bb0000\"",
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.CognitiveServices/accounts/db-accessHandOnsss3",
+ "identity": {
+  "principalId": "e39a56dc-f403-4eae-9ae8-6c157804c5ab",
+  "tenantId": "19540d9a-5368-4dae-a52d-642342e1f5c7",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+ },
+ "kind": "AIServices",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "db-accessHandOnsss3",
+ "plan": null,
+ "properties": {
+  "a365LoggingEnabled": true,
+  "a365Status": "Enabled",
+  "allowProjectManagement": true,
+  "apiProperties": {
+   "qnaAzureSearchEndpointKey": null
+  },
+  "associatedProjects": [
+   "proj-default"
+  ],
+  "callRateLimit": {
+   "rules": [
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 300,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 300,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 300,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 600,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 3,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 150,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 150,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 50,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 3,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 2,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 200,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 2,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "PUT",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "PUT",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 20,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 5,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 10000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 15,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 50,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 5,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 15,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 5,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 20,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 500,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 50,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 5,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 5,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 10,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1000,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 30,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 400,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 1,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 200,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 200,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 200,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 2,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 200,
+     "dynamicThrottlingEnabled": true,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 10
+    },
+    {
+     "count": 15,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 50,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 15,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "PUT",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "PATCH",
+       "path": "<redacted>"
+      },
+      {
+       "method": "PUT",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      },
+      {
+       "method": "PATCH",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "PATCH",
+       "path": "<redacted>"
+      },
+      {
+       "method": "DELETE",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 10,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 120,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 120,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 120,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 60,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 6000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      },
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 500,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 100,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      },
+      {
+       "method": "GET",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 120,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      },
+      {
+       "method": "POST",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 60
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 1000000,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    },
+    {
+     "count": 30,
+     "key": "<redacted>",
+     "matchPatterns": [
+      {
+       "method": "*",
+       "path": "<redacted>"
+      }
+     ],
+     "renewalPeriod": 1
+    }
+   ]
+  },
+  "capabilities": [
+   {
+    "name": "VirtualNetworks"
+   },
+   {
+    "name": "EnabledApimVnet",
+    "value": "true"
+   },
+   {
+    "name": "TrustedServices",
+    "value": "Microsoft.CognitiveServices,Microsoft.MachineLearningServices,Microsoft.Search,Microsoft.CognitiveServices,Microsoft.MachineLearningServices,Microsoft.Search,Microsoft.VideoIndexer,Microsoft.CognitiveServices"
+   },
+   {
+    "name": "CustomerManagedKey"
+   },
+   {
+    "name": "CustomerManagedStorage"
+   },
+   {
+    "name": "MaxFineTuneCount",
+    "value": "500"
+   },
+   {
+    "name": "MaxRunningFineTuneCount",
+    "value": "3"
+   },
+   {
+    "name": "MaxUserFileCount",
+    "value": "100"
+   },
+   {
+    "name": "MaxTrainingFileSize",
+    "value": "512000000"
+   },
+   {
+    "name": "MaxUserFileImportDurationInHours",
+    "value": "1"
+   },
+   {
+    "name": "MaxFineTuneJobDurationInHours",
+    "value": "720"
+   },
+   {
+    "name": "MaxEvaluationRunDurationInHours",
+    "value": "5"
+   },
+   {
+    "name": "MaxRunningEvaluationCount",
+    "value": "5"
+   },
+   {
+    "name": "NetworkSecurityPerimeter"
+   },
+   {
+    "name": "useEndpointRateLimiter",
+    "value": "Enabled"
+   },
+   {
+    "name": "MaxRunningGlobalStandardFineTuneCount",
+    "value": "3"
+   },
+   {
+    "name": "RaiMonitor"
+   },
+   {
+    "name": "quotaRefundsEnabled",
+    "value": "false"
+   },
+   {
+    "name": "audio",
+    "value": "true"
+   },
+   {
+    "name": "imageGenerations",
+    "value": "true"
+   },
+   {
+    "name": "chatCompletion",
+    "value": "true"
+   },
+   {
+    "name": "fineTune",
+    "value": "true"
+   },
+   {
+    "name": "imageEdits",
+    "value": "true"
+   },
+   {
+    "name": "realtimeTranscription",
+    "value": "true"
+   },
+   {
+    "name": "Container",
+    "value": "ContentSafety.TextAnalyze,ContentSafety.ImageAnalyze,ContentSafety.Jailbreak,ContentSafety.jailbreakanalyze,ContentSafety.jailbreakanalyzenew,ComputerVision.ComputerVisionRead,ComputerVision.ocr,ComputerVision.readfile,ComputerVision.readfiledsd,ComputerVision.recognizetext,ComputerVision.ComputerVision,ComputerVision.ocrlayoutworker,ComputerVision.ocrcontroller,ComputerVision.ocrdispatcher,ComputerVision.ocrbillingprocessor,ComputerVision.ocranalyzer,ComputerVision.ocrpagesplitter,ComputerVision.ocrapi,ComputerVision.ocrengineworker,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp,SpeechServices.CustomSpeechToText,SpeechServices.NeuralTextToSpeechOnPrem,SpeechServices.DPP,SpeechServices.SpeechToText,SpeechServices.ctsdiarizer,SpeechServices.diarization,TextAnalytics.Healthcare,TextAnalytics.EntityV3,TextAnalytics.EntityONNX,TextAnalytics.Keyphrase,TextAnalytics.KeyphraseV2,TextAnalytics.KeyPhraseONNX,TextAnalytics.LanguageFastText,TextAnalytics.Language,TextAnalytics.LanguageV2,TextAnalytics.Sentiment,TextAnalytics.SentimentV2,TextAnalytics.SentimentV3,TextAnalytics.SentimentV3Preview,TextAnalytics.SentimentONNX,TextAnalytics.CustomNER,TextAnalytics.textanalyticsdispatcher,TextAnalytics.SummarizationFrontend,TextAnalytics.SummarizationWorker,TextAnalytics.PII,TextAnalytics.CluRuntime,TextAnalytics.CluContainer,TextAnalytics.NER"
+   },
+   {
+    "name": "DynamicThrottling"
+   },
+   {
+    "name": "CommitmentPlan"
+   },
+   {
+    "name": "Cloud",
+    "value": "TextAnalytics.Healthcare,TextAnalytics.Analyze,QuestionAnswer.AllApis,LanguageService.QuestionAnsweringApis"
+   }
+  ],
+  "customSubDomainName": "db-accesshandonsss3",
+  "dateCreated": "2025-11-19T16:50:17.4367101Z",
+  "defaultProject": "proj-default",
+  "endpoint": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+  "endpoints": {
+   "AI Foundry API": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Azure AI Model Inference API": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Azure MAI Model Inference API": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Azure MAI Model Inference API v1.0": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Azure MAI Realtime API v1.0": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Azure OpenAI Legacy API - Latest moniker": "https://db-accesshandonsss3.openai.azure.com/",
+   "Cohere AI API": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Computer Vision": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Container": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Content Safety": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Content Understanding": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "Conversational Language Understanding Authoring": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "ConversationalLURuntime": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Custom Question Answering": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Custom Question Answering Authoring": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Custom Text Authoring": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "CustomTranslator": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "DocumentTranslation": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "FormRecognizer": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "LUIS": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Language": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Language Remote MCP Server": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "MAAP Managed Deployments API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Mistral AI API": "https://db-accesshandonsss3.services.ai.azure.com/",
+   "OpenAI Dall-E API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Language Model Instance API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Model Scaleset API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Moderations API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Realtime API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Realtime Live WebSocket API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Realtime Translation WebSocket API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Response API on Websocket": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Sora API": "https://db-accesshandonsss3.openai.azure.com/",
+   "OpenAI Whisper API": "https://db-accesshandonsss3.openai.azure.com/",
+   "ProjectA APIs": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "QnAMaker": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "QuestionAnswering": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Audio Content Creation": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Batch Avatar": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Batch Text to Speech": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Custom Avatar": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Custom Voice": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Custom Voice Trial": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Podcast": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speaker Identification": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speaker Verification": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text (Standard)": "https://eastus.stt.speech.microsoft.com",
+   "Speech Services Speech to Text 2024-05-15-preview": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text 2024-11-15": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text 2025-10-15": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text v3.2": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Speech to Text v3.2_internal.1": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services TTS Player": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Speech Services Text to Speech (Neural)": "https://eastus.tts.speech.microsoft.com",
+   "Text Analytics": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "TextTranslation": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "TextTranslation-Global": "https://api.cognitive.microsofttranslator.com/",
+   "Token": "<redacted>",
+   "Token Service API": "<redacted>",
+   "Turing": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Video Translation": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Agent Realtime API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live Capabilities API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live Media Gateway Calls API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live Media Gateway Calls HTTP API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live Realtime API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live SIP API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "Voice Live SIP Calls API": "https://db-accesshandonsss3.cognitiveservices.azure.com/",
+   "fal.ai Inference API": "https://db-accesshandonsss3.cognitiveservices.azure.com/"
+  },
+  "internalId": "18cb18d5dab74275b0c67c87ab67c143",
+  "isMigrated": false,
+  "networkAcls": {
+   "defaultAction": "Allow",
+   "ipRules": [],
+   "virtualNetworkRules": []
+  },
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled"
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "S0",
+  "size": null,
+  "tier": null
+ },
+ "systemData": {
+  "createdAt": "2025-11-19T16:50:15.9160728Z",
+  "createdBy": "kartikanand@gmail.com",
+  "createdByType": "User",
+  "lastModifiedAt": "2025-11-19T16:50:15.9160728Z",
+  "lastModifiedBy": "kartikanand@gmail.com",
+  "lastModifiedByType": "User"
+ },
+ "tags": {},
+ "type": "Microsoft.CognitiveServices/accounts"
+}

@@ -1,0 +1,70 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.Storage/storageAccounts/stdbxucka2026",
+ "identity": null,
+ "kind": "StorageV2",
+ "location": "eastus",
+ "managedBy": null,
+ "name": "stdbxucka2026",
+ "plan": null,
+ "properties": {
+  "accessTier": "Hot",
+  "allowBlobPublicAccess": false,
+  "allowCrossTenantDelegationSas": false,
+  "allowCrossTenantReplication": false,
+  "allowSharedKeyAccess": false,
+  "creationTime": "2026-10-26T16:23:16.3401410Z",
+  "encryption": {
+   "keySource": "<redacted>",
+   "services": {
+    "blob": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2026-10-26T16:23:16.7408665Z"
+    },
+    "file": {
+     "enabled": true,
+     "keyType": "<redacted>",
+     "lastEnabledTime": "2026-10-26T16:23:16.7408665Z"
+    }
+   }
+  },
+  "isHnsEnabled": true,
+  "keyCreationTime": {
+   "key1": "<redacted>",
+   "key2": "<redacted>"
+  },
+  "minimumTlsVersion": "TLS1_2",
+  "networkAcls": {
+   "bypass": "None",
+   "defaultAction": "Allow",
+   "ipRules": [],
+   "ipv6Rules": [],
+   "virtualNetworkRules": []
+  },
+  "primaryEndpoints": {
+   "blob": "https://stdbxucka2026.blob.core.windows.net/",
+   "dfs": "https://stdbxucka2026.dfs.core.windows.net/",
+   "file": "https://stdbxucka2026.file.core.windows.net/",
+   "queue": "https://stdbxucka2026.queue.core.windows.net/",
+   "table": "https://stdbxucka2026.table.core.windows.net/",
+   "web": "https://stdbxucka2026.z13.web.core.windows.net/"
+  },
+  "primaryLocation": "eastus",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "statusOfPrimary": "available",
+  "supportsHttpsTrafficOnly": true
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": null,
+  "family": null,
+  "model": null,
+  "name": "Standard_LRS",
+  "size": null,
+  "tier": "Standard"
+ },
+ "tags": {},
+ "type": "Microsoft.Storage/storageAccounts"
+}

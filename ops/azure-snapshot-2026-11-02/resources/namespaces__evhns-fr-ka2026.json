@@ -1,0 +1,53 @@
+{
+ "extendedLocation": null,
+ "id": "/subscriptions/fe74279e-6ca8-48ff-bf54-90305b257322/resourceGroups/DB/providers/Microsoft.EventHub/namespaces/evhns-fr-ka2026",
+ "identity": null,
+ "kind": null,
+ "location": "eastus",
+ "managedBy": null,
+ "name": "evhns-fr-ka2026",
+ "plan": null,
+ "properties": {
+  "createdAt": "2026-10-26T22:05:19.4903525Z",
+  "disableLocalAuth": true,
+  "errors": [],
+  "geoDataReplication": {
+   "locations": [
+    {
+     "locationName": "eastus",
+     "replicaState": "Ready",
+     "roleType": "Primary"
+    }
+   ],
+   "maxReplicationLagDurationInSeconds": 0
+  },
+  "ipAddressType": "IPv4",
+  "isAutoInflateEnabled": false,
+  "kafkaEnabled": true,
+  "maximumThroughputUnits": 0,
+  "metricId": "fe74279e-6ca8-48ff-bf54-90305b257322:evhns-fr-ka2026",
+  "minimumTlsVersion": "1.2",
+  "platformCapabilities": {
+   "confidentialCompute": {
+    "mode": "Disabled"
+   }
+  },
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": "Enabled",
+  "serviceBusEndpoint": "https://evhns-fr-ka2026.servicebus.windows.net:443/",
+  "status": "Active",
+  "updatedAt": "2026-10-26T22:05:19.4903525Z",
+  "zoneRedundant": true
+ },
+ "resourceGroup": "DB",
+ "sku": {
+  "capacity": 1,
+  "family": null,
+  "model": null,
+  "name": "Standard",
+  "size": null,
+  "tier": "Standard"
+ },
+ "tags": {},
+ "type": "Microsoft.EventHub/Namespaces"
+}
