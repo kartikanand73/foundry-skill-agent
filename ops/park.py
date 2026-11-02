@@ -22,7 +22,8 @@ import time
 
 AZ = "az.cmd" if sys.platform == "win32" else "az"
 SUB, RG = "fe74279e-6ca8-48ff-bf54-90305b257322", "DB"
-ARM = f"https://management.azure.com/subscriptions/{SUB}/resourceGroups/{RG}/providers"
+RID = f"/subscriptions/{SUB}/resourceGroups/{RG}/providers"          # resource ids (az resource --ids)
+ARM = f"https://management.azure.com{RID}"                               # REST urls (az rest)
 
 
 def az(*a, check=True):
@@ -47,7 +48,9 @@ def put(path, ver, body):
 
 
 def exists(rid):
-    r = subprocess.run([AZ, "resource", "show", "--ids", f"{ARM}/{rid}", "-o", "none"], capture_output=True, text=True)
+    r = subprocess.run([AZ, "resource", "show", "--ids", f"{RID}/{rid}", "-o", "none"], capture_output=True, text=True)
+    if r.returncode and "not found" not in r.stderr.lower() and "ResourceNotFound" not in r.stderr:
+        raise SystemExit(f"cannot tell whether {rid} exists: {r.stderr.strip()[-300:]}")   # never assume 'gone'
     return r.returncode == 0
 
 
@@ -94,7 +97,7 @@ def main():
         if not exists(rid):
             print("   already gone")
             continue
-        r = subprocess.run([AZ, "resource", "delete", "--ids", f"{ARM}/{rid}", "--subscription", SUB],
+        r = subprocess.run([AZ, "resource", "delete", "--ids", f"{RID}/{rid}", "--subscription", SUB],
                            capture_output=True, text=True)
         print("   deleted" if r.returncode == 0 and not exists(rid) else f"   delete returned {r.returncode}: "
               f"{r.stderr.strip()[-300:]}")
